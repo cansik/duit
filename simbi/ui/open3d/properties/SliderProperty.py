@@ -19,7 +19,7 @@ class SliderProperty(Open3dFieldProperty[SliderAnnotation]):
 
         def on_dm_changed(value):
             if slider_type == gui.Slider.INT:
-                field.int_value = value
+                field.int_value = round(value)
             else:
                 field.double_value = value
 

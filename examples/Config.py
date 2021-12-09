@@ -14,6 +14,7 @@ class Config:
         self.hungry = DataField(True) | BooleanAnnotation("Hungry")
         self.year = DataField(2021) | NumberAnnotation("Year", 2000, 2050)
         self.temperature = DataField(30.2) | SliderAnnotation("Temperature", 0, 40)
+        self.rings = DataField(30) | SliderAnnotation("Rings", 0, 40)
 
         self.resolution = DataField(256) | OptionsAnnotation("Resolution", [64, 128, 256, 512, 1024])
         self.color = DataField(Color.White) | EnumAnnotation("Color")
