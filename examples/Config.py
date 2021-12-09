@@ -5,6 +5,7 @@ from simbi.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from simbi.ui.annotations.EnumAnnotation import EnumAnnotation
 from simbi.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from simbi.ui.annotations.SliderAnnotation import SliderAnnotation
+from simbi.ui.annotations.TextAnnotation import TextAnnotation
 
 
 class Config:
@@ -16,3 +17,5 @@ class Config:
 
         self.resolution = DataField(256) | OptionsAnnotation("Resolution", [64, 128, 256, 512, 1024])
         self.color = DataField(Color.White) | EnumAnnotation("Color")
+
+        self.name = DataField("Test") | TextAnnotation("Name", readonly=True)

@@ -1,3 +1,5 @@
+import logging
+
 from open3d.visualization import gui
 
 from simbi.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
@@ -32,11 +34,12 @@ class PropertyPanel(gui.Vert):
         annotations = find_all_ui_annotations(self._data_context)
         for var_name, (model, anns) in annotations.items():
             for ann in anns:
-                property_field = UI_PROPERTY_REGISTRY[type(ann)](ann, model)
+                ann_type = type(ann)
+                if ann_type not in UI_PROPERTY_REGISTRY:
+                    logging.warning(f"Annotation not registered: {ann_type.__name__}")
+                    continue
+                property_field = UI_PROPERTY_REGISTRY[ann_type](ann, model)
                 widgets = property_field.create_widgets()
 
                 for widget in widgets:
                     self._grid.add_child(widget)
-
-
-
