@@ -13,7 +13,7 @@ from simbi.ui.annotations.container.StartSectionAnnotation import StartSectionAn
 
 class Config:
     def __init__(self):
-        self.age = DataField(5) | StartSectionAnnotation("Main") | NumberAnnotation("Age")
+        self.age = DataField(5) | StartSectionAnnotation("Options", collapsed=True) | NumberAnnotation("Age")
         self.hungry = DataField(True) | BooleanAnnotation("Hungry")
         self.year = DataField(2021) | NumberAnnotation("Year", 2000, 2050)
         self.temperature = DataField(30.2) | SliderAnnotation("Temperature", 0, 40)
