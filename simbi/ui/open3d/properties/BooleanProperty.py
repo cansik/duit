@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Optional
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -16,14 +15,14 @@ class BooleanProperty(Open3dFieldProperty[BooleanAnnotation]):
     def create_field(self) -> Widget:
         field = gui.Checkbox("")
 
-        def on_dm_changed(value, f: gui.Checkbox):
-            f.checked = value
+        def on_dm_changed(value):
+            field.checked = value
 
-        def on_ui_changed(value, m: DataModel):
-            m.value = value
+        def on_ui_changed(value):
+            self.model.value = value
 
-        self.model.on_changed.append(partial(on_dm_changed, f=field))
-        field.set_on_checked(partial(on_ui_changed, m=self.model))
+        self.model.on_changed.append(on_dm_changed)
+        field.set_on_checked(on_ui_changed)
 
         self.model.fire_latest()
         return field

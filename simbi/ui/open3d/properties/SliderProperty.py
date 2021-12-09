@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Optional
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -18,17 +17,17 @@ class SliderProperty(Open3dFieldProperty[SliderAnnotation]):
         field = gui.Slider(slider_type)
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)
 
-        def on_dm_changed(value, f: gui.Slider):
+        def on_dm_changed(value):
             if slider_type == gui.Slider.INT:
-                f.int_value = value
+                field.int_value = value
             else:
-                f.double_value = value
+                field.double_value = value
 
-        def on_ui_changed(value, m: DataModel):
-            m.value = value
+        def on_ui_changed(value):
+            self.model.value = value
 
-        self.model.on_changed.append(partial(on_dm_changed, f=field))
-        field.set_on_value_changed(partial(on_ui_changed, m=self.model))
+        self.model.on_changed.append(on_dm_changed)
+        field.set_on_value_changed(on_ui_changed)
 
         self.model.fire_latest()
         return field

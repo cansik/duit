@@ -1,4 +1,3 @@
-from functools import partial
 from typing import Optional
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -19,14 +18,14 @@ class OptionsProperty(Open3dFieldProperty[OptionsAnnotation]):
         for option in self.annotation.options:
             field.add_item(str(option))
 
-        def on_dm_changed(value, f: gui.NumberEdit):
-            f.selected_index = self.annotation.options.index(value)
+        def on_dm_changed(value):
+            field.selected_index = self.annotation.options.index(value)
 
-        def on_ui_changed(value, index, m: DataModel):
-            m.value = self.annotation.options[index]
+        def on_ui_changed(value, index):
+            self.model.value = self.annotation.options[index]
 
-        self.model.on_changed.append(partial(on_dm_changed, f=field))
-        field.set_on_selection_changed(partial(on_ui_changed, m=self.model))
+        self.model.on_changed.append(on_dm_changed)
+        field.set_on_selection_changed(on_ui_changed)
 
         self.model.fire_latest()
         return field
