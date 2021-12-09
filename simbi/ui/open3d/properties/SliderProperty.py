@@ -5,12 +5,11 @@ from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
 
 from simbi.model.DataModel import DataModel
-from simbi.ui.annotations import NumberAnnotation
 from simbi.ui.annotations.SliderAnnotation import SliderAnnotation
 from simbi.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
-class SliderProperty(Open3dFieldProperty):
+class SliderProperty(Open3dFieldProperty[SliderAnnotation]):
     def __init__(self, annotation: SliderAnnotation, model: Optional[DataModel] = None):
         super().__init__(annotation, model)
 

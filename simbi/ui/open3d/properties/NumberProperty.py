@@ -9,7 +9,7 @@ from simbi.ui.annotations import NumberAnnotation
 from simbi.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
-class NumberProperty(Open3dFieldProperty):
+class NumberProperty(Open3dFieldProperty[NumberAnnotation]):
     def __init__(self, annotation: NumberAnnotation, model: Optional[DataModel] = None):
         super().__init__(annotation, model)
 
