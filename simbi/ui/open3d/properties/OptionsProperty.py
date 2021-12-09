@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any, List
 
 from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
@@ -15,17 +15,24 @@ class OptionsProperty(Open3dFieldProperty[OptionsAnnotation]):
     def create_field(self) -> Widget:
         field = gui.Combobox()
 
-        for option in self.annotation.options:
-            field.add_item(str(option))
+        for option in self.options:
+            field.add_item(self.get_option_name(option))
 
         def on_dm_changed(value):
-            field.selected_index = self.annotation.options.index(value)
+            field.selected_index = self.options.index(value)
 
         def on_ui_changed(value, index):
-            self.model.value = self.annotation.options[index]
+            self.model.value = self.options[index]
 
         self.model.on_changed.append(on_dm_changed)
         field.set_on_selection_changed(on_ui_changed)
 
         self.model.fire_latest()
         return field
+
+    @property
+    def options(self) -> List[Any]:
+        return self.annotation.options
+
+    def get_option_name(self, option) -> str:
+        return str(option)
