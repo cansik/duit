@@ -1,6 +1,7 @@
 from examples.Color import Color
 from simbi.model.DataField import DataField
 from simbi.ui.annotations import NumberAnnotation
+from simbi.ui.annotations.ActionAnnotation import ActionAnnotation
 from simbi.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from simbi.ui.annotations.EnumAnnotation import EnumAnnotation
 from simbi.ui.annotations.OptionsAnnotation import OptionsAnnotation
@@ -20,3 +21,7 @@ class Config:
         self.color = DataField(Color.White) | EnumAnnotation("Color")
 
         self.name = DataField("Test") | TextAnnotation("Name", readonly=True)
+        self._on_hello = DataField(self.say_hello) | ActionAnnotation("Press Me")
+
+    def say_hello(self):
+        print("hello world")
