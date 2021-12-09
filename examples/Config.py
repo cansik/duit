@@ -7,15 +7,17 @@ from simbi.ui.annotations.EnumAnnotation import EnumAnnotation
 from simbi.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from simbi.ui.annotations.SliderAnnotation import SliderAnnotation
 from simbi.ui.annotations.TextAnnotation import TextAnnotation
+from simbi.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
+from simbi.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
 
 
 class Config:
     def __init__(self):
-        self.age = DataField(5) | NumberAnnotation("Age")
+        self.age = DataField(5) | StartSectionAnnotation("Main") | NumberAnnotation("Age")
         self.hungry = DataField(True) | BooleanAnnotation("Hungry")
         self.year = DataField(2021) | NumberAnnotation("Year", 2000, 2050)
         self.temperature = DataField(30.2) | SliderAnnotation("Temperature", 0, 40)
-        self.rings = DataField(30) | SliderAnnotation("Rings", 0, 40)
+        self.rings = DataField(30) | EndSectionAnnotation() | SliderAnnotation("Rings", 0, 40)
 
         self.resolution = DataField(256) | OptionsAnnotation("Resolution", [64, 128, 256, 512, 1024])
         self.color = DataField(Color.White) | EnumAnnotation("Color")

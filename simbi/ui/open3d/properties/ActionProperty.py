@@ -1,3 +1,4 @@
+import threading
 from typing import Optional
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -5,7 +6,6 @@ from open3d.visualization import gui
 
 from simbi.model.DataField import DataField
 from simbi.ui.annotations.ActionAnnotation import ActionAnnotation
-from simbi.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from simbi.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
@@ -19,8 +19,17 @@ class ActionProperty(Open3dFieldProperty[ActionAnnotation]):
         field.vertical_padding_em = 0.1
 
         def on_clicked():
-            if self.model is not None:
-                self.model.value()
+            if self.model is None:
+                return
+
+            if self.annotation.threaded:
+                thread = threading.Thread(target=self._run_method, daemon = True)
+                thread.start()
+            else:
+                self._run_method()
 
         field.set_on_clicked(on_clicked)
         return field
+
+    def _run_method(self):
+        self.model.value()
