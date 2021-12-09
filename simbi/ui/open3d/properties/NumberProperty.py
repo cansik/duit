@@ -3,13 +3,13 @@ from typing import Optional
 from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
 
-from simbi.model.DataModel import DataModel
+from simbi.model.DataField import DataField
 from simbi.ui.annotations import NumberAnnotation
 from simbi.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
 class NumberProperty(Open3dFieldProperty[NumberAnnotation]):
-    def __init__(self, annotation: NumberAnnotation, model: Optional[DataModel] = None):
+    def __init__(self, annotation: NumberAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:

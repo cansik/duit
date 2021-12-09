@@ -5,7 +5,7 @@ from simbi.event.Event import Event
 T = TypeVar('T')
 
 
-class DataModel(Generic[T]):
+class DataField(Generic[T]):
     def __init__(self, value: T):
         self._value: T = value
         self.publish_enabled: bool = True
@@ -35,7 +35,7 @@ class DataModel(Generic[T]):
     def fire_latest(self):
         self.on_changed.invoke_latest(self._value)
 
-    def bind_to(self, model: "DataModel[T]") -> None:
+    def bind_to(self, model: "DataField[T]") -> None:
         def on_change():
             old_publish_value = self.publish_enabled
             self.publish_enabled = False
@@ -44,7 +44,7 @@ class DataModel(Generic[T]):
 
         self.on_changed.append(on_change)
 
-    def bind_bidirectional(self, model: "DataModel[T]") -> None:
+    def bind_bidirectional(self, model: "DataField[T]") -> None:
         self.bind_to(model)
         model.bind_to(self)
 
@@ -55,6 +55,6 @@ class DataModel(Generic[T]):
         return self.__repr__()
 
     def __eq__(self, other: object) -> bool:
-        if isinstance(other, DataModel):
+        if isinstance(other, DataField):
             return self.value == other.value
         return False
