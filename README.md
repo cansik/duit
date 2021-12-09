@@ -50,7 +50,7 @@ pip install "simbi[open3d]"
 To develop it is recommended to clone this repository and install the dependencies like this:
 
 ```bash
-# in the visiongraph directory
+# in the simbi directory
 pip install -e ".[all]"
 ```
 
