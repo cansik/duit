@@ -16,6 +16,7 @@ class SliderProperty(Open3dFieldProperty[SliderAnnotation]):
         slider_type = gui.Slider.INT if isinstance(self.model.value, int) else gui.Slider.DOUBLE
         field = gui.Slider(slider_type)
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)
+        field.enabled = not self.annotation.read_only
 
         def on_dm_changed(value):
             if slider_type == gui.Slider.INT:

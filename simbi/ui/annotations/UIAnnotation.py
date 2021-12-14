@@ -6,8 +6,9 @@ UI_ANNOTATION_ATTRIBUTE_NAME = "ui_annotation"
 
 
 class UIAnnotation(ABC):
-    def __init__(self, name: str):
+    def __init__(self, name: str, read_only: bool = False):
         self.name = name
+        self.read_only = read_only
 
     def __ror__(self, model) -> DataField:
         if not isinstance(model, DataField):

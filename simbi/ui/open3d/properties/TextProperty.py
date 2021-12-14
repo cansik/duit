@@ -15,7 +15,7 @@ class TextProperty(Open3dFieldProperty[TextAnnotation]):
     def create_field(self) -> Widget:
         field = gui.TextEdit()
         field.placeholder_text = self.annotation.placeholder_text
-        field.enabled = not self.annotation.readonly
+        field.enabled = not self.annotation.read_only
 
         def on_dm_changed(value):
             field.text_value = value

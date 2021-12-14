@@ -4,6 +4,6 @@ from simbi.ui.annotations import UIAnnotation
 
 
 class OptionsAnnotation(UIAnnotation):
-    def __init__(self, name: str, options: Iterable[Any]):
-        super().__init__(name)
+    def __init__(self, name: str, options: Iterable[Any], readonly: bool = False):
+        super().__init__(name, readonly)
         self.options = options
