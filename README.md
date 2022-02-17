@@ -10,10 +10,10 @@ To create a gui by code, create a new class with the fields you need.
 ```python
 class Config:
     def __init__(self):
-        self.age = DataModel(5) | NumberAnnotation("Age")
-        self.hungry = DataModel(True) | BooleanAnnotation("Hungry")
-        self.year = DataModel(2021) | NumberAnnotation("Year", 2000, 2050)
-        self.temperature = DataModel(30.2) | SliderAnnotation("Temperature", 0, 40)
+        self.age = DataField(5) | NumberAnnotation("Age")
+        self.hungry = DataField(True) | BooleanAnnotation("Hungry")
+        self.year = DataField(2021) | NumberAnnotation("Year", 2000, 2050)
+        self.temperature = DataField(30.2) | SliderAnnotation("Temperature", 0, 40)
 ```
 
 And use the open3d gui package to display them:
@@ -55,4 +55,4 @@ pip install -e ".[all]"
 ```
 
 ## About
-Copyright (c) 2021 Florian Bruggisser
+Copyright (c) 2022 Florian Bruggisser

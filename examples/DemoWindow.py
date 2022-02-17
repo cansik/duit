@@ -5,7 +5,7 @@ from simbi.ui.open3d.PropertyPanel import PropertyPanel
 
 class DemoWindow:
     def __init__(self, data_context):
-        self.window = gui.Application.instance.create_window("Demo Window", 400, 600)
+        self.window: gui.Window = gui.Application.instance.create_window("Demo Window", 400, 600)
         self.window.set_on_layout(self._on_layout)
         self.window.set_on_close(self._on_close)
 
