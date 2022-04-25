@@ -1,6 +1,7 @@
 from typing import TypeVar, Generic
 
 from simbi.event.Event import Event
+from simbi.settings.Settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 
 T = TypeVar('T')
 
@@ -10,6 +11,10 @@ class DataField(Generic[T]):
         self._value: T = value
         self.publish_enabled: bool = True
         self.on_changed: Event[T] = Event[T]()
+
+        # add serialization attribute by default
+        from simbi.settings.Setting import Setting
+        self.__setattr__(SETTING_ANNOTATION_ATTRIBUTE_NAME, Setting())
 
     @property
     def value(self) -> T:
