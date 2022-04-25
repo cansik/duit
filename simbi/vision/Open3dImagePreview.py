@@ -3,7 +3,6 @@ import time
 from typing import Optional
 
 import numpy as np
-import open3d as o3d
 import open3d.visualization.gui as gui
 
 from simbi.vision.ImagePreview import ImagePreview
