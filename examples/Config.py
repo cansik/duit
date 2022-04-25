@@ -1,29 +1,21 @@
 from examples.Color import Color
 from simbi.model.DataField import DataField
-from simbi.ui.annotations import NumberAnnotation
-from simbi.ui.annotations.ActionAnnotation import ActionAnnotation
-from simbi.ui.annotations.BooleanAnnotation import BooleanAnnotation
-from simbi.ui.annotations.EnumAnnotation import EnumAnnotation
-from simbi.ui.annotations.OptionsAnnotation import OptionsAnnotation
-from simbi.ui.annotations.SliderAnnotation import SliderAnnotation
-from simbi.ui.annotations.TextAnnotation import TextAnnotation
-from simbi.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
-from simbi.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
+import simbi.ui as ui
 
 
 class Config:
     def __init__(self):
-        self.age = DataField(5) | StartSectionAnnotation("Options", collapsed=True) | NumberAnnotation("Age")
-        self.hungry = DataField(True) | BooleanAnnotation("Hungry")
-        self.year = DataField(2021) | NumberAnnotation("Year", 2000, 2050)
-        self.temperature = DataField(30.2) | SliderAnnotation("Temperature", 0, 40)
-        self.rings = DataField(30) | EndSectionAnnotation() | SliderAnnotation("Rings", 0, 40)
+        self.age = DataField(5) | ui.StartSection("Options", collapsed=True) | ui.Number("Age")
+        self.hungry = DataField(True) | ui.Boolean("Hungry")
+        self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
+        self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
+        self.rings = DataField(30) | ui.EndSection() | ui.Slider("Rings", 0, 40)
 
-        self.resolution = DataField(256) | OptionsAnnotation("Resolution", [64, 128, 256, 512, 1024])
-        self.color = DataField(Color.White) | EnumAnnotation("Color")
+        self.resolution = DataField(256) | ui.Options("Resolution", [64, 128, 256, 512, 1024])
+        self.color = DataField(Color.White) | ui.Enum("Color")
 
-        self.name = DataField("Test") | TextAnnotation("Name", readonly=True)
-        self._on_hello = DataField(self.say_hello) | ActionAnnotation("Press Me")
+        self.name = DataField("Test") | ui.Text("Name", readonly=True)
+        self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
 
     def say_hello(self):
         print("hello world")

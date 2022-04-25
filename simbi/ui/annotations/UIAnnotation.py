@@ -2,7 +2,7 @@ from abc import ABC
 
 from simbi.model.DataField import DataField
 
-UI_ANNOTATION_ATTRIBUTE_NAME = "ui_annotation"
+UI_ANNOTATION_ATTRIBUTE_NAME = "__simbi_ui_annotation"
 
 
 class UIAnnotation(ABC):
