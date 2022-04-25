@@ -17,12 +17,14 @@ class Settings(Generic[T]):
         self.serializers: List[BaseSerializer] = [EnumSerializer()]
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
-    def load(self, file_path: str, obj: Optional[T] = None) -> T:
+    def load(self, file_path: str, obj: T) -> T:
         with open(file_path, "r") as file:
             return self.load_json(file.read(), obj)
 
-    def load_json(self, content: str, obj: Optional[T] = None) -> T:
-        pass
+    def load_json(self, content: str, obj: T) -> T:
+        data = json.loads(content)
+        self._deserialize(obj, data)
+        return obj
 
     def save(self, file_path: str, obj: T):
         with open(file_path, "w") as file:
@@ -63,7 +65,7 @@ class Settings(Generic[T]):
             if success:
                 data[name] = value
             else:
-                logging.warning(f"Could not serialize {name}.")
+                logging.warning(f"Could not serialize {name}: {field.value}")
 
             # call again for each datamodel value to catch subfields
             result = self._serialize(field.value, {}, obj_history)
@@ -71,6 +73,41 @@ class Settings(Generic[T]):
                 data[name] = result
 
         return data
+
+    def _deserialize(self, obj: Any, data: Dict[str, Any],
+                     obj_history: Optional[Set[Any]] = None):
+        if obj_history is None:
+            obj_history = set()
+
+        if obj in obj_history:
+            return
+
+        obj_history.add(obj)
+
+        # create string to field index
+        fields_table: Dict[str, Any] = {}
+        fields = self._find_all_setting_annotations(obj)
+        for name, values in fields.items():
+            field, setting = values
+
+            if setting.name is not None:
+                name = setting.name
+            fields_table.update({name: field})
+
+        # map data to fields
+        for key, raw_value in data.items():
+            if key not in fields_table:
+                continue
+            field: DataField = fields_table[key]
+            serializer = self._get_matching_serializer(field)
+            success, value = serializer.deserialize(type(field.value), raw_value)
+
+            if success:
+                field.value = value
+            else:
+                logging.warning(f"Could not deserialize {key}: {raw_value}")
+
+        # todo: implement sub config support
 
     def _get_matching_serializer(self, field: DataField) -> BaseSerializer:
         for serializer in self.serializers:

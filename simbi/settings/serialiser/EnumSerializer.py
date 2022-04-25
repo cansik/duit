@@ -1,5 +1,5 @@
-from enum import Enum
-from typing import Any
+from enum import Enum, EnumMeta
+from typing import Any, Type
 
 from simbi.settings.serialiser.BaseSerializer import BaseSerializer
 
@@ -10,3 +10,11 @@ class EnumSerializer(BaseSerializer):
 
     def serialize(self, obj: Enum) -> [bool, Any]:
         return True, obj.name
+
+    def deserialize(self, data_type: EnumMeta, obj: Any) -> [bool, Any]:
+        options = {o.name: o for o in list(data_type)}
+
+        if obj not in options:
+            return False, obj
+
+        return True, options[obj]
