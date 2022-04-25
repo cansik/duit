@@ -1,7 +1,10 @@
 # Simbi [![PyPI](https://img.shields.io/pypi/v/simbi)](https://pypi.org/project/simbi/)
 Simbi is a toolkit to create simple user-interfaces for python.
-
 It is based on the ideas of [cansik/bildspur-base](https://github.com/cansik/bildspur-base) and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
+
+<img width="200" alt="python_1xlGn4l6Pb" src="https://user-images.githubusercontent.com/5220162/165138252-d7ac7542-974a-4573-ba88-35724e94b0d8.png">
+
+*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D)*
 
 ## Installation
 To install simbi with all dependencies call pip like this:
