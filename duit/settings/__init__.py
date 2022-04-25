@@ -1,0 +1,1 @@
+SETTING_ANNOTATION_ATTRIBUTE_NAME = "__duit_settings_annotation"

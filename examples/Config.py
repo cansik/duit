@@ -1,7 +1,7 @@
 from examples.Color import Color
 from examples.SubConfig import SubConfig
-from simbi.model.DataField import DataField
-import simbi.ui as ui
+from duit.model.DataField import DataField
+import duit.ui as ui
 
 
 class Config:

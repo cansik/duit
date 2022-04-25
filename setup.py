@@ -55,14 +55,14 @@ current_dir = Path(__file__).parent
 long_description = (current_dir / "README.md").read_text()
 
 setup(
-    name="simbi",
-    version='0.1.2',
+    name="duit",
+    version='0.1.0',
     packages=required_packages,
-    url='https://github.com/cansik/simbi',
+    url='https://github.com/cansik/duit',
     license='MIT License',
     author='Florian Bruggisser',
     author_email='github@broox.ch',
-    description='Simbi is a toolkit to create simple user-interfaces for python.',
+    description='Duit is a toolkit to create simple user-interfaces for python.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_required,

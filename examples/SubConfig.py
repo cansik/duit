@@ -1,5 +1,5 @@
-from simbi.model.DataField import DataField
-import simbi.ui as ui
+from duit.model.DataField import DataField
+import duit.ui as ui
 
 
 class SubConfig:

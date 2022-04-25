@@ -1,6 +1,6 @@
 import unittest
 
-from simbi.event.Event import Event
+from duit.event.Event import Event
 
 
 class EventTest(unittest.TestCase):

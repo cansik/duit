@@ -1,8 +1,8 @@
 from Config import Config
 import open3d as o3d
 from DemoWindow import DemoWindow
-from simbi.settings.Settings import Settings
-from simbi.ui.open3d.Open3dPropertyRegistry import init_open3d_registry
+from duit.settings.Settings import Settings
+from duit.ui.open3d.Open3dPropertyRegistry import init_open3d_registry
 
 
 def main():

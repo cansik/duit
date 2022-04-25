@@ -1,5 +1,5 @@
-# Simbi [![PyPI](https://img.shields.io/pypi/v/simbi)](https://pypi.org/project/simbi/)
-Simbi is a toolkit to create simple user-interfaces for python.
+# Duit (Data UI Toolkit) [![PyPI](https://img.shields.io/pypi/v/duit)](https://pypi.org/project/duit/)
+Duit is a toolkit to create simple user-interfaces for python.
 It is based on the ideas of [cansik/bildspur-base](https://github.com/cansik/bildspur-base) and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
 <img width="200" alt="python_1xlGn4l6Pb" src="https://user-images.githubusercontent.com/5220162/165138252-d7ac7542-974a-4573-ba88-35724e94b0d8.png">
@@ -7,16 +7,16 @@ It is based on the ideas of [cansik/bildspur-base](https://github.com/cansik/bil
 *Example UI rendered with [Open3D](https://github.com/isl-org/Open3D)*
 
 ## Installation
-To install simbi with all dependencies call pip like this:
+To install duit with all dependencies call pip like this:
 
 ```bash
-pip install "simbi[all]"
+pip install "duit[all]"
 ```
 
-It is also possible to only install certain packages (for example for the open3d gui):
+It is also possible to only install certain packages (for example only [Open3D](https://github.com/isl-org/Open3D)):
 
 ```bash
-pip install "simbi[open3d]"
+pip install "duit[open3d]"
 ```
 
 ## Example
@@ -25,8 +25,8 @@ To create a gui by code, create a new class with the data-fields you need.
 
 ```python
 from examples.Color import Color
-from simbi.model.DataField import DataField
-import simbi.ui as ui
+from duit.model.DataField import DataField
+import duit.ui as ui
 
 class Config:
     def __init__(self):
@@ -55,7 +55,7 @@ app.run()
 ```
 
 ## Settings
-To save and load settings have a look at the following example. Serialization from and to `json` is automatically handled by simbi.
+To save and load settings have a look at the following example. Serialization from and to `json` is automatically handled by duit.
 
 ```python
 config = Config()
@@ -70,7 +70,7 @@ settings.load("test.json", config)
 To develop it is recommended to clone this repository and install the dependencies like this:
 
 ```bash
-# in the simbi directory
+# in the duit directory
 pip install -e ".[all]"
 ```
 

@@ -1,6 +1,6 @@
 import open3d.visualization.gui as gui
 
-from simbi.ui.open3d.PropertyPanel import PropertyPanel
+from duit.ui.open3d.PropertyPanel import PropertyPanel
 
 
 class DemoWindow:

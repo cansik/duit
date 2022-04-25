@@ -1,6 +1,6 @@
 import numpy as np
 
-from simbi.vision.Open3dImagePreview import Open3dImagePreview
+from duit.vision.Open3dImagePreview import Open3dImagePreview
 
 if __name__ == "__main__":
     preview = Open3dImagePreview("Example")
