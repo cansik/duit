@@ -75,6 +75,10 @@ class Settings(Generic[T]):
             if len(result) != 0:
                 data[name] = result
 
+            if not self._is_jsonable(data[name]):
+                data.pop(name)
+                continue
+
         return data
 
     def _deserialize(self, obj: Any, data: Dict[str, Any],
@@ -147,3 +151,11 @@ class Settings(Generic[T]):
 
                 annotations[n] = (v, v.__getattribute__(SETTING_ANNOTATION_ATTRIBUTE_NAME))
         return annotations
+
+    @staticmethod
+    def _is_jsonable(x):
+        try:
+            json.dumps(x)
+            return True
+        except (TypeError, OverflowError):
+            return False
