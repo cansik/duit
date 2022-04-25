@@ -1,4 +1,5 @@
 from examples.Color import Color
+from examples.SubConfig import SubConfig
 from simbi.model.DataField import DataField
 import simbi.ui as ui
 
@@ -16,6 +17,8 @@ class Config:
 
         self.name = DataField("Test") | ui.Text("Name", readonly=True)
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
+
+        self.location = DataField(SubConfig())
 
     def say_hello(self):
         print("hello world")
