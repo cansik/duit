@@ -1,7 +1,7 @@
 from typing import TypeVar, Generic
 
 from simbi.event.Event import Event
-from simbi.settings.Settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
+from simbi.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 
 T = TypeVar('T')
 

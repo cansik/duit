@@ -1,7 +1,8 @@
-from enum import Enum
+from enum import Enum, unique
 
 
-class Color(Enum):
+@unique
+class Color(int, Enum):
     Red = 1
     Blue = 2
     Green = 3

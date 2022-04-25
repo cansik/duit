@@ -1,6 +1,7 @@
 from Config import Config
 import open3d as o3d
 from DemoWindow import DemoWindow
+from simbi.settings.Settings import Settings
 from simbi.ui.open3d.Open3dPropertyRegistry import init_open3d_registry
 
 
@@ -9,6 +10,9 @@ def main():
 
     config = Config()
     config.age.value = 10
+
+    settings = Settings()
+    settings.save("test.json", config)
 
     app = o3d.visualization.gui.Application.instance
     app.initialize()

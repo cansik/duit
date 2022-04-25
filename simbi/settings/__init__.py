@@ -1,0 +1,1 @@
+SETTING_ANNOTATION_ATTRIBUTE_NAME = "__simbi_settings_annotation"

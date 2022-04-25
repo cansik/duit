@@ -1,7 +1,7 @@
 from typing import Optional
 
 from simbi.model.DataField import DataField
-from simbi.settings.Settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
+from simbi.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 
 
 class Setting:

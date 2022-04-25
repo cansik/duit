@@ -1,0 +1,10 @@
+{
+    "age": 10,
+    "color": 4,
+    "hungry": true,
+    "name": "Test",
+    "resolution": 256,
+    "rings": 30,
+    "temperature": 30.2,
+    "year": 2021
+}
