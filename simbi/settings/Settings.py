@@ -7,13 +7,14 @@ from simbi.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 from simbi.settings.Setting import Setting
 from simbi.settings.serialiser.BaseSerializer import BaseSerializer
 from simbi.settings.serialiser.DefaultSerializer import DefaultSerializer
+from simbi.settings.serialiser.EnumSerializer import EnumSerializer
 
 T = TypeVar('T')
 
 
 class Settings(Generic[T]):
     def __init__(self):
-        self.serializers: List[BaseSerializer] = []
+        self.serializers: List[BaseSerializer] = [EnumSerializer()]
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
     def load(self, file_path: str, obj: Optional[T] = None) -> T:

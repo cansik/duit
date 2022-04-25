@@ -1,6 +1,6 @@
 {
     "age": 10,
-    "color": 4,
+    "color": "White",
     "hungry": true,
     "name": "Test",
     "resolution": 256,
