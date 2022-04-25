@@ -12,7 +12,7 @@ class DemoWindow:
         em = self.window.theme.font_size
         separation_height = int(round(0.5 * em))
 
-        self.panel = PropertyPanel(0, gui.Margins(0.25 * em, 0.25 * em, 0.25 * em, 0.25 * em))
+        self.panel = PropertyPanel()
         self.window.add_child(self.panel)
 
         self.panel.data_context = data_context

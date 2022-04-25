@@ -10,12 +10,13 @@ from simbi.ui.annotations.container.EndSectionAnnotation import EndSectionAnnota
 from simbi.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
 
 
-class PropertyPanel(gui.Vert):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class PropertyPanel(gui.WidgetProxy):
+    def __init__(self):
+        super().__init__()
 
         self.em = 15
 
+        self.widget: gui.Vert = gui.Vert()
         self._data_context = None
         self._containers: Stack[Widget] = Stack()
 
@@ -29,7 +30,7 @@ class PropertyPanel(gui.Vert):
         self._create_properties()
 
     def _create_properties(self):
-        # todo: remove children
+        self.widget = gui.Vert()
 
         if self._data_context is None:
             return
@@ -48,7 +49,7 @@ class PropertyPanel(gui.Vert):
                     settings.set_is_open(not ann.collapsed)
                     grid = gui.VGrid(2, 0.25 * self.em)
                     settings.add_child(grid)
-                    self.add_child(settings)
+                    self.widget.add_child(settings)
                     self._containers.push(grid)
                     continue
 
@@ -72,7 +73,9 @@ class PropertyPanel(gui.Vert):
 
         # add all containers that are left
         while not self._containers.is_empty:
-            self.add_child(self._containers.pop())
+            self.widget.add_child(self._containers.pop())
+
+        self.set_widget(self.widget)
 
     @property
     def _current_container(self):

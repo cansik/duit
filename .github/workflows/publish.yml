@@ -46,7 +46,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: dist/*.whl
-        tag: ${{ steps.get_version.outputs.v_version }}
+        tag: "v${{ steps.get_version.outputs.v_version }}"
         release_name: "Version ${{ steps.get_version.outputs.version }}"
         body: "Prebuilt wheel packages version ${{ steps.get_version.outputs.version }}."
         overwrite: true
