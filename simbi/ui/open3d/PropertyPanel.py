@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from open3d.visualization import gui
 from open3d.visualization.gui import Widget
@@ -8,6 +9,7 @@ from simbi.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from simbi.ui.annotations import find_all_ui_annotations
 from simbi.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
 from simbi.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
+from simbi.ui.annotations.container.SubSectionAnnotation import SubSectionAnnotation
 
 
 class PropertyPanel(gui.WidgetProxy):
@@ -17,8 +19,12 @@ class PropertyPanel(gui.WidgetProxy):
         self.em = 15
 
         self.widget: gui.Vert = gui.Vert()
+        self.container_margins = gui.Margins(self.em, 0.25 * self.em, self.em, 0.25 * self.em)
+        self.container_spacing = 0.25 * self.em
         self._data_context = None
-        self._containers: Stack[Widget] = Stack()
+
+        self.max_stack_depth = 5
+        self.stack_depth = 0
 
     @property
     def data_context(self):
@@ -27,16 +33,24 @@ class PropertyPanel(gui.WidgetProxy):
     @data_context.setter
     def data_context(self, value):
         self._data_context = value
-        self._create_properties()
+        self._create_panel()
 
-    def _create_properties(self):
+    def _create_panel(self):
         self.widget = gui.Vert()
 
         if self._data_context is None:
             return
 
-        # todo: refactor this ugly method
-        annotations = find_all_ui_annotations(self._data_context)
+        self._create_properties(self.data_context, self.widget)
+        self.set_widget(self.widget)
+
+    def _create_properties(self, obj: Any, root_widget: gui.Widget):
+        self.stack_depth += 1
+
+        containers: Stack[Widget] = Stack()
+        containers.push(gui.VGrid(2, self.container_spacing, self.container_margins))
+
+        annotations = find_all_ui_annotations(obj)
         for var_name, (model, anns) in annotations.items():
             pop_after = False
 
@@ -44,13 +58,24 @@ class PropertyPanel(gui.WidgetProxy):
                 ann_type = type(ann)
 
                 # check for container
-                if isinstance(ann, StartSectionAnnotation):
-                    settings = gui.CollapsableVert(ann.name, 0.25 * self.em, gui.Margins(self.em, 0, 0, 0))
+                is_sub_section = isinstance(ann, SubSectionAnnotation)
+                if isinstance(ann, StartSectionAnnotation) or is_sub_section:
+                    if is_sub_section:
+                        if self.stack_depth > self.max_stack_depth:
+                            logging.info(f"Stack ({self.stack_depth}) depth is at limit {self.max_stack_depth}.")
+                            continue
+
+                    settings = gui.CollapsableVert(ann.name, self.container_spacing, self.container_margins)
                     settings.set_is_open(not ann.collapsed)
                     grid = gui.VGrid(2, 0.25 * self.em)
                     settings.add_child(grid)
-                    self.widget.add_child(settings)
-                    self._containers.push(grid)
+                    root_widget.add_child(settings)
+
+                    if is_sub_section:
+                        self._create_properties(model.value, grid)
+                        continue
+
+                    containers.push(grid)
                     continue
 
                 if isinstance(ann, EndSectionAnnotation):
@@ -66,20 +91,13 @@ class PropertyPanel(gui.WidgetProxy):
                 widgets = property_field.create_widgets()
 
                 for widget in widgets:
-                    self._current_container.add_child(widget)
+                    containers.peek().add_child(widget)
 
             if pop_after:
-                self._containers.pop()
+                containers.pop()
 
         # add all containers that are left
-        while not self._containers.is_empty:
-            self.widget.add_child(self._containers.pop())
+        while not containers.is_empty:
+            root_widget.add_child(containers.pop())
 
-        self.set_widget(self.widget)
-
-    @property
-    def _current_container(self):
-        if self._containers.is_empty:
-            self._containers.push(gui.VGrid(2, 0.25 * self.em))
-
-        return self._containers.peek()
+        self.stack_depth -= 1

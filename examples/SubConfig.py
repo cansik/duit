@@ -4,4 +4,4 @@ import simbi.ui as ui
 
 class SubConfig:
     def __init__(self):
-        self.city = DataField("Berlin") | ui.Number("City")
+        self.city = DataField("Berlin") | ui.Text("City")
