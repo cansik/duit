@@ -16,6 +16,7 @@ def main():
     settings.load("test.json", config)
 
     print(f"City: {config.location.value.city.value}")
+    print(f"Library: {config.library.value}")
 
     app = o3d.visualization.gui.Application.instance
     app.initialize()

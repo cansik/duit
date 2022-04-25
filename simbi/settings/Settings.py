@@ -1,3 +1,4 @@
+import collections
 import json
 import logging
 from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
@@ -27,8 +28,9 @@ class Settings(Generic[T]):
         return obj
 
     def save(self, file_path: str, obj: T):
+        data = self.save_json(obj)
         with open(file_path, "w") as file:
-            file.write(self.save_json(obj))
+            file.write(data)
 
     def save_json(self, obj: T) -> str:
         data = self._serialize(obj)
@@ -40,13 +42,14 @@ class Settings(Generic[T]):
         if obj_history is None:
             obj_history = set()
 
-        if obj in obj_history:
+        if isinstance(obj, collections.Hashable) and obj in obj_history:
             return {}
 
         if data is None:
             data = {}
 
-        obj_history.add(obj)
+        if isinstance(obj, collections.Hashable):
+            obj_history.add(obj)
 
         # extract datamodel fields
         fields = self._find_all_setting_annotations(obj)
@@ -75,14 +78,18 @@ class Settings(Generic[T]):
         return data
 
     def _deserialize(self, obj: Any, data: Dict[str, Any],
-                     obj_history: Optional[Set[Any]] = None):
+                     obj_history: Optional[Set[Any]] = None) -> Tuple[bool, Any]:
         if obj_history is None:
             obj_history = set()
 
-        if obj in obj_history:
-            return
+        if isinstance(obj, collections.Hashable) and obj in obj_history:
+            return True, obj
 
-        obj_history.add(obj)
+        if not isinstance(data, Dict):
+            return False, None
+
+        if isinstance(obj, collections.Hashable):
+            obj_history.add(obj)
 
         # create string to field index
         fields_table: Dict[str, Any] = {}
@@ -99,6 +106,13 @@ class Settings(Generic[T]):
             if key not in fields_table:
                 continue
             field: DataField = fields_table[key]
+
+            # check if is subtype
+            success, sub_obj = self._deserialize(field.value, raw_value, obj_history)
+            if success and type(field.value) == type(sub_obj):
+                field.value = sub_obj
+                continue
+
             serializer = self._get_matching_serializer(field)
             success, value = serializer.deserialize(type(field.value), raw_value)
 
@@ -107,7 +121,7 @@ class Settings(Generic[T]):
             else:
                 logging.warning(f"Could not deserialize {key}: {raw_value}")
 
-        # todo: implement sub config support
+        return True, obj
 
     def _get_matching_serializer(self, field: DataField) -> BaseSerializer:
         for serializer in self.serializers:

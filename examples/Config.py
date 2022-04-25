@@ -19,6 +19,7 @@ class Config:
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
 
         self.location = DataField(SubConfig())
+        self.library = DataField({"Book": "Test", "Movie": "World"})
 
     def say_hello(self):
         print("hello world")
