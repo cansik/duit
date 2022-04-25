@@ -18,8 +18,9 @@ class Config:
         self.name = DataField("Test") | ui.Text("Name", readonly=True)
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
 
-        self.location = DataField(SubConfig())
+        self.location = DataField(SubConfig()) | ui.SubSection("Location")
         self.library = DataField({"Book": "Test", "Movie": "World"})
 
-    def say_hello(self):
+    @staticmethod
+    def say_hello():
         print("hello world")

@@ -12,7 +12,7 @@ def main():
     config.age.value = 10
 
     settings = Settings()
-    # settings.save("test.json", config)
+    settings.save("test.json", config)
     settings.load("test.json", config)
 
     print(f"City: {config.location.value.city.value}")

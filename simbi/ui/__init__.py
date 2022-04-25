@@ -8,3 +8,4 @@ from .annotations.TextAnnotation import TextAnnotation as Text
 
 from .annotations.container.StartSectionAnnotation import StartSectionAnnotation as StartSection
 from .annotations.container.EndSectionAnnotation import EndSectionAnnotation as EndSection
+from .annotations.container.SubSectionAnnotation import SubSectionAnnotation as SubSection
