@@ -62,7 +62,7 @@ setup(
     license='MIT License',
     author='Florian Bruggisser',
     author_email='github@broox.ch',
-    description='Simbi is a toolkit with helpful code for python.',
+    description='Simbi is a toolkit to create simple user-interfaces for python.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_required,

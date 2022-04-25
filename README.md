@@ -1,11 +1,24 @@
-# Simbi
-Simbi is a toolkit for python to create GUI's and settings.
+# Simbi [![PyPI](https://img.shields.io/pypi/v/simbi)](https://pypi.org/project/simbi/)
+Simbi is a toolkit to create simple user-interfaces for python.
 
 It is based on the ideas of [cansik/bildspur-base](https://github.com/cansik/bildspur-base) and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
+## Installation
+To install simbi with all dependencies call pip like this:
+
+```bash
+pip install "simbi[all]"
+```
+
+It is also possible to only install certain packages (for example for the open3d gui):
+
+```bash
+pip install "simbi[open3d]"
+```
+
 ## Example
 
-To create a gui by code, create a new class with the fields you need.
+To create a gui by code, create a new class with the data-fields you need.
 
 ```python
 from examples.Color import Color
@@ -38,17 +51,15 @@ win = DemoWindow(config)
 app.run()
 ```
 
-## Installation
-To install simbi with all dependencies call pip like this:
+## Settings
+To save and load settings have a look at the following example. Serialization from and to `json` is automatically handled by simbi.
 
-```bash
-pip install "simbi[all]"
-```
+```python
+config = Config()
+settings = Settings()
 
-It is also possible to only install certain packages (for example for the open3d gui):
-
-```bash
-pip install "simbi[open3d]"
+settings.save("test.json", config)
+settings.load("test.json", config)
 ```
 
 ### Development
@@ -61,4 +72,4 @@ pip install -e ".[all]"
 ```
 
 ## About
-Copyright (c) 2022 Florian Bruggisser
+MIT License - Copyright (c) 2022 Florian Bruggisser
