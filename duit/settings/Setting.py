@@ -1,10 +1,11 @@
 from typing import Optional
 
+from duit.annotation.Annotation import Annotation
 from duit.model.DataField import DataField
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 
 
-class Setting:
+class Setting(Annotation):
     def __init__(self, name: Optional[str] = None, exposed: bool = True):
         self.name = name
         self.exposed = exposed

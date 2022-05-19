@@ -1,11 +1,12 @@
 from abc import ABC
 
+from duit.annotation.Annotation import Annotation
 from duit.model.DataField import DataField
 
 UI_ANNOTATION_ATTRIBUTE_NAME = "__duit_ui_annotation"
 
 
-class UIAnnotation(ABC):
+class UIAnnotation(Annotation, ABC):
     def __init__(self, name: str, read_only: bool = False):
         self.name = name
         self.read_only = read_only

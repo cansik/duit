@@ -1,3 +1,4 @@
+from duit.annotation.AnnotationList import AnnotationList
 from examples.Color import Color
 from examples.SubConfig import SubConfig
 from duit.model.DataField import DataField
@@ -6,7 +7,8 @@ import duit.ui as ui
 
 class Config:
     def __init__(self):
-        self.age = DataField(5) | ui.StartSection("Options", collapsed=True) | ui.Number("Age")
+        self.age = DataField(5) | AnnotationList(ui.StartSection("Options", collapsed=True),
+                                                 ui.Number("Age"))
         self.hungry = DataField(True) | ui.Boolean("Hungry")
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
         self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
