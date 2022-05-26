@@ -56,7 +56,7 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="duit",
-    version='0.1.1',
+    version='0.1.2',
     packages=required_packages,
     url='https://github.com/cansik/duit',
     license='MIT License',

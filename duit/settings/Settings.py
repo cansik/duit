@@ -3,20 +3,28 @@ import json
 import logging
 from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
 
+import vector
+
 from duit.model.DataField import DataField
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 from duit.settings.Setting import Setting
 from duit.settings.serialiser.BaseSerializer import BaseSerializer
 from duit.settings.serialiser.DefaultSerializer import DefaultSerializer
 from duit.settings.serialiser.EnumSerializer import EnumSerializer
+from duit.settings.serialiser.VectorSerializer import VectorSerializer
 
 T = TypeVar('T')
 
 
 class Settings(Generic[T]):
     def __init__(self):
-        self.serializers: List[BaseSerializer] = [EnumSerializer()]
+        self.serializers: List[BaseSerializer] = [
+            EnumSerializer(),
+            VectorSerializer()
+        ]
         self.default_serializer: BaseSerializer = DefaultSerializer()
+
+        self.non_unpackable_type = [vector.Vector]
 
     def load(self, file_path: str, obj: T) -> T:
         with open(file_path, "r") as file:
@@ -91,6 +99,10 @@ class Settings(Generic[T]):
 
         if not isinstance(data, Dict):
             return False, None
+
+        for t in self.non_unpackable_type:
+            if isinstance(obj, t):
+                return False, None
 
         if isinstance(obj, collections.Hashable):
             obj_history.add(obj)

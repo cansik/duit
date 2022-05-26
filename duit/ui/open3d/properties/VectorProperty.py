@@ -7,6 +7,7 @@ from open3d.visualization import gui
 from duit.model.DataField import DataField
 from duit.ui.annotations.VectorAnnotation import VectorAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
+from duit.utils import _vector
 
 
 class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
@@ -14,7 +15,7 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
-        vector_attributes = self._get_vector_attributes()
+        vector_attributes = _vector.get_vector_attributes(self.model.value)
         attribute_widgets: Dict[str, gui.NumberEdit] = {}
 
         max_width = 230
@@ -60,12 +61,3 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
         self.model.fire_latest()
 
         return container
-
-    def _get_vector_attributes(self) -> Sequence[str]:
-        value = self.model.value
-        if isinstance(value, vector.Vector2D):
-            return "x", "y"
-        elif isinstance(value, vector.Vector3D):
-            return "x", "y", "z"
-        elif isinstance(value, vector.Vector4D):
-            return "x", "y", "z", "t"
