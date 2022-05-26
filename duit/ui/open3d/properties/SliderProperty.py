@@ -17,6 +17,7 @@ class SliderProperty(Open3dFieldProperty[SliderAnnotation]):
         field = gui.Slider(slider_type)
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)
         field.enabled = not self.annotation.read_only
+        field.tooltip = self.annotation.tooltip
 
         def on_dm_changed(value):
             if slider_type == gui.Slider.INT:

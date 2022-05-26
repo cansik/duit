@@ -15,6 +15,7 @@ class OptionsProperty(Open3dFieldProperty[OptionsAnnotation]):
     def create_field(self) -> Widget:
         field = gui.Combobox()
         field.enabled = not self.annotation.read_only
+        field.tooltip = self.annotation.tooltip
 
         for option in self.options:
             field.add_item(self.get_option_name(option))

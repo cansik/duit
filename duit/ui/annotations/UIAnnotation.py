@@ -7,8 +7,9 @@ UI_ANNOTATION_ATTRIBUTE_NAME = "__duit_ui_annotation"
 
 
 class UIAnnotation(Annotation, ABC):
-    def __init__(self, name: str, read_only: bool = False):
+    def __init__(self, name: str, tooltip: str = "", read_only: bool = False):
         self.name = name
+        self.tooltip = tooltip
         self.read_only = read_only
 
     def __ror__(self, model) -> DataField:

@@ -15,6 +15,7 @@ class BooleanProperty(Open3dFieldProperty[BooleanAnnotation]):
     def create_field(self) -> Widget:
         field = gui.Checkbox("")
         field.enabled = not self.annotation.read_only
+        field.tooltip = self.annotation.tooltip
 
         def on_dm_changed(value):
             field.checked = value

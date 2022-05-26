@@ -17,6 +17,7 @@ class ActionProperty(Open3dFieldProperty[ActionAnnotation]):
         field = gui.Button(self.annotation.text)
         field.horizontal_padding_em = 0.1
         field.vertical_padding_em = 0.1
+        field.tooltip = self.annotation.tooltip
 
         def on_clicked():
             if self.model is None:

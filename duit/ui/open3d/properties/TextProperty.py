@@ -16,6 +16,7 @@ class TextProperty(Open3dFieldProperty[TextAnnotation]):
         field = gui.TextEdit()
         field.placeholder_text = self.annotation.placeholder_text
         field.enabled = not self.annotation.read_only or self.annotation.copy_content
+        field.tooltip = self.annotation.tooltip
 
         def on_dm_changed(value):
             field.text_value = value
