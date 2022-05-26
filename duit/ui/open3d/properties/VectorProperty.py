@@ -22,20 +22,29 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
 
         container = gui.Horiz(15)
         container.add_stretch()
-        container.enabled = not self.annotation.read_only
-        container.tooltip = self.annotation.tooltip
 
         def update_model():
             for attribute_name in vector_attributes:
                 setattr(self.model.value, attribute_name, attribute_widgets[attribute_name].double_value)
             self.model.fire()
 
+        def update_ui():
+            value = self.model.value
+            for attribute_name in vector_attributes:
+                attribute_widgets[attribute_name].double_value = getattr(value, attribute_name)
+
         for i, attribute_name in enumerate(vector_attributes):
             field = gui.NumberEdit(gui.NumberEdit.DOUBLE)
             field.decimal_precision = self.annotation.decimal_precision
 
+            field.enabled = not self.annotation.read_only or self.annotation.copy_content
+            field.tooltip = self.annotation.tooltip
+
             def on_ui_changed(value):
-                update_model()
+                if self.annotation.read_only:
+                    update_ui()
+                else:
+                    update_model()
 
             field.set_on_value_changed(on_ui_changed)
             # container.add_child(gui.Label(f"{attribute_name}:"))
@@ -45,8 +54,7 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
             attribute_widgets[attribute_name] = field
 
         def on_dm_changed(value):
-            for attribute_name in vector_attributes:
-                attribute_widgets[attribute_name].double_value = getattr(value, attribute_name)
+            update_ui()
 
         self.model.on_changed.append(on_dm_changed)
         self.model.fire_latest()
