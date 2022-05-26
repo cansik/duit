@@ -15,13 +15,16 @@ class TextProperty(Open3dFieldProperty[TextAnnotation]):
     def create_field(self) -> Widget:
         field = gui.TextEdit()
         field.placeholder_text = self.annotation.placeholder_text
-        field.enabled = not self.annotation.read_only
+        field.enabled = not self.annotation.read_only or self.annotation.copy_content
 
         def on_dm_changed(value):
             field.text_value = value
 
         def on_ui_changed(value):
-            self.model.value = value
+            if self.annotation.read_only:
+                field.text_value = self.model.value
+            else:
+                self.model.value = value
 
         self.model.on_changed.append(on_dm_changed)
         field.set_on_value_changed(on_ui_changed)

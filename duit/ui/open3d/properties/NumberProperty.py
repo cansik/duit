@@ -16,13 +16,16 @@ class NumberProperty(Open3dFieldProperty[NumberAnnotation]):
         edit_type = gui.NumberEdit.INT if isinstance(self.model.value, int) else gui.NumberEdit.DOUBLE
         field = gui.NumberEdit(edit_type)
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)
-        field.enabled = not self.annotation.read_only
+        field.enabled = not self.annotation.read_only or self.annotation.copy_content
 
         def on_dm_changed(value):
             field.set_value(value)
 
         def on_ui_changed(value):
-            self.model.value = value
+            if self.annotation.read_only:
+                field.text_value = self.model.value
+            else:
+                self.model.value = value
 
         self.model.on_changed.append(on_dm_changed)
         field.set_on_value_changed(on_ui_changed)
