@@ -17,7 +17,11 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
         vector_attributes = self._get_vector_attributes()
         attribute_widgets: Dict[str, gui.NumberEdit] = {}
 
-        container = gui.VGrid(2, 0.25 * 10)
+        max_width = 230
+        spacing = 15
+
+        container = gui.Horiz(15)
+        container.add_stretch()
         container.enabled = not self.annotation.read_only
         container.tooltip = self.annotation.tooltip
 
@@ -34,7 +38,8 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
                 update_model()
 
             field.set_on_value_changed(on_ui_changed)
-            container.add_child(gui.Label(f"{attribute_name}:"))
+            # container.add_child(gui.Label(f"{attribute_name}:"))
+            field.set_preferred_width((max_width - ((len(vector_attributes) - 1) * spacing)) / len(vector_attributes))
             container.add_child(field)
 
             attribute_widgets[attribute_name] = field
