@@ -1,4 +1,5 @@
 # base packages
+vector
 
 # extra open3d
 open3d>=0.15.1

@@ -18,6 +18,7 @@ class NumberProperty(Open3dFieldProperty[NumberAnnotation]):
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)
         field.enabled = not self.annotation.read_only or self.annotation.copy_content
         field.tooltip = self.annotation.tooltip
+        field.decimal_precision = self.annotation.decimal_precision
 
         def on_dm_changed(value):
             field.set_value(value)
