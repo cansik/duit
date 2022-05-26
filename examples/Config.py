@@ -1,3 +1,5 @@
+import vector
+
 from duit.annotation.AnnotationList import AnnotationList
 from examples.Color import Color
 from examples.SubConfig import SubConfig

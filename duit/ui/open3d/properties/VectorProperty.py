@@ -14,12 +14,12 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
-        box = gui.Horiz()
-        box.enabled = not self.annotation.read_only
-        box.tooltip = self.annotation.tooltip
-
         vector_attributes = self._get_vector_attributes()
         attribute_widgets: Dict[str, gui.NumberEdit] = {}
+
+        container = gui.VGrid(2, 0.25 * 10)
+        container.enabled = not self.annotation.read_only
+        container.tooltip = self.annotation.tooltip
 
         def update_model():
             for attribute_name in vector_attributes:
@@ -34,7 +34,9 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
                 update_model()
 
             field.set_on_value_changed(on_ui_changed)
-            box.add_child(field)
+            container.add_child(gui.Label(f"{attribute_name}:"))
+            container.add_child(field)
+
             attribute_widgets[attribute_name] = field
 
         def on_dm_changed(value):
@@ -43,7 +45,8 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
 
         self.model.on_changed.append(on_dm_changed)
         self.model.fire_latest()
-        return box
+
+        return container
 
     def _get_vector_attributes(self) -> Sequence[str]:
         value = self.model.value
