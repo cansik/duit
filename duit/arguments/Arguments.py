@@ -45,14 +45,13 @@ class Arguments:
 
             for field, argument in groups[key]:
                 type_adapter = self._get_matching_type_adapter(field)
-                type_adapter.add_argument(p, argument, type(field.value))
+                type_adapter.add_argument(p, argument, field.value)
 
     def configure(self, args: argparse.Namespace, obj: Any):
         for name, (field, argument) in self._find_all_argument_annotations(obj).items():
-            dest = self._to_namespace_str(argument.dest)
-
+            ns_dest = self._to_namespace_str(argument.dest)
             type_adapter = self._get_matching_type_adapter(field)
-            field.value = type_adapter.parse_argument(args, dest, argument, type(field.value))
+            field.value = type_adapter.parse_argument(args, ns_dest, argument, field.value)
 
     @staticmethod
     def _find_all_argument_annotations(obj: Any) -> Dict[str, Tuple[DataField, Argument]]:

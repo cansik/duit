@@ -9,8 +9,8 @@ class DefaultTypeAdapter(BaseTypeAdapter):
     def handles_type(self, obj: Any) -> bool:
         return True
 
-    def add_argument(self, parser, argument: Argument, data_type: Type):
+    def add_argument(self, parser, argument: Argument, obj: Any):
         parser.add_argument(argument.dest, *argument.args, **argument.kwargs)
 
-    def parse_argument(self, args: argparse.Namespace, dest: str, argument: Argument, data_type: Type) -> Any:
-        return getattr(args, dest)
+    def parse_argument(self, args: argparse.Namespace, ns_dest: str, argument: Argument, obj: Any) -> Any:
+        return getattr(args, ns_dest)

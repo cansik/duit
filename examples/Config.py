@@ -18,7 +18,7 @@ class Config:
         self.rings = DataField(30) | ui.EndSection() | ui.Slider("Rings", 0, 40)
 
         self.resolution = DataField(256) | ui.Options("Resolution", [64, 128, 256, 512, 1024])
-        self.color = DataField(Color.White) | ui.Enum("Color")
+        self.color = DataField(Color.White) | ui.Enum("Color") | Argument()
 
         self.name1 = DataField("Test 1") | ui.Text("Name") | Argument()
         self.name2 = DataField("Test 2") | ui.Text("Name", readonly=True)
