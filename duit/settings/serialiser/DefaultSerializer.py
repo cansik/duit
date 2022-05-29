@@ -5,7 +5,7 @@ from duit.settings.serialiser.BaseSerializer import BaseSerializer
 
 class DefaultSerializer(BaseSerializer):
     def handles_type(self, obj: Any) -> bool:
-        return False
+        return True
 
     def serialize(self, obj: Any) -> [bool, Any]:
         return True, obj

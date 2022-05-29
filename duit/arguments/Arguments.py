@@ -1,13 +1,22 @@
 import argparse
 from collections import defaultdict
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, List
 
 from duit.arguments import ARGUMENT_ANNOTATION_ATTRIBUTE_NAME
 from duit.arguments.Argument import Argument
+from duit.arguments.adapters.BaseTypeAdapter import BaseTypeAdapter
+from duit.arguments.adapters.DefaultTypeAdapter import DefaultTypeAdapter
+from duit.arguments.adapters.EnumTypeAdapter import EnumTypeAdapter
 from duit.model.DataField import DataField
 
 
 class Arguments:
+    def __init__(self):
+        self.type_adapters: List[BaseTypeAdapter] = [
+            EnumTypeAdapter()
+        ]
+        self.default_serializer: BaseTypeAdapter = DefaultTypeAdapter()
+
     def add_and_configure(self, parser: argparse.ArgumentParser, obj: Any) -> argparse.Namespace:
         self.add_arguments(parser, obj)
         args = parser.parse_args()
@@ -21,7 +30,7 @@ class Arguments:
             if argument.dest is None:
                 argument.dest = f"--{self._to_argument_str(name)}"
 
-            groups[argument.group].append(argument)
+            groups[argument.group].append((field, argument))
 
         group_keys = sorted(groups.keys())
         if None in group_keys:
@@ -34,15 +43,16 @@ class Arguments:
         for key in group_keys:
             p = parser_groups[key]
 
-            for argument in groups[key]:
-                p.add_argument(argument.dest, *argument.args, **argument.kwargs)
+            for field, argument in groups[key]:
+                type_adapter = self._get_matching_type_adapter(field)
+                type_adapter.add_argument(p, argument, type(field.value))
 
     def configure(self, args: argparse.Namespace, obj: Any):
         for name, (field, argument) in self._find_all_argument_annotations(obj).items():
             dest = self._to_namespace_str(argument.dest)
 
-            if dest in args:
-                field.value = getattr(args, dest)
+            type_adapter = self._get_matching_type_adapter(field)
+            field.value = type_adapter.parse_argument(args, dest, argument, type(field.value))
 
     @staticmethod
     def _find_all_argument_annotations(obj: Any) -> Dict[str, Tuple[DataField, Argument]]:
@@ -58,8 +68,15 @@ class Arguments:
                         continue
                     annotations[n] = (v, v.__getattribute__(ARGUMENT_ANNOTATION_ATTRIBUTE_NAME))
                 else:
+                    # todo: check for infinite recursion
                     annotations.update(Arguments._find_all_argument_annotations(v.value))
         return annotations
+
+    def _get_matching_type_adapter(self, field: DataField) -> BaseTypeAdapter:
+        for type_adapter in self.type_adapters:
+            if type_adapter.handles_type(field.value):
+                return type_adapter
+        return self.default_serializer
 
     @staticmethod
     def _to_argument_str(name: str) -> str:

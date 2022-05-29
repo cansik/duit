@@ -1,8 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Type
 
-from duit.model.DataField import DataField
-
 
 class BaseSerializer(ABC):
 
