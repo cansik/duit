@@ -1,0 +1,1 @@
+ARGUMENT_ANNOTATION_ATTRIBUTE_NAME = "__duit_arguments_annotation"

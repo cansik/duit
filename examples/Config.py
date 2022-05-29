@@ -1,6 +1,7 @@
 import vector
 
 from duit.annotation.AnnotationList import AnnotationList
+from duit.arguments.Argument import Argument
 from examples.Color import Color
 from examples.SubConfig import SubConfig
 from duit.model.DataField import DataField
@@ -19,7 +20,7 @@ class Config:
         self.resolution = DataField(256) | ui.Options("Resolution", [64, 128, 256, 512, 1024])
         self.color = DataField(Color.White) | ui.Enum("Color")
 
-        self.name1 = DataField("Test 1") | ui.Text("Name")
+        self.name1 = DataField("Test 1") | ui.Text("Name") | Argument()
         self.name2 = DataField("Test 2") | ui.Text("Name", readonly=True)
         self.name3 = DataField("Test 3") | ui.Text("Name", readonly=True, copy_content=True)
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
