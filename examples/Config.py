@@ -14,6 +14,7 @@ class Config:
                                                  ui.Number("Age"))
         self.hungry = DataField(True) | ui.Boolean("Hungry")
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
+        self.humidity = DataField(18.5) | ui.Number("Humidity")
         self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
         self.rings = DataField(30) | ui.EndSection() | ui.Slider("Rings", 0, 40)
 
