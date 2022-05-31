@@ -14,6 +14,8 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
         BasePropertyPanel.__init__(self)
         ctk.CTkFrame.__init__(self, master, corner_radius=0)
 
+        self.grid_columnconfigure(1, weight=1)
+
     def _clean_widgets(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -36,5 +38,12 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
                 widgets = property_field.create_widgets(self)
 
                 for i, widget in enumerate(widgets):
-                    widget.grid(row=row_counter, column=i, pady=4)
+                    extra = {}
+                    if i == 1:
+                        extra = {
+                            "sticky": "we",
+                            "padx": 20,
+                        }
+
+                    widget.grid(row=row_counter, column=i, pady=4, **extra)
                 row_counter += 1
