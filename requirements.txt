@@ -4,3 +4,7 @@ vector
 # extra open3d
 open3d>=0.15.1
 numpy
+
+# extra tk
+tk
+customtkinter

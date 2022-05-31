@@ -5,6 +5,7 @@ from open3d.visualization import gui
 from open3d.visualization.gui import Widget
 
 from duit.collections.Stack import Stack
+from duit.ui.BasePropertyPanel import BasePropertyPanel
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from duit.ui.annotations import find_all_ui_annotations
 from duit.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
@@ -12,9 +13,10 @@ from duit.ui.annotations.container.StartSectionAnnotation import StartSectionAnn
 from duit.ui.annotations.container.SubSectionAnnotation import SubSectionAnnotation
 
 
-class PropertyPanel(gui.WidgetProxy):
+class Open3dPropertyPanel(BasePropertyPanel, gui.WidgetProxy):
     def __init__(self):
-        super().__init__()
+        BasePropertyPanel.__init__(self)
+        gui.WidgetProxy.__init__(self)
 
         self.em = 15
 
