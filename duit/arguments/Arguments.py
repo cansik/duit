@@ -51,7 +51,8 @@ class Arguments:
 
     def configure(self, args: argparse.Namespace, obj: Any):
         for name, (field, argument) in self._find_all_argument_annotations(obj).items():
-            ns_dest = self._to_namespace_str(argument.dest)
+            dest = name if argument.dest is None else argument.dest
+            ns_dest = self._to_namespace_str(dest)
             type_adapter = self._get_matching_type_adapter(field)
             field.value = type_adapter.parse_argument(args, ns_dest, argument, field.value)
 
