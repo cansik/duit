@@ -23,6 +23,11 @@ def main():
 
     panel.data_context = config
 
+    def on_hungry(value):
+        print(f"hungry changed to: {value}")
+
+    config.hungry.on_changed += on_hungry
+
     app.mainloop()
 
 
