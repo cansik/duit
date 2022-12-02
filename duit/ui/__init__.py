@@ -10,3 +10,12 @@ from .annotations.VectorAnnotation import VectorAnnotation as Vector
 from .annotations.container.StartSectionAnnotation import StartSectionAnnotation as StartSection
 from .annotations.container.EndSectionAnnotation import EndSectionAnnotation as EndSection
 from .annotations.container.SubSectionAnnotation import SubSectionAnnotation as SubSection
+
+
+def setup_open3d():
+    from .open3d.Open3dPropertyRegistry import init_open3d_registry
+    init_open3d_registry()
+
+
+def setup_tk():
+    pass

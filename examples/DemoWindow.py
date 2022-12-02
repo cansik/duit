@@ -1,6 +1,6 @@
 import open3d.visualization.gui as gui
 
-from duit.ui.open3d.PropertyPanel import PropertyPanel
+from duit.ui.open3d.Open3dPropertyPanel import Open3dPropertyPanel
 
 
 class DemoWindow:
@@ -12,7 +12,7 @@ class DemoWindow:
         em = self.window.theme.font_size
         separation_height = int(round(0.5 * em))
 
-        self.panel = PropertyPanel()
+        self.panel = Open3dPropertyPanel()
         self.window.add_child(self.panel)
 
         self.panel.data_context = data_context
