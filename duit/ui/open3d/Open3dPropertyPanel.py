@@ -55,6 +55,8 @@ class Open3dPropertyPanel(gui.WidgetProxy):
         for var_name, (model, anns) in annotations.items():
             pop_after = False
 
+            anns = sorted(anns)
+
             for ann in anns:
                 ann_type = type(ann)
 

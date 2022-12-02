@@ -24,6 +24,11 @@ class Config:
         self.name1 = DataField("Test 1") | ui.Text("Name") | Argument()
         self.name2 = DataField("Test 2") | ui.Text("Name", readonly=True)
         self.name3 = DataField("Test 3") | ui.Text("Name", readonly=True, copy_content=True)
+
+        self.check1 = DataField(False) | ui.Boolean("Check 1") | ui.StartSection("Boxes")
+        self.check2 = DataField(False) | ui.Boolean("Check 2")
+        self.check3 = DataField(False) | ui.Boolean("Check 3") | ui.EndSection()
+
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
 
         self.location = DataField(SubConfig()) | ui.SubSection("Location")
