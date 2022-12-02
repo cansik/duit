@@ -1,5 +1,3 @@
-import tkinter as tk
-
 import customtkinter as ctk
 from customtkinter.widgets.widget_base_class import CTkBaseClass
 
