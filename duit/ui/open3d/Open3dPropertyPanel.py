@@ -13,9 +13,8 @@ from duit.ui.annotations.container.StartSectionAnnotation import StartSectionAnn
 from duit.ui.annotations.container.SubSectionAnnotation import SubSectionAnnotation
 
 
-class Open3dPropertyPanel(BasePropertyPanel, gui.WidgetProxy):
+class Open3dPropertyPanel(gui.WidgetProxy):
     def __init__(self):
-        BasePropertyPanel.__init__(self)
         gui.WidgetProxy.__init__(self)
 
         self.em = 15

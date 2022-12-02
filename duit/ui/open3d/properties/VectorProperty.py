@@ -1,6 +1,5 @@
-from typing import Optional, Sequence, Dict
+from typing import Optional, Dict
 
-import vector
 from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
 
@@ -18,11 +17,12 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
         vector_attributes = _vector.get_vector_attributes(self.model.value)
         attribute_widgets: Dict[str, gui.NumberEdit] = {}
 
-        max_width = 230
-        spacing = 15
+        container = gui.Horiz(self.annotation.spacing)
 
-        container = gui.Horiz(15)
-        container.add_stretch()
+        labels = vector_attributes
+        if self.annotation.labels is not None:
+            assert len(labels) == len(self.annotation.labels), f"Label count is not correct for {self.annotation.name}!"
+            labels = self.annotation.labels
 
         def update_model():
             for attribute_name in vector_attributes:
@@ -48,11 +48,18 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
                     update_model()
 
             field.set_on_value_changed(on_ui_changed)
-            # container.add_child(gui.Label(f"{attribute_name}:"))
-            field.set_preferred_width((max_width - ((len(vector_attributes) - 1) * spacing)) / len(vector_attributes))
+            field.set_preferred_width(self.annotation.max_width)
+
+            label = labels[i]
+
+            if self.annotation.hide_labels:
+                field.tooltip = f"{label}"
+            else:
+                container.add_child(gui.Label(f"{label}:"))
             container.add_child(field)
 
             attribute_widgets[attribute_name] = field
+        container.add_stretch()
 
         def on_dm_changed(value):
             update_ui()

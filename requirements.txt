@@ -2,7 +2,7 @@
 vector
 
 # extra open3d
-open3d>=0.15.1
+open3d>=0.16.0
 numpy
 
 # extra tk
