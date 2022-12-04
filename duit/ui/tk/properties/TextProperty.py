@@ -7,7 +7,7 @@ from duit.ui.tk.widgets.CTkTextEntry import CTkTextEntry
 
 class TextProperty(TkFieldProperty[TextAnnotation]):
     def create_field(self, master) -> CTkBaseClass:
-        field = CTkTextEntry(master)
+        field = CTkTextEntry(master, placeholder_text=self.annotation.placeholder_text)
         field.readonly = self.annotation.read_only
 
         def on_dm_changed(value):
