@@ -11,7 +11,7 @@ class BooleanProperty(TkFieldProperty[BooleanAnnotation]):
     def create_field(self, master) -> CTkBaseClass:
         check_var = tkinter.BooleanVar()
 
-        field = ctk.CTkCheckBox(master, text="", variable=check_var)
+        field = ctk.CTkSwitch(master, text="", variable=check_var)
         field.tooltip = self.annotation.tooltip
         field.enabled = not self.annotation.read_only
 
