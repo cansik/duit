@@ -6,5 +6,5 @@ open3d>=0.16.0
 numpy
 
 # extra tk
-tk
-customtkinter
+tk>=0.1.0
+customtkinter>=5.0.1

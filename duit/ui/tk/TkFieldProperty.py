@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Optional, Iterable
 
-from customtkinter.widgets.widget_base_class import CTkBaseClass
+from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
 from duit.model.DataField import DataField, T
 from duit.ui.annotations import UIAnnotation

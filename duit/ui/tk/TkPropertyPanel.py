@@ -1,4 +1,5 @@
 import logging
+import typing
 from typing import Union
 
 import customtkinter as ctk
@@ -34,7 +35,7 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
                     continue
 
                 # add property
-                property_field = UI_PROPERTY_REGISTRY[ann_type](ann, model)  # type: TkFieldProperty
+                property_field = typing.cast(TkFieldProperty, UI_PROPERTY_REGISTRY[ann_type](ann, model))
                 widgets = property_field.create_widgets(self)
 
                 for i, widget in enumerate(widgets):

@@ -1,4 +1,4 @@
-from customtkinter.widgets.widget_base_class import CTkBaseClass
+from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
 from duit.ui.annotations import NumberAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
