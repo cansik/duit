@@ -2,59 +2,32 @@ from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
 from duit.ui.annotations import NumberAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
-import customtkinter as ctk
-import tkinter as tk
+from duit.ui.tk.widgets.CTkNumberEntry import CTkNumberEntry
 
 
 class NumberProperty(TkFieldProperty[NumberAnnotation]):
     def create_field(self, master) -> CTkBaseClass:
-        field = ctk.CTkEntry(master)
-
-        def set_text(text: str):
-            field.delete(0, tk.END)
-            field.insert(0, text)
+        field = CTkNumberEntry(master,
+                               self.model.value,
+                               self.annotation.limit_min,
+                               self.annotation.limit_max,
+                               self.annotation.decimal_precision)
 
         def on_dm_changed(value):
-            set_text(self.get_value_str())
+            field.value = value
 
         def on_ui_changed(event):
-            self.convert_to_value(field)
+            value = field.value
+
+            if value is None:
+                self.model.fire()
+                return
+
+            self.model.value = value
 
         self.model.on_changed.append(on_dm_changed)
-        field.bind("<FocusOut>", on_ui_changed)
+        field.on_changed(on_ui_changed)
 
         self.model.fire_latest()
 
         return field
-
-    def get_value_str(self) -> str:
-        if isinstance(self.model.value, int):
-            return f"{self.model.value}"
-        else:
-            return f"{round(self.model.value, self.annotation.decimal_precision)}"
-
-    def convert_to_value(self, field: ctk.CTkEntry):
-        content = field.get()
-
-        if not self.is_number(content):
-            self.model.fire()
-            return
-
-        value = float(content)
-        value = max(self.annotation.limit_min, value)
-        value = min(self.annotation.limit_max, value)
-
-        if isinstance(self.model.value, int):
-            value = int(value)
-        else:
-            value = float(value)
-
-        self.model.value = value
-
-    @staticmethod
-    def is_number(value: str):
-        try:
-            float(value)
-            return True
-        except ValueError:
-            return False
