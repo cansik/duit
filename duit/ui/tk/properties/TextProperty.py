@@ -1,0 +1,23 @@
+from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
+
+from duit.ui.annotations.TextAnnotation import TextAnnotation
+from duit.ui.tk.TkFieldProperty import TkFieldProperty
+from duit.ui.tk.widgets.CTkTextEntry import CTkTextEntry
+
+
+class TextProperty(TkFieldProperty[TextAnnotation]):
+    def create_field(self, master) -> CTkBaseClass:
+        field = CTkTextEntry(master)
+        field.readonly = self.annotation.read_only
+
+        def on_dm_changed(value):
+            field.text = value
+
+        def on_ui_changed(event):
+            self.model.value = field.text
+
+        self.model.on_changed.append(on_dm_changed)
+        field.on_changed(on_ui_changed)
+
+        self.model.fire_latest()
+        return field
