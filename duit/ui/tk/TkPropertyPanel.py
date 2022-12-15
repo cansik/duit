@@ -2,6 +2,8 @@ import logging
 import typing
 from typing import Union, Optional
 
+import tkinter as tk
+from tkinter import ttk
 import customtkinter as ctk
 
 from duit.collections.Stack import Stack
@@ -25,7 +27,7 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
 
     def _init_tab_view(self):
         self.tabview = ctk.CTkTabview(self)
-        self.tabview.pack(padx=5, pady=5)
+        self.tabview.pack(padx=5, pady=5, fill=tk.BOTH)
 
         self.general_tab = self._add_tab("General")
 
