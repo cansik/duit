@@ -27,8 +27,12 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
         self.tabview = ctk.CTkTabview(self)
         self.tabview.pack(padx=5, pady=5)
 
-        self.general_tab = self.tabview.add("General")
-        self.general_tab.grid_columnconfigure(1, weight=1)
+        self.general_tab = self._add_tab("General")
+
+    def _add_tab(self, title: str) -> ctk.CTkFrame:
+        tab = self.tabview.add(title)
+        tab.grid_columnconfigure(1, weight=1)
+        return tab
 
     def _clean_widgets(self):
         for widget in self.winfo_children():
@@ -51,8 +55,7 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
                 ann_type = type(ann)
 
                 if isinstance(ann, StartSectionAnnotation):
-                    tab = self.tabview.add(ann.name)
-                    tab.grid_columnconfigure(1, weight=1)
+                    tab = self._add_tab(ann.name)
                     containers.push(tab)
 
                 if isinstance(ann, EndSectionAnnotation):
