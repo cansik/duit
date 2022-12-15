@@ -17,6 +17,8 @@ class Config:
         self.humidity = DataField(18.5) | ui.Number("Humidity", readonly=True)
         self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
         self.rings = DataField(30) | ui.EndSection() | ui.Slider("Rings", 0, 40)
+        self.speed = DataField(vector.obj(x=1.0, y=2.0)) | ui.Vector("Speed")
+        self.velocity = DataField(vector.obj(x=1.0, y=2.0, z=5.0)) | ui.Vector("Velocity")
 
         self.resolution = DataField(256) | ui.Options("Resolution", [64, 128, 256, 512, 1024])
         self.color = DataField(Color.White) | ui.Enum("Color") | Argument()

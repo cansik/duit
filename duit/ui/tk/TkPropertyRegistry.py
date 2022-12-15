@@ -6,6 +6,7 @@ from duit.ui.annotations.EnumAnnotation import EnumAnnotation
 from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.annotations.TextAnnotation import TextAnnotation
+from duit.ui.annotations.VectorAnnotation import VectorAnnotation
 from duit.ui.tk.properties.ActionProperty import ActionProperty
 from duit.ui.tk.properties.BooleanProperty import BooleanProperty
 from duit.ui.tk.properties.EnumProperty import EnumProperty
@@ -13,6 +14,7 @@ from duit.ui.tk.properties.NumberProperty import NumberProperty
 from duit.ui.tk.properties.OptionsProperty import OptionsProperty
 from duit.ui.tk.properties.SliderProperty import SliderProperty
 from duit.ui.tk.properties.TextProperty import TextProperty
+from duit.ui.tk.properties.VectorProperty import VectorProperty
 
 
 def init_tk_registry():
@@ -23,3 +25,4 @@ def init_tk_registry():
     UI_PROPERTY_REGISTRY[EnumAnnotation] = EnumProperty
     UI_PROPERTY_REGISTRY[SliderAnnotation] = SliderProperty
     UI_PROPERTY_REGISTRY[TextAnnotation] = TextProperty
+    UI_PROPERTY_REGISTRY[VectorAnnotation] = VectorProperty
