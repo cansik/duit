@@ -1,5 +1,3 @@
-import tkinter as tk
-
 import customtkinter as ctk
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
@@ -10,23 +8,24 @@ from duit.ui.tk.widgets.CTkNumberEntry import CTkNumberEntry
 
 class SliderProperty(TkFieldProperty[SliderAnnotation]):
     def create_field(self, master) -> CTkBaseClass:
-        frame = ctk.CTkFrame(master)
+        frame = ctk.CTkFrame(master,
+                             fg_color="transparent",
+                             corner_radius=0)
+        frame.grid_columnconfigure(0, weight=1)
 
         data_variable = ctk.IntVar() if isinstance(self.model.value, int) else ctk.DoubleVar()
         field = ctk.CTkSlider(frame,
                               variable=data_variable,
                               from_=self.annotation.limit_min,
-                              to=self.annotation.limit_max,
-                              width=140
-                              )
-        field.grid(row=0, column=0, padx=5, pady=0)
+                              to=self.annotation.limit_max)
+        field.grid(row=0, column=0, padx=5, pady=0, sticky="ew")
 
         number_entry = CTkNumberEntry(frame,
                                       self.model.value,
                                       self.annotation.limit_min,
                                       self.annotation.limit_max,
                                       width=80)
-        number_entry.grid(row=0, column=1, padx=5, pady=0)
+        number_entry.grid(row=0, column=1, padx=5, pady=0, sticky="nse")
 
         def on_dm_changed(value):
             data_variable.set(value)
