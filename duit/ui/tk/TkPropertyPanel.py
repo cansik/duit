@@ -27,6 +27,8 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
         annotations = find_all_ui_annotations(self.data_context)
         row_counter = 0
         for var_name, (model, anns) in annotations.items():
+            anns = sorted(anns)
+
             for ann in anns:
                 ann_type = type(ann)
 
