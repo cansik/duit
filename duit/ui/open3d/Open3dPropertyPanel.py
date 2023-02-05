@@ -1,23 +1,26 @@
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from open3d.visualization import gui
 from open3d.visualization.gui import Widget
 
 from duit.collections.Stack import Stack
-from duit.ui.BasePropertyPanel import BasePropertyPanel
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from duit.ui.annotations import find_all_ui_annotations
 from duit.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
 from duit.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
 from duit.ui.annotations.container.SubSectionAnnotation import SubSectionAnnotation
+from duit.ui.open3d import Open3dContext
 
 
 class Open3dPropertyPanel(gui.WidgetProxy):
-    def __init__(self):
+    def __init__(self, em: float):
         gui.WidgetProxy.__init__(self)
 
-        self.em = 15
+        self.em = em
+
+        # set global font em to be used in widgets
+        Open3dContext.OPEN3D_FONT_EM = self.em
 
         self.widget: gui.Vert = gui.Vert()
         self.container_margins = gui.Margins(self.em, 0.25 * self.em, self.em, 0.25 * self.em)

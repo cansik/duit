@@ -59,9 +59,11 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
                 if isinstance(ann, StartSectionAnnotation):
                     tab = self._add_tab(ann.name)
                     containers.push(tab)
+                    continue
 
                 if isinstance(ann, EndSectionAnnotation):
                     containers.pop()
+                    continue
 
                 if ann_type not in UI_PROPERTY_REGISTRY:
                     logging.warning(f"Annotation not registered: {ann_type.__name__}")

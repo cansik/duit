@@ -5,6 +5,7 @@ from open3d.visualization import gui
 
 from duit.model.DataField import DataField
 from duit.ui.annotations.VectorAnnotation import VectorAnnotation
+from duit.ui.open3d import Open3dContext
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 from duit.utils import _vector
 
@@ -17,7 +18,7 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
         vector_attributes = _vector.get_vector_attributes(self.model.value)
         attribute_widgets: Dict[str, gui.NumberEdit] = {}
 
-        container = gui.Horiz(self.annotation.spacing)
+        container = gui.Horiz(self.annotation.spacing * Open3dContext.OPEN3D_FONT_EM)
 
         labels = vector_attributes
         if self.annotation.labels is not None:
@@ -48,7 +49,7 @@ class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
                     update_model()
 
             field.set_on_value_changed(on_ui_changed)
-            field.set_preferred_width(self.annotation.max_width)
+            field.set_preferred_width(self.annotation.max_width * Open3dContext.OPEN3D_FONT_EM)
 
             label = labels[i]
 

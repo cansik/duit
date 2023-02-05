@@ -6,6 +6,7 @@ from open3d.visualization import gui
 
 from duit.model.DataField import DataField
 from duit.ui.annotations.ActionAnnotation import ActionAnnotation
+from duit.ui.open3d import Open3dContext
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
@@ -15,8 +16,8 @@ class ActionProperty(Open3dFieldProperty[ActionAnnotation]):
 
     def create_field(self) -> Widget:
         field = gui.Button(self.annotation.text)
-        field.horizontal_padding_em = 0.1
-        field.vertical_padding_em = 0.1
+        field.horizontal_padding_em = 0.01 * Open3dContext.OPEN3D_FONT_EM
+        field.vertical_padding_em = 0.01 * Open3dContext.OPEN3D_FONT_EM
         field.tooltip = self.annotation.tooltip
 
         def on_clicked():
