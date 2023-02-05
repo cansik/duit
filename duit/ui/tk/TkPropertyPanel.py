@@ -1,9 +1,8 @@
 import logging
+import tkinter as tk
 import typing
 from typing import Union, Optional
 
-import tkinter as tk
-from tkinter import ttk
 import customtkinter as ctk
 
 from duit.collections.Stack import Stack

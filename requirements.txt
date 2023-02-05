@@ -7,4 +7,4 @@ numpy
 
 # extra tk
 tk>=0.1.0
-customtkinter>=5.0.1
+customtkinter>=5.0.5
