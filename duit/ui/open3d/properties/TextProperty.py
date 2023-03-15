@@ -1,11 +1,14 @@
 from typing import Optional
 
-from open3d.cpu.pybind.visualization.gui import Widget
+import pyperclip
+from open3d.cpu.pybind.visualization.gui import Widget, MouseEvent
 from open3d.visualization import gui
 
 from duit.model.DataField import DataField
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
+from duit.ui.open3d.widgets.CopyToClipboardButton import CopyToClipboardButton
+from duit.ui.open3d.widgets.ImageButton import ImageButton
 
 
 class TextProperty(Open3dFieldProperty[TextAnnotation]):
@@ -15,7 +18,7 @@ class TextProperty(Open3dFieldProperty[TextAnnotation]):
     def create_field(self) -> Widget:
         field = gui.TextEdit()
         field.placeholder_text = self.annotation.placeholder_text
-        field.enabled = not self.annotation.read_only or self.annotation.copy_content
+        field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
 
         def on_dm_changed(value):
@@ -31,5 +34,11 @@ class TextProperty(Open3dFieldProperty[TextAnnotation]):
         field.set_on_value_changed(on_ui_changed)
 
         self.model.fire_latest()
+
+        if self.annotation.read_only and self.annotation.copy_content:
+            container = gui.Horiz()
+            container.add_child(field)
+            container.add_child(CopyToClipboardButton(self.model))
+            return container
 
         return field

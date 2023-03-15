@@ -1,5 +1,6 @@
 # base packages
 vector
+pyperclip
 
 # extra open3d
 open3d>=0.17.0
