@@ -14,10 +14,10 @@ from duit.ui.annotations.container.StartSectionAnnotation import StartSectionAnn
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 
 
-class TkPropertyPanel(BasePropertyPanel, ctk.CTkFrame):
+class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
     def __init__(self, master: Union[ctk.CTk, ctk.CTkFrame]):
         BasePropertyPanel.__init__(self)
-        ctk.CTkFrame.__init__(self, master, corner_radius=0)
+        ctk.CTkScrollableFrame.__init__(self, master, corner_radius=0)
 
         self.tabview: Optional[ctk.CTkTabview] = None
         self.general_tab: Optional[ctk.CTkFrame] = None
