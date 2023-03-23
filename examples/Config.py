@@ -1,7 +1,10 @@
+from pathlib import Path
+
 import vector
 
 from duit.annotation.AnnotationList import AnnotationList
 from duit.arguments.Argument import Argument
+from duit.ui.annotations.PathAnnotation import DialogType
 from examples.Color import Color
 from examples.SubConfig import SubConfig
 from duit.model.DataField import DataField
@@ -26,6 +29,10 @@ class Config:
         self.name1 = DataField("Test 1") | ui.Text("Name") | Argument()
         self.name2 = DataField("Test 2") | ui.Text("Name", readonly=True)
         self.name3 = DataField("Test 3") | ui.Text("Name", readonly=True, copy_content=True)
+
+        self.home = DataField(Path()) | ui.Path("Home", dialog_type=DialogType.OpenDirectory)
+        self.main = DataField(Path()) | ui.Path("Main", filters={".py": "Python Files"})
+        self.save = DataField(Path()) | ui.Path("Save", dialog_type=DialogType.SaveFile)
 
         self.check1 = DataField(False) | ui.Boolean("Check 1") | ui.StartSection("Boxes")
         self.check2 = DataField(False) | ui.Boolean("Check 2")

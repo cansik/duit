@@ -36,7 +36,7 @@ class TextProperty(Open3dFieldProperty[TextAnnotation]):
         self.model.fire_latest()
 
         if self.annotation.read_only and self.annotation.copy_content:
-            container = gui.Horiz()
+            container = gui.Horiz(4)
             container.add_child(field)
             container.add_child(CopyToClipboardButton(self.model))
             return container
