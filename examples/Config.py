@@ -30,7 +30,7 @@ class Config:
         self.name2 = DataField("Test 2") | ui.Text("Name", readonly=True)
         self.name3 = DataField("Test 3") | ui.Text("Name", readonly=True, copy_content=True)
 
-        self.home = DataField(Path()) | ui.Path("Home", dialog_type=DialogType.OpenDirectory)
+        self.home = DataField(Path()) | ui.Path("Home", dialog_type=DialogType.OpenDirectory) | Argument()
         self.main = DataField(Path()) | ui.Path("Main", filters={".py": "Python Files"})
         self.save = DataField(Path()) | ui.Path("Save", dialog_type=DialogType.SaveFile)
 

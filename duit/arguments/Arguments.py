@@ -7,6 +7,7 @@ from duit.arguments.Argument import Argument
 from duit.arguments.adapters.BaseTypeAdapter import BaseTypeAdapter
 from duit.arguments.adapters.DefaultTypeAdapter import DefaultTypeAdapter
 from duit.arguments.adapters.EnumTypeAdapter import EnumTypeAdapter
+from duit.arguments.adapters.PathTypeAdapter import PathTypeAdapter
 from duit.arguments.adapters.VectorTypeAdapter import VectorTypeAdapter
 from duit.model.DataField import DataField
 
@@ -15,7 +16,8 @@ class Arguments:
     def __init__(self):
         self.type_adapters: List[BaseTypeAdapter] = [
             EnumTypeAdapter(),
-            VectorTypeAdapter()
+            VectorTypeAdapter(),
+            PathTypeAdapter()
         ]
         self.default_serializer: BaseTypeAdapter = DefaultTypeAdapter()
 

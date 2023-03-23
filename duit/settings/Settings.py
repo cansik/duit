@@ -11,6 +11,7 @@ from duit.settings.Setting import Setting
 from duit.settings.serialiser.BaseSerializer import BaseSerializer
 from duit.settings.serialiser.DefaultSerializer import DefaultSerializer
 from duit.settings.serialiser.EnumSerializer import EnumSerializer
+from duit.settings.serialiser.PathSerializer import PathSerializer
 from duit.settings.serialiser.VectorSerializer import VectorSerializer
 
 T = TypeVar('T')
@@ -20,7 +21,8 @@ class Settings(Generic[T]):
     def __init__(self):
         self.serializers: List[BaseSerializer] = [
             EnumSerializer(),
-            VectorSerializer()
+            VectorSerializer(),
+            PathSerializer()
         ]
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
