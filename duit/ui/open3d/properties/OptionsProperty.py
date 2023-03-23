@@ -1,3 +1,4 @@
+import sys
 from typing import Optional, Any, List
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -6,6 +7,7 @@ from open3d.visualization import gui
 from duit.model.DataField import DataField
 from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
+from duit.ui.open3d.widgets.SelectionBox import SelectionBox
 
 
 class OptionsProperty(Open3dFieldProperty[OptionsAnnotation]):
@@ -13,7 +15,11 @@ class OptionsProperty(Open3dFieldProperty[OptionsAnnotation]):
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
-        field = gui.Combobox()
+        # workaround for issue https://github.com/isl-org/Open3D/issues/6024
+        if sys.platform == "darwin":
+            field = SelectionBox()
+        else:
+            field = gui.Combobox()
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
 
