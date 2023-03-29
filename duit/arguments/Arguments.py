@@ -7,6 +7,7 @@ from duit.arguments.Argument import Argument
 from duit.arguments.adapters.BaseTypeAdapter import BaseTypeAdapter
 from duit.arguments.adapters.DefaultTypeAdapter import DefaultTypeAdapter
 from duit.arguments.adapters.EnumTypeAdapter import EnumTypeAdapter
+from duit.arguments.adapters.PathTypeAdapter import PathTypeAdapter
 from duit.arguments.adapters.VectorTypeAdapter import VectorTypeAdapter
 from duit.model.DataField import DataField
 
@@ -15,7 +16,8 @@ class Arguments:
     def __init__(self):
         self.type_adapters: List[BaseTypeAdapter] = [
             EnumTypeAdapter(),
-            VectorTypeAdapter()
+            VectorTypeAdapter(),
+            PathTypeAdapter()
         ]
         self.default_serializer: BaseTypeAdapter = DefaultTypeAdapter()
 
@@ -55,6 +57,12 @@ class Arguments:
             ns_dest = self._to_namespace_str(dest)
             type_adapter = self._get_matching_type_adapter(field)
             field.value = type_adapter.parse_argument(args, ns_dest, argument, field.value)
+
+    def update_namespace(self, namespace: argparse.Namespace, obj: Any):
+        for name, (field, argument) in self._find_all_argument_annotations(obj).items():
+            dest = name if argument.dest is None else argument.dest
+            ns_dest = self._to_namespace_str(dest)
+            namespace.__setattr__(ns_dest, field.value)
 
     @staticmethod
     def _find_all_argument_annotations(obj: Any) -> Dict[str, Tuple[DataField, Argument]]:

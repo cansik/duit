@@ -1,13 +1,11 @@
 # base packages
 vector
+pyperclip
 
 # extra open3d
-open3d>=0.16.0
+open3d>=0.17.0
 numpy
 
 # extra tk
 tk>=0.1.0
-customtkinter>=5.0.1
-
-# extra nanogui
-nanogui>=0.2.0
+customtkinter>=5.1.2

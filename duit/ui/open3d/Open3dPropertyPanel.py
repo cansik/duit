@@ -14,13 +14,15 @@ from duit.ui.open3d import Open3dContext
 
 
 class Open3dPropertyPanel(gui.WidgetProxy):
-    def __init__(self, em: float):
+    def __init__(self, window: gui.Window):
         gui.WidgetProxy.__init__(self)
 
-        self.em = em
+        self.window = window
+        self.em = self.window.theme.font_size
 
         # set global font em to be used in widgets
         Open3dContext.OPEN3D_FONT_EM = self.em
+        Open3dContext.OPEN3D_MAIN_WINDOW = self.window
 
         self.widget: gui.Vert = gui.Vert()
         self.container_margins = gui.Margins(self.em, 0.25 * self.em, self.em, 0.25 * self.em)

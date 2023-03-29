@@ -1,4 +1,4 @@
-import collections
+from collections.abc import Hashable
 import json
 import logging
 from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
@@ -11,6 +11,7 @@ from duit.settings.Setting import Setting
 from duit.settings.serialiser.BaseSerializer import BaseSerializer
 from duit.settings.serialiser.DefaultSerializer import DefaultSerializer
 from duit.settings.serialiser.EnumSerializer import EnumSerializer
+from duit.settings.serialiser.PathSerializer import PathSerializer
 from duit.settings.serialiser.VectorSerializer import VectorSerializer
 
 T = TypeVar('T')
@@ -20,7 +21,8 @@ class Settings(Generic[T]):
     def __init__(self):
         self.serializers: List[BaseSerializer] = [
             EnumSerializer(),
-            VectorSerializer()
+            VectorSerializer(),
+            PathSerializer()
         ]
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
@@ -50,13 +52,13 @@ class Settings(Generic[T]):
         if obj_history is None:
             obj_history = set()
 
-        if isinstance(obj, collections.Hashable) and obj in obj_history:
+        if isinstance(obj, Hashable) and obj in obj_history:
             return {}
 
         if data is None:
             data = {}
 
-        if isinstance(obj, collections.Hashable):
+        if isinstance(obj, Hashable):
             obj_history.add(obj)
 
         # extract datamodel fields
@@ -94,7 +96,7 @@ class Settings(Generic[T]):
         if obj_history is None:
             obj_history = set()
 
-        if isinstance(obj, collections.Hashable) and obj in obj_history:
+        if isinstance(obj, Hashable) and obj in obj_history:
             return True, obj
 
         if not isinstance(data, Dict):
@@ -104,7 +106,7 @@ class Settings(Generic[T]):
             if isinstance(obj, t):
                 return False, None
 
-        if isinstance(obj, collections.Hashable):
+        if isinstance(obj, Hashable):
             obj_history.add(obj)
 
         # create string to field index

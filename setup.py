@@ -12,7 +12,7 @@ ALL_NAME = "all"
 def parse_requirements():
     extras = {}
 
-    with open('requirements.txt') as f:
+    with open("requirements.txt") as f:
         lines = f.read().splitlines()
 
     extra_name = BASE_NAME
@@ -56,13 +56,13 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="duit",
-    version='0.1.4',
+    version="0.1.6",
     packages=required_packages,
-    url='https://github.com/cansik/duit',
-    license='MIT License',
-    author='Florian Bruggisser',
-    author_email='github@broox.ch',
-    description='Duit is a toolkit to create simple user-interfaces for python.',
+    url="https://github.com/cansik/duit",
+    license="MIT License",
+    author="Florian Bruggisser",
+    author_email="github@broox.ch",
+    description="Duit is a toolkit to create simple user-interfaces for python.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_required,
