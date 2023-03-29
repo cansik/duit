@@ -9,3 +9,6 @@ numpy
 # extra tk
 tk>=0.1.0
 customtkinter>=5.1.2
+
+# extra nanogui
+nanogui>=0.2.0
