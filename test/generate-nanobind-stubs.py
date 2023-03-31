@@ -1,8 +1,10 @@
 import argparse
+import ast
 import importlib
 import inspect
+import keyword
+import logging
 import os
-import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, List, Optional
@@ -95,6 +97,10 @@ class StubClass(StubEntry):
             child.export(output_path, intent + 1)
 
 
+class StubNanoBindType(StubClass):
+    pass
+
+
 class StubRoutine(StubEntry):
     def export(self, output_path: Path, intent: int = 0):
         out = []
@@ -119,6 +125,14 @@ class StubNanoBindFunction(StubRoutine):
 
         self.signature = self.parse_signature()
 
+    @staticmethod
+    def is_valid_python(code):
+        try:
+            ast.parse(code)
+        except SyntaxError:
+            return False
+        return True
+
     def parse_signature(self) -> str:
         doc = self.obj.__doc__
         if doc is None:
@@ -128,6 +142,15 @@ class StubNanoBindFunction(StubRoutine):
         parts = doc_str.split("\n")
 
         signature = parts[0]
+        func_name = signature.split("(")[0].strip()
+
+        if keyword.iskeyword(func_name):
+            logging.warning(f"Function is named like a python keyword ({func_name}): {signature}")
+
+        is_valid = self.is_valid_python(f"def {signature}:\n    pass")
+        if not is_valid:
+            logging.warning(f"Function is not valid python code: {signature}")
+            return super().routine_signature()
 
         if not signature.startswith(self.name):
             return super().routine_signature()
@@ -136,6 +159,10 @@ class StubNanoBindFunction(StubRoutine):
 
     def routine_signature(self) -> str:
         return self.signature
+
+
+class StubNanoBindMethod(StubNanoBindFunction):
+    pass
 
 
 class NanobindStubsGenerator:
@@ -153,7 +180,10 @@ class NanobindStubsGenerator:
                 continue
 
             if inspect.isclass(obj):
-                class_module = StubClass(name, obj)
+                if type(obj).__name__ == "nb_type":
+                    class_module = StubNanoBindType(name, obj)
+                else:
+                    class_module = StubClass(name, obj)
                 stub_entry.children.append(class_module)
                 self._analyse_module(obj, class_module)
 
@@ -163,7 +193,10 @@ class NanobindStubsGenerator:
                 self._analyse_module(obj, stub_module)
 
             if inspect.isroutine(obj):
-                stub_routine = StubRoutine(name, obj)
+                if type(obj).__name__ == "nb_method":
+                    stub_routine = StubNanoBindMethod(name, obj)
+                else:
+                    stub_routine = StubRoutine(name, obj)
                 stub_entry.children.append(stub_routine)
 
             if type(obj).__name__ == "nb_func":
@@ -179,9 +212,10 @@ def main():
     parser.add_argument("--output", type=str, default=".", help="Output path.")
     args = parser.parse_args()
 
-    export_path = Path("../nanogui")
-    if export_path.exists():
-        shutil.rmtree(export_path)
+    # just for debug
+    # export_path = Path("../nanogui")
+    # if export_path.exists():
+    #    shutil.rmtree(export_path)
 
     generator = NanobindStubsGenerator(args.module)
     stubs = generator.analyse()
