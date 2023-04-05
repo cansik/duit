@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Any
 
 from duit.event.Event import Event
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
@@ -41,7 +41,7 @@ class DataField(Generic[T]):
         self.on_changed.invoke_latest(self._value)
 
     def bind_to(self, model: "DataField[T]") -> None:
-        def on_change():
+        def on_change(*args: Any):
             old_publish_value = self.publish_enabled
             self.publish_enabled = False
             model.value = self._value
