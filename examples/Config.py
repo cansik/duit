@@ -13,12 +13,12 @@ import duit.ui as ui
 
 class Config:
     def __init__(self):
-        self.age = DataField(5) | AnnotationList(ui.StartSection("Options", collapsed=True),
-                                                 ui.Number("Age"))
+        self.age = DataField(5) | AnnotationList(ui.StartSection("Options", collapsed=False), ui.Number("Age"))
         self.hungry = DataField(True) | ui.Boolean("Hungry")
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
         self.humidity = DataField(18.5) | ui.Number("Humidity", readonly=True)
         self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
+        self.sunshine = DataField(0.5) | ui.Slider("Sunshine", 0, 1, show_number_field=False)
         self.rings = DataField(30) | ui.EndSection() | ui.Slider("Rings", 0, 40)
         self.speed = DataField(vector.obj(x=1.0, y=2.0)) | ui.Vector("Speed")
         self.velocity = DataField(vector.obj(x=1.0, y=2.0, z=5.0)) | ui.Vector("Velocity")
