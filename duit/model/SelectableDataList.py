@@ -12,7 +12,7 @@ class SelectableDataList(DataList[T], Generic[T]):
 
         super().__init__(values)
 
-        if len(self) > 0:
+        if len(values) > 0:
             selected_index = 0
 
         self._selected_index = selected_index

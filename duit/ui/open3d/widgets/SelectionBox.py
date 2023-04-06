@@ -69,9 +69,9 @@ class SelectionBox(gui.Vert):
         return self._list.selected_index
 
     @selected_index.setter
-    def selected_index(self, value: int):
-        self._list.selected_index = value
-        self._preview_text.text_value = self._items[value]
+    def selected_index(self, index: int):
+        self._list.selected_index = index
+        self._preview_text.text_value = self._items[index]
 
     def set_on_selection_changed(self, callback: Callable[[str, int], None]):
         self._on_selection_changed_handler = callback

@@ -30,7 +30,8 @@ class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
                 field.add_item(self.get_option_name(option))
 
         def on_dm_selection_changed(index):
-            field.selected_index = index
+            if index is not None:
+                field.selected_index = index
 
         def on_ui_selection_changed(value, index):
             self.model.selected_index = index
@@ -40,6 +41,7 @@ class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
         field.set_on_selection_changed(on_ui_selection_changed)
 
         self.model.fire_latest()
+        self.model.on_index_changed.invoke_latest(self.model.selected_index)
         return field
 
     @property
