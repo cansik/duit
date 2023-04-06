@@ -7,6 +7,7 @@ from .annotations.SliderAnnotation import SliderAnnotation as Slider
 from .annotations.TextAnnotation import TextAnnotation as Text
 from .annotations.VectorAnnotation import VectorAnnotation as Vector
 from .annotations.PathAnnotation import PathAnnotation as Path
+from .annotations.ListAnnotation import ListAnnotation as List
 
 from .annotations.container.StartSectionAnnotation import StartSectionAnnotation as StartSection
 from .annotations.container.EndSectionAnnotation import EndSectionAnnotation as EndSection

@@ -1,17 +1,15 @@
 from typing import Optional
 
-import pyperclip
-from open3d.cpu.pybind.visualization.gui import Widget, MouseEvent
+from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
 
 from duit.model.DataField import DataField
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 from duit.ui.open3d.widgets.CopyToClipboardButton import CopyToClipboardButton
-from duit.ui.open3d.widgets.ImageButton import ImageButton
 
 
-class TextProperty(Open3dFieldProperty[TextAnnotation]):
+class TextProperty(Open3dFieldProperty[TextAnnotation, DataField]):
     def __init__(self, annotation: TextAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

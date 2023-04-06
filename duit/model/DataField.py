@@ -54,7 +54,7 @@ class DataField(Generic[T]):
         model.bind_to(self)
 
     def __repr__(self) -> str:
-        return f"DataModel[{type(self._value).__name__}] ({self._value})"
+        return f"{type(self).__name__}[{type(self._value).__name__}] ({self._value})"
 
     def __str__(self):
         return self.__repr__()

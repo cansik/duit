@@ -1,11 +1,12 @@
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
+from duit.model.DataField import DataField
 from duit.ui.annotations import NumberAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 from duit.ui.tk.widgets.CTkNumberEntry import CTkNumberEntry
 
 
-class NumberProperty(TkFieldProperty[NumberAnnotation]):
+class NumberProperty(TkFieldProperty[NumberAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
         field = CTkNumberEntry(master,
                                self.model.value,

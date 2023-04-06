@@ -5,10 +5,11 @@ from duit.model.DataField import DataField
 from duit.ui.annotations import UIAnnotation
 
 T = TypeVar("T", bound=UIAnnotation)
+M = TypeVar("M", bound=DataField)
 
 
-class BaseProperty(Generic[T], ABC):
-    def __init__(self, annotation: T, model: Optional[DataField] = None):
+class BaseProperty(Generic[T, M], ABC):
+    def __init__(self, annotation: T, model: Optional[M] = None):
         self.annotation = annotation
         self.model = model
 

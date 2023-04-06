@@ -1,8 +1,10 @@
-from typing import Optional
+from typing import Optional, TypeVar
 
 from duit.annotation.Annotation import Annotation
 from duit.model.DataField import DataField
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
+
+M = TypeVar("M", bound=DataField)
 
 
 class Setting(Annotation):
@@ -10,7 +12,7 @@ class Setting(Annotation):
         self.name = name
         self.exposed = exposed
 
-    def __ror__(self, model) -> DataField:
+    def __ror__(self, model: M) -> M:
         if not isinstance(model, DataField):
             raise Exception(f"UIAnnotation can not be applied to {type(model).__name__}")
 

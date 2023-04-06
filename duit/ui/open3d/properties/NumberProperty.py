@@ -8,7 +8,7 @@ from duit.ui.annotations import NumberAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
-class NumberProperty(Open3dFieldProperty[NumberAnnotation]):
+class NumberProperty(Open3dFieldProperty[NumberAnnotation, DataField]):
     def __init__(self, annotation: NumberAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

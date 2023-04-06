@@ -8,7 +8,7 @@ from duit.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
-class BooleanProperty(Open3dFieldProperty[BooleanAnnotation]):
+class BooleanProperty(Open3dFieldProperty[BooleanAnnotation, DataField]):
     def __init__(self, annotation: BooleanAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

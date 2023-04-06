@@ -1,11 +1,12 @@
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
+from duit.model.DataField import DataField
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 from duit.ui.tk.widgets.CTkTextEntry import CTkTextEntry
 
 
-class TextProperty(TkFieldProperty[TextAnnotation]):
+class TextProperty(TkFieldProperty[TextAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
         field = CTkTextEntry(master, placeholder_text=self.annotation.placeholder_text)
         field.readonly = self.annotation.read_only

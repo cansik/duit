@@ -10,7 +10,7 @@ from duit.utils import _vector
 import customtkinter as ctk
 
 
-class VectorProperty(TkFieldProperty[VectorAnnotation]):
+class VectorProperty(TkFieldProperty[VectorAnnotation, DataField]):
     def __init__(self, annotation: VectorAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

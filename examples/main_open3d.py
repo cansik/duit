@@ -21,6 +21,11 @@ def main():
     settings.save("test.json", config)
     settings.load("test.json", config)
 
+    def on_code_changed(index):
+        print(config.codes[index])
+
+    config.codes.on_index_changed += on_code_changed
+
     print(f"City: {config.location.value.city.value}")
     print(f"Library: {config.library.value}")
 

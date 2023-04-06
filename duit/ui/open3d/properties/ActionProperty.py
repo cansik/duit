@@ -10,7 +10,7 @@ from duit.ui.open3d import Open3dContext
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
-class ActionProperty(Open3dFieldProperty[ActionAnnotation]):
+class ActionProperty(Open3dFieldProperty[ActionAnnotation, DataField]):
     def __init__(self, annotation: ActionAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model, hide_label=not annotation.show_label)
 

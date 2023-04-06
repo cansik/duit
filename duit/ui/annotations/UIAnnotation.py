@@ -1,10 +1,13 @@
 from abc import ABC
 from functools import total_ordering
+from typing import TypeVar
 
 from duit.annotation.Annotation import Annotation
 from duit.model.DataField import DataField
 
 UI_ANNOTATION_ATTRIBUTE_NAME = "__duit_ui_annotation"
+
+T = TypeVar('T', bound=DataField)
 
 
 @total_ordering
@@ -15,7 +18,7 @@ class UIAnnotation(Annotation, ABC):
         self.read_only = read_only
         self._importance = importance
 
-    def __ror__(self, model) -> DataField:
+    def __ror__(self, model: T) -> T:
         if not isinstance(model, DataField):
             raise Exception(f"UIAnnotation can not be applied to {type(model).__name__}")
 

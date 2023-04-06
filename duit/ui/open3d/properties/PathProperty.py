@@ -1,19 +1,16 @@
 from pathlib import Path
 from typing import Optional
 
-import open3d.cpu.pybind.visualization.gui
 from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
 
 from duit.model.DataField import DataField
 from duit.ui.annotations.PathAnnotation import PathAnnotation, DialogType
-from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.open3d import Open3dContext
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
-from duit.ui.open3d.widgets.CopyToClipboardButton import CopyToClipboardButton
 
 
-class PathProperty(Open3dFieldProperty[PathAnnotation]):
+class PathProperty(Open3dFieldProperty[PathAnnotation, DataField]):
     def __init__(self, annotation: PathAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

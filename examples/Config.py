@@ -1,9 +1,12 @@
+import random
 from pathlib import Path
 
 import vector
 
 from duit.annotation.AnnotationList import AnnotationList
 from duit.arguments.Argument import Argument
+from duit.model.DataList import DataList
+from duit.model.SelectableDataList import SelectableDataList
 from duit.ui.annotations.PathAnnotation import DialogType
 from examples.Color import Color
 from examples.SubConfig import SubConfig
@@ -43,6 +46,8 @@ class Config:
         self.location = DataField(SubConfig()) | ui.SubSection("Location")
         self.library = DataField({"Book": "Test", "Movie": "World"})
 
-    @staticmethod
-    def say_hello():
+        self.codes = SelectableDataList() | ui.List("Codes")
+
+    def say_hello(self):
         print("hello world")
+        self.codes.append(random.randint(0, 100))

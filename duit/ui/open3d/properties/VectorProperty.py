@@ -10,7 +10,7 @@ from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 from duit.utils import _vector
 
 
-class VectorProperty(Open3dFieldProperty[VectorAnnotation]):
+class VectorProperty(Open3dFieldProperty[VectorAnnotation, DataField]):
     def __init__(self, annotation: VectorAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

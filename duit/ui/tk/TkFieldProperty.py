@@ -4,14 +4,15 @@ from typing import Generic, Optional, Iterable
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
 from duit.model.DataField import DataField, T
+from duit.ui.BaseProperty import M
 from duit.ui.annotations import UIAnnotation
 import customtkinter as ctk
 
 from duit.ui.tk.TkProperty import TkProperty
 
 
-class TkFieldProperty(Generic[T], TkProperty[T], ABC):
-    def __init__(self, annotation: UIAnnotation, model: Optional[DataField] = None, hide_label: bool = False):
+class TkFieldProperty(Generic[T, M], TkProperty[T, M], ABC):
+    def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
         super().__init__(annotation, model)
         self.hide_label = hide_label
 

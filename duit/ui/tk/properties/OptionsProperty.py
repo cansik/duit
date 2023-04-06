@@ -3,11 +3,12 @@ from typing import List, Any
 import customtkinter as ctk
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
+from duit.model.DataField import DataField
 from duit.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 
 
-class OptionsProperty(TkFieldProperty[BooleanAnnotation]):
+class OptionsProperty(TkFieldProperty[BooleanAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
         option_var = ctk.StringVar(value="")
 

@@ -8,7 +8,7 @@ from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
-class SliderProperty(Open3dFieldProperty[SliderAnnotation]):
+class SliderProperty(Open3dFieldProperty[SliderAnnotation, DataField]):
     def __init__(self, annotation: SliderAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 

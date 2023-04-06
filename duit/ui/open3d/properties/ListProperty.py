@@ -4,14 +4,14 @@ from typing import Optional, Any, List
 from open3d.cpu.pybind.visualization.gui import Widget
 from open3d.visualization import gui
 
-from duit.model.DataField import DataField
-from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
+from duit.model.SelectableDataList import SelectableDataList
+from duit.ui.annotations.ListAnnotation import ListAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 from duit.ui.open3d.widgets.SelectionBox import SelectionBox
 
 
-class OptionsProperty(Open3dFieldProperty[OptionsAnnotation, DataField]):
-    def __init__(self, annotation: OptionsAnnotation, model: Optional[DataField] = None):
+class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
+    def __init__(self, annotation: ListAnnotation, model: Optional[SelectableDataList] = None):
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
@@ -23,24 +23,28 @@ class OptionsProperty(Open3dFieldProperty[OptionsAnnotation, DataField]):
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
 
-        for option in self.options:
-            field.add_item(self.get_option_name(option))
-
         def on_dm_changed(value):
-            field.selected_index = self.options.index(value)
+            field.clear_items()
 
-        def on_ui_changed(value, index):
-            self.model.value = self.options[index]
+            for option in self.options:
+                field.add_item(self.get_option_name(option))
 
-        self.model.on_changed.append(on_dm_changed)
-        field.set_on_selection_changed(on_ui_changed)
+        def on_dm_selection_changed(index):
+            field.selected_index = index
+
+        def on_ui_selection_changed(value, index):
+            self.model.selected_index = index
+
+        self.model.on_changed += on_dm_changed
+        self.model.on_index_changed += on_dm_selection_changed
+        field.set_on_selection_changed(on_ui_selection_changed)
 
         self.model.fire_latest()
         return field
 
     @property
     def options(self) -> List[Any]:
-        return self.annotation.options
+        return self.model.value
 
     def get_option_name(self, option) -> str:
         return str(option)

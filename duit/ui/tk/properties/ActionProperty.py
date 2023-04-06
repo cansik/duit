@@ -9,7 +9,7 @@ from duit.ui.annotations.ActionAnnotation import ActionAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 
 
-class ActionProperty(TkFieldProperty[ActionAnnotation]):
+class ActionProperty(TkFieldProperty[ActionAnnotation, DataField]):
     def __init__(self, annotation: ActionAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model, hide_label=not annotation.show_label)
 

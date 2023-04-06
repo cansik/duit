@@ -1,12 +1,13 @@
 import customtkinter as ctk
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
+from duit.model.DataField import DataField
 from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 from duit.ui.tk.widgets.CTkNumberEntry import CTkNumberEntry
 
 
-class SliderProperty(TkFieldProperty[SliderAnnotation]):
+class SliderProperty(TkFieldProperty[SliderAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
         frame = ctk.CTkFrame(master,
                              fg_color="transparent",

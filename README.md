@@ -75,4 +75,4 @@ pip install -e ".[all]"
 ```
 
 ## About
-MIT License - Copyright (c) 2022 Florian Bruggisser
+MIT License - Copyright (c) 2023 Florian Bruggisser
