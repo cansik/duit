@@ -16,9 +16,9 @@ class SelectionBox(gui.Vert):
         self._open_button.vertical_padding_em = 0
         self._open_button.horizontal_padding_em = 0
         self._open_button.set_on_clicked(self._on_button_clicked)
-
+        
         self._list = gui.ListView()
-        self._list.background_color.set_color(1.0, 0.0, 0.0)
+        self._list.background_color.set_color(1.0, 0.0, 0.0, 1.0)
         self._list.set_on_selection_changed(self._on_list_selection_changed)
         self._list.visible = False
 
@@ -37,9 +37,8 @@ class SelectionBox(gui.Vert):
 
     def _on_button_clicked(self):
         rect: gui.Rect = self.frame
-
         self._list.frame = gui.Rect(rect.x, rect.y + rect.height, rect.width, self.list_size)
-        self._list.visible = True
+        self._list.visible = not self._list.visible
 
     def _on_list_selection_changed(self, new_val, is_double_click):
         index = self._items.index(new_val)
