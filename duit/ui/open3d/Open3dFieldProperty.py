@@ -18,7 +18,7 @@ class Open3dFieldProperty(Generic[T, M], Open3dProperty[T, M], ABC):
 
     def create_widgets(self) -> Iterable[Widget]:
         if self.hide_label:
-            return gui.Widget(), self.create_field()
+            return gui.Label(""), self.create_field()
 
         label = gui.Label(f"{self.annotation.name}:")
         label.font_id = Open3dContext.OPEN3D_LABEL_FONT_ID
