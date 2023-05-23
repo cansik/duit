@@ -8,6 +8,7 @@ from .annotations.TextAnnotation import TextAnnotation as Text
 from .annotations.VectorAnnotation import VectorAnnotation as Vector
 from .annotations.PathAnnotation import PathAnnotation as Path
 from .annotations.ListAnnotation import ListAnnotation as List
+from .annotations.ProgressAnnotation import ProgressAnnotation as Progress
 
 from .annotations.container.StartSectionAnnotation import StartSectionAnnotation as StartSection
 from .annotations.container.EndSectionAnnotation import EndSectionAnnotation as EndSection
