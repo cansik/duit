@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Optional
+from typing import Any
 
 from open3d.visualization import gui
 from open3d.visualization.gui import Widget
