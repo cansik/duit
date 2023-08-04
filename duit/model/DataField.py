@@ -3,7 +3,7 @@ from typing import TypeVar, Generic, Any
 from duit.event.Event import Event
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class DataField(Generic[T]):
@@ -52,6 +52,13 @@ class DataField(Generic[T]):
     def bind_bidirectional(self, model: "DataField[T]") -> None:
         self.bind_to(model)
         model.bind_to(self)
+
+    def bind_to_attribute(self, obj: Any, field_name: Any) -> None:
+        def on_change(*args: Any):
+            if hasattr(obj, field_name):
+                setattr(obj, field_name, self._value)
+
+        self.on_changed.append(on_change)
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}[{type(self._value).__name__}] ({self._value})"
