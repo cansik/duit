@@ -31,8 +31,9 @@ class ContainerHelper:
         attribute_name = self._section_stack.pop()
         setattr(self._obj, f"__duit_end_section_{attribute_name}", field)
 
-    def section(self, name: str, collapsed: bool = False) -> "ContainerHelper":
-        self.start_section(name, collapsed)
+    def section(self, name: str, collapsed: bool = False,
+                is_active_field: Optional[DataField[bool]] = None) -> "ContainerHelper":
+        self.start_section(name, collapsed, is_active_field)
         return self
 
     def __enter__(self):
