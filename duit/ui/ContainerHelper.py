@@ -1,5 +1,5 @@
 import re
-from typing import Any
+from typing import Any, Optional
 
 from duit.collections.Stack import Stack
 from duit.model.DataField import DataField
@@ -20,8 +20,8 @@ class ContainerHelper:
         result = re.sub(regex, "_", name, 0, re.MULTILINE)
         return result.lower()
 
-    def start_section(self, name: str, collapsed: bool = False):
-        field = DataField(None) | StartSectionAnnotation(name, collapsed) | Setting(exposed=False)
+    def start_section(self, name: str, collapsed: bool = False, is_active_field: Optional[DataField[bool]] = None):
+        field = DataField(None) | StartSectionAnnotation(name, collapsed, is_active_field) | Setting(exposed=False)
         attribute_name = self._create_field_name(name)
         self._section_stack.push(attribute_name)
         setattr(self._obj, f"__duit_start_section_{attribute_name}", field)
@@ -40,4 +40,3 @@ class ContainerHelper:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.end_section()
-

@@ -50,6 +50,9 @@ class Open3dPropertyPanel(gui.WidgetProxy):
         self._create_properties(self.data_context, self.widget)
         self.set_widget(self.widget)
 
+    def __on_recreate_requested(self, *args):
+        self._create_panel()
+
     def _create_properties(self, obj: Any, root_widget: gui.Widget):
         self.stack_depth += 1
 
@@ -78,16 +81,13 @@ class Open3dPropertyPanel(gui.WidgetProxy):
                     grid = gui.VGrid(2, 0.25 * self.em)
                     settings.add_child(grid)
 
-                    # initial implementation of active field
+                    # implementation of active field link
                     if ann.is_active_field is not None:
                         if ann.is_active_field.value:
                             root_widget.add_child(settings)
 
-                        def on_active_changed(is_active):
-                            self._create_panel()
-
-                        ann.is_active_field.on_changed.clear()
-                        ann.is_active_field.on_changed += on_active_changed
+                        if self.__on_recreate_requested not in ann.is_active_field.on_changed:
+                            ann.is_active_field.on_changed += self.__on_recreate_requested
                     else:
                         root_widget.add_child(settings)
 
