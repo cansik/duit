@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Any
+from typing import TypeVar, Generic, Any, Optional, Callable
 
 from duit.event.Event import Event
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
@@ -53,10 +53,14 @@ class DataField(Generic[T]):
         self.bind_to(model)
         model.bind_to(self)
 
-    def bind_to_attribute(self, obj: Any, field_name: Any) -> None:
+    def bind_to_attribute(self, obj: Any, field_name: Any, converter: Optional[Callable[[T], Any]] = None) -> None:
         def on_change(*args: Any):
             if hasattr(obj, field_name):
-                setattr(obj, field_name, self._value)
+                output_value = self._value
+                if converter is not None:
+                    output_value = converter(output_value)
+
+                setattr(obj, field_name, output_value)
 
         self.on_changed.append(on_change)
 
