@@ -27,8 +27,8 @@ class SliderProperty(Open3dFieldProperty[SliderAnnotation, DataField]):
 
         def on_dm_changed(value):
             if slider_type == gui.Slider.INT:
-                field.int_value = round(value)
-                number_field.int_value = round(value)
+                field.int_value = int(round(value))
+                number_field.int_value = int(round(value))
             else:
                 field.double_value = value
                 number_field.double_value = value
@@ -37,7 +37,10 @@ class SliderProperty(Open3dFieldProperty[SliderAnnotation, DataField]):
             self.model.value = value
 
         def on_ui_changed(value):
-            self.model.value = value
+            if slider_type == gui.Slider.INT:
+                self.model.value = int(round(value))
+            else:
+                self.model.value = value
 
         self.model.on_changed.append(on_dm_changed)
         field.set_on_value_changed(on_ui_changed)
