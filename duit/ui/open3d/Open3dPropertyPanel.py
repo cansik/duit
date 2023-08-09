@@ -77,7 +77,19 @@ class Open3dPropertyPanel(gui.WidgetProxy):
                     settings.set_is_open(not ann.collapsed)
                     grid = gui.VGrid(2, 0.25 * self.em)
                     settings.add_child(grid)
-                    root_widget.add_child(settings)
+
+                    # initial implementation of active field
+                    if ann.is_active_field is not None:
+                        if ann.is_active_field.value:
+                            root_widget.add_child(settings)
+
+                        def on_active_changed(is_active):
+                            self._create_panel()
+
+                        ann.is_active_field.on_changed.clear()
+                        ann.is_active_field.on_changed += on_active_changed
+                    else:
+                        root_widget.add_child(settings)
 
                     if is_sub_section:
                         self._create_properties(model.value, grid)
