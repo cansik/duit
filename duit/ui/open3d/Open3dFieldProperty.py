@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Iterable, Generic
+from typing import Optional, Iterable, Generic, Sequence, Union
 
 from open3d.visualization import gui
 from open3d.visualization.gui import Widget
@@ -17,13 +17,18 @@ class Open3dFieldProperty(Generic[T, M], Open3dProperty[T, M], ABC):
         self.hide_label = hide_label
 
     def create_widgets(self) -> Iterable[Widget]:
+        fields = self.create_field()
+
+        if not isinstance(fields, Sequence):
+            fields = [fields]
+
         if self.hide_label:
-            return gui.Label(""), self.create_field()
+            return gui.Label(""), *fields
 
         label = gui.Label(f"{self.annotation.name}:")
         label.font_id = Open3dContext.OPEN3D_LABEL_FONT_ID
-        return label, self.create_field()
+        return label, *fields
 
     @abstractmethod
-    def create_field(self) -> Widget:
+    def create_field(self) -> Union[Widget, Sequence[Widget]]:
         pass
