@@ -5,7 +5,10 @@ from typing import Optional
 
 import numpy as np
 
+from duit.model.DataField import DataField
 from duit.model.SharedDataField import SharedDataField
+from duit.multiprocessing.Shared import Shared
+from duit.multiprocessing.SharedContext import SharedContext
 
 
 class Day(Enum):
@@ -15,7 +18,7 @@ class Day(Enum):
 
 class Config:
     def __init__(self, manager: mp.Manager):
-        self.counter = SharedDataField(0, manager)
+        self.counter = DataField(0) | Shared()
         self.data = SharedDataField(np.ones((2,)), manager)
         self.day = SharedDataField(Day.Today, manager)
 
@@ -55,6 +58,8 @@ def main():
 
     config = Config(manager)
     config.counter.value = 42
+
+    context = SharedContext(config, manager)
 
     handler = ValueHandler(config)
     handler.run()
