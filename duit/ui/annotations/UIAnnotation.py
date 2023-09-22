@@ -39,3 +39,7 @@ class UIAnnotation(Annotation, ABC):
         if not isinstance(other, UIAnnotation):
             return NotImplemented
         return self._importance < other._importance
+
+    @staticmethod
+    def _get_annotation_attribute_name() -> str:
+        return UI_ANNOTATION_ATTRIBUTE_NAME

@@ -5,6 +5,7 @@ from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
 
 import vector
 
+from duit.annotation.AnnotationFinder import AnnotationFinder
 from duit.model.DataField import DataField
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 from duit.settings.Setting import Setting
@@ -27,6 +28,17 @@ class Settings(Generic[T]):
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
         self.non_unpackable_type = [vector.Vector]
+
+        # setup annotation finder
+        def _is_field_valid(field: DataField, annotation: Setting):
+            if callable(field.value):
+                return False
+
+            if not annotation.exposed:
+                return False
+            return True
+
+        self._annotation_finder = AnnotationFinder(Setting, _is_field_valid, recursive=False)
 
     def load(self, file_path: str, obj: T) -> T:
         with open(file_path, "r") as file:
@@ -62,7 +74,7 @@ class Settings(Generic[T]):
             obj_history.add(obj)
 
         # extract datamodel fields
-        fields = self._find_all_setting_annotations(obj)
+        fields = self._annotation_finder.find(obj)
 
         # fill datamodel fields into data
         for name, values in fields.items():
@@ -111,7 +123,7 @@ class Settings(Generic[T]):
 
         # create string to field index
         fields_table: Dict[str, Any] = {}
-        fields = self._find_all_setting_annotations(obj)
+        fields = self._annotation_finder.find(obj)
         for name, values in fields.items():
             field, setting = values
 
@@ -146,25 +158,6 @@ class Settings(Generic[T]):
             if serializer.handles_type(field.value):
                 return serializer
         return self.default_serializer
-
-    @staticmethod
-    def _find_all_setting_annotations(obj: Any, filter_exposed: bool = True) -> Dict[str, Tuple[DataField, Setting]]:
-        annotations = {}
-
-        if not hasattr(obj, "__dict__"):
-            return annotations
-
-        for n, v in obj.__dict__.items():
-            if isinstance(v, DataField) and hasattr(v, SETTING_ANNOTATION_ATTRIBUTE_NAME):
-                setting: Setting = v.__getattribute__(SETTING_ANNOTATION_ATTRIBUTE_NAME)
-                if filter_exposed and not setting.exposed:
-                    continue
-
-                if callable(v.value):
-                    continue
-
-                annotations[n] = (v, v.__getattribute__(SETTING_ANNOTATION_ATTRIBUTE_NAME))
-        return annotations
 
     @staticmethod
     def _is_jsonable(x):

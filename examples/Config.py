@@ -7,6 +7,7 @@ from duit.annotation.AnnotationList import AnnotationList
 from duit.arguments.Argument import Argument
 from duit.model.DataList import DataList
 from duit.model.SelectableDataList import SelectableDataList
+from duit.settings.Setting import Setting
 from duit.ui.annotations.PathAnnotation import DialogType
 from examples.Color import Color
 from examples.SubConfig import SubConfig
@@ -19,7 +20,7 @@ class Config:
         self.is_active = DataField(False) | ui.Boolean("Active")
 
         self.age = DataField(5) | AnnotationList(ui.StartSection("Options", collapsed=False, is_active_field=self.is_active), ui.Number("Age"))
-        self.hungry = DataField(True) | ui.Boolean("Hungry")
+        self.hungry = DataField(True) | ui.Boolean("Hungry") | Setting(exposed=False)
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
         self.humidity = DataField(18.5) | ui.Number("Humidity", readonly=True)
         self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)

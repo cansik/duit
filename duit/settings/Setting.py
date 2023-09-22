@@ -19,3 +19,7 @@ class Setting(Annotation):
         # add ui attribute to data model
         model.__setattr__(SETTING_ANNOTATION_ATTRIBUTE_NAME, self)
         return model
+
+    @staticmethod
+    def _get_annotation_attribute_name() -> str:
+        return SETTING_ANNOTATION_ATTRIBUTE_NAME

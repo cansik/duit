@@ -11,3 +11,7 @@ class AnnotationList(Annotation):
         for annotation in self.annotations:
             model |= annotation
         return model
+
+    @staticmethod
+    def _get_annotation_attribute_name() -> str:
+        raise Exception("AnnotationList is not a real Annotation.")

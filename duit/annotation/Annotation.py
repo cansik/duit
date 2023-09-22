@@ -11,3 +11,8 @@ class Annotation(ABC):
     @abstractmethod
     def __ror__(self, model: M) -> M:
         pass
+
+    @staticmethod
+    @abstractmethod
+    def _get_annotation_attribute_name() -> str:
+        pass
