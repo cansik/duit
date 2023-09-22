@@ -12,7 +12,7 @@ class DataField(Generic[T]):
         self.publish_enabled: bool = True
         self.on_changed: Event[T] = Event[T]()
 
-        # add serialization attribute by default
+        # Add serialization attribute by default
         from duit.settings.Setting import Setting
         self.__setattr__(SETTING_ANNOTATION_ATTRIBUTE_NAME, Setting())
 
@@ -25,7 +25,7 @@ class DataField(Generic[T]):
         old_value = self._value
         self._value = new_value
 
-        if self.publish_enabled and self._value != old_value:
+        if self.publish_enabled and not self._is_equal(self._value, old_value):
             self.fire()
 
     def set_silent(self, value: T) -> None:
@@ -64,6 +64,16 @@ class DataField(Generic[T]):
 
         self.on_changed.append(on_change)
 
+    @staticmethod
+    def _is_equal(value: T, new_value: T) -> bool:
+        result = value == new_value
+
+        # fix numpy and list comparisons
+        if hasattr(result, '__iter__'):
+            return all(result)
+
+        return result
+
     def __repr__(self) -> str:
         return f"{type(self).__name__}[{type(self._value).__name__}] ({self._value})"
 
@@ -72,5 +82,5 @@ class DataField(Generic[T]):
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, DataField):
-            return self.value == other.value
+            return self._is_equal_method(self.value, other.value)
         return False
