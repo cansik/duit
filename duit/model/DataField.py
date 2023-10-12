@@ -53,7 +53,9 @@ class DataField(Generic[T]):
         self.bind_to(model)
         model.bind_to(self)
 
-    def bind_to_attribute(self, obj: Any, field_name: Any, converter: Optional[Callable[[T], Any]] = None) -> None:
+    def bind_to_attribute(self, obj: Any, field_name: Any,
+                          converter: Optional[Callable[[T], Any]] = None,
+                          fire_latest: bool = False) -> None:
         def on_change(*args: Any):
             if hasattr(obj, field_name):
                 output_value = self._value
@@ -63,6 +65,9 @@ class DataField(Generic[T]):
                 setattr(obj, field_name, output_value)
 
         self.on_changed.append(on_change)
+
+        if fire_latest:
+            self.fire_latest()
 
     @staticmethod
     def _is_equal(value: T, new_value: T) -> bool:
