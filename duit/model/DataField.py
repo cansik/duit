@@ -89,3 +89,8 @@ class DataField(Generic[T]):
         if isinstance(other, DataField):
             return self._is_equal_method(self.value, other.value)
         return False
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d["on_changed"]
+        return d
