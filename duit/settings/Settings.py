@@ -1,13 +1,12 @@
-from collections.abc import Hashable
 import json
 import logging
+from collections.abc import Hashable
 from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
 
 import vector
 
 from duit.annotation.AnnotationFinder import AnnotationFinder
 from duit.model.DataField import DataField
-from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 from duit.settings.Setting import Setting
 from duit.settings.serialiser.BaseSerializer import BaseSerializer
 from duit.settings.serialiser.DefaultSerializer import DefaultSerializer
@@ -49,6 +48,9 @@ class Settings(Generic[T]):
         self._deserialize(obj, data)
         return obj
 
+    def deserialize(self, data: Dict[str, Any], obj: T) -> T:
+        return self._deserialize(obj, data)
+
     def save(self, file_path: str, obj: T):
         data = self.save_json(obj)
         with open(file_path, "w") as file:
@@ -57,6 +59,9 @@ class Settings(Generic[T]):
     def save_json(self, obj: T) -> str:
         data = self._serialize(obj)
         return json.dumps(data, indent=4, sort_keys=True)
+
+    def serialize(self, obj: T) -> Dict[str, Any]:
+        return self._serialize(obj)
 
     def _serialize(self, obj: Any,
                    data: Optional[Dict[str, Any]] = None,
@@ -166,3 +171,6 @@ class Settings(Generic[T]):
             return True
         except (TypeError, OverflowError):
             return False
+
+
+DefaultSettings = Settings()

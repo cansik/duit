@@ -88,3 +88,6 @@ class Arguments:
             name = name[2:]
 
         return name.replace("-", "_")
+
+
+DefaultArguments = Arguments()
