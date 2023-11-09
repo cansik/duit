@@ -13,10 +13,24 @@ from duit.ui.open3d.Open3dProperty import Open3dProperty
 
 class Open3dFieldProperty(Generic[T, M], Open3dProperty[T, M], ABC):
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
+        """
+        Initialize an Open3dFieldProperty.
+
+        :param annotation: The UIAnnotation associated with this property.
+        :param model: The data model for this property (default is None).
+        :param hide_label: Whether to hide the label associated with the property (default is False).
+        """
         super().__init__(annotation, model)
         self.hide_label = hide_label
 
     def create_widgets(self) -> Iterable[Widget]:
+        """
+        Create widgets for the Open3dFieldProperty.
+
+        This method generates the widgets for the Open3dFieldProperty, including the label and the field.
+
+        :return: An iterable of Open3D widgets.
+        """
         fields = self.create_field()
 
         if not isinstance(fields, Sequence):
@@ -31,4 +45,11 @@ class Open3dFieldProperty(Generic[T, M], Open3dProperty[T, M], ABC):
 
     @abstractmethod
     def create_field(self) -> Union[Widget, Sequence[Widget]]:
+        """
+        Create the field widget for the Open3dFieldProperty.
+
+        This method should be implemented in subclasses to create the specific field widget for the property.
+
+        :return: The field widget or a sequence of field widgets.
+        """
         pass

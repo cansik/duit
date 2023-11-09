@@ -18,7 +18,20 @@ T = TypeVar('T')
 
 
 class Settings(Generic[T]):
+    """
+    A utility class for managing and serializing settings.
+
+    Args:
+        None
+    """
+
     def __init__(self):
+        """
+        Initialize a Settings instance.
+
+        Args:
+            None
+        """
         self.serializers: List[BaseSerializer] = [
             EnumSerializer(),
             VectorSerializer(),
@@ -40,27 +53,85 @@ class Settings(Generic[T]):
         self._annotation_finder = AnnotationFinder(Setting, _is_field_valid, recursive=False)
 
     def load(self, file_path: str, obj: T) -> T:
+        """
+        Load settings from a file and apply them to an object.
+
+        Args:
+            file_path (str): The path to the settings file.
+            obj (T): The object to which the settings will be applied.
+
+        Returns:
+            T: The object with applied settings.
+        """
         with open(file_path, "r") as file:
             return self.load_json(file.read(), obj)
 
     def load_json(self, content: str, obj: T) -> T:
+        """
+        Load settings from a JSON string and apply them to an object.
+
+        Args:
+            content (str): The JSON string containing the settings.
+            obj (T): The object to which the settings will be applied.
+
+        Returns:
+            T: The object with applied settings.
+        """
         data = json.loads(content)
         self._deserialize(obj, data)
         return obj
 
     def deserialize(self, data: Dict[str, Any], obj: T) -> T:
+        """
+        Deserialize a dictionary of settings and apply them to an object.
+
+        Args:
+            data (Dict[str, Any]): The dictionary containing the settings.
+            obj (T): The object to which the settings will be applied.
+
+        Returns:
+            T: The object with applied settings.
+        """
         return self._deserialize(obj, data)
 
     def save(self, file_path: str, obj: T):
+        """
+        Save settings from an object to a file.
+
+        Args:
+            file_path (str): The path to the settings file.
+            obj (T): The object from which settings will be saved.
+
+        Returns:
+            None
+        """
         data = self.save_json(obj)
         with open(file_path, "w") as file:
             file.write(data)
 
     def save_json(self, obj: T) -> str:
+        """
+        Save settings from an object to a JSON string.
+
+        Args:
+            obj (T): The object from which settings will be saved.
+
+        Returns:
+            str: The JSON string containing the settings.
+        """
         data = self._serialize(obj)
         return json.dumps(data, indent=4, sort_keys=True)
 
     def serialize(self, obj: T) -> Dict[str, Any]:
+        """
+        Serialize settings from an object to a dictionary.
+
+        Args:
+            obj (T): The object from which settings will be serialized.
+
+        Returns:
+            Dict[str, Any]: The dictionary containing the settings.
+        """
         return self._serialize(obj)
 
     def _serialize(self, obj: Any,

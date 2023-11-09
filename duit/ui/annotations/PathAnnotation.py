@@ -1,5 +1,4 @@
 from enum import Enum
-from pathlib import Path
 from typing import Optional, Dict
 
 from duit.ui.annotations.UIAnnotation import UIAnnotation
@@ -18,6 +17,17 @@ class PathAnnotation(UIAnnotation):
                  dialog_type: DialogType = DialogType.OpenFile,
                  filters: Optional[Dict[str, str]] = None
                  ):
+        """
+        Initialize a PathAnnotation.
+
+        :param name: The name of the path annotation.
+        :param placeholder_text: The placeholder text to display in the input field.
+        :param tooltip: The tooltip text for the annotation.
+        :param readonly: Whether the annotation is read-only (default is False).
+        :param title: The title of the file dialog.
+        :param dialog_type: The type of file dialog (default is DialogType.OpenFile).
+        :param filters: Optional file filters in the form of a dictionary (default is an empty dictionary).
+        """
         super().__init__(name, tooltip, readonly)
         self.placeholder_text = placeholder_text
         self.title = title

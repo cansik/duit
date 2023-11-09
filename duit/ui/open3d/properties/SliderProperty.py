@@ -10,9 +10,22 @@ from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 class SliderProperty(Open3dFieldProperty[SliderAnnotation, DataField]):
     def __init__(self, annotation: SliderAnnotation, model: Optional[DataField] = None):
+        """
+        Initializes a SliderProperty instance.
+
+        Args:
+            annotation (SliderAnnotation): The SliderAnnotation associated with this property.
+            model (Optional[DataField]): The data model field to bind this property to.
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """
+        Creates a GUI widget for the slider property.
+
+        Returns:
+            Widget: The created GUI widget for the slider property.
+        """
         slider_type = gui.Slider.INT if isinstance(self.model.value, int) else gui.Slider.DOUBLE
         field = gui.Slider(slider_type)
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)

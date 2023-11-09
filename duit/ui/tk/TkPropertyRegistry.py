@@ -18,6 +18,9 @@ from duit.ui.tk.properties.VectorProperty import VectorProperty
 
 
 def init_tk_registry():
+    """
+    Initialize the Tk property registry with mapping between annotation types and their respective property classes.
+    """
     UI_PROPERTY_REGISTRY[NumberAnnotation] = NumberProperty
     UI_PROPERTY_REGISTRY[BooleanAnnotation] = BooleanProperty
     UI_PROPERTY_REGISTRY[ActionAnnotation] = ActionProperty

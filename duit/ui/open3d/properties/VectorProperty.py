@@ -12,9 +12,22 @@ from duit.utils import _vector
 
 class VectorProperty(Open3dFieldProperty[VectorAnnotation, DataField]):
     def __init__(self, annotation: VectorAnnotation, model: Optional[DataField] = None):
+        """
+        Initializes a VectorProperty instance.
+
+        Args:
+            annotation (VectorAnnotation): The VectorAnnotation associated with this property.
+            model (Optional[DataField]): The data model field to bind this property to.
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """
+        Creates a GUI widget for the vector property.
+
+        Returns:
+            Widget: The created GUI widget for the vector property.
+        """
         vector_attributes = _vector.get_vector_attributes(self.model.value)
         attribute_widgets: Dict[str, gui.NumberEdit] = {}
 

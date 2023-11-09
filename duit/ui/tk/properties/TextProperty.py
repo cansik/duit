@@ -8,6 +8,15 @@ from duit.ui.tk.widgets.CTkTextEntry import CTkTextEntry
 
 class TextProperty(TkFieldProperty[TextAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
+        """
+        Create a text entry field for the given text annotation.
+
+        Args:
+            master: The parent widget.
+
+        Returns:
+            CTkBaseClass: The created text entry field.
+        """
         field = CTkTextEntry(master, placeholder_text=self.annotation.placeholder_text)
         field.readonly = self.annotation.read_only
 

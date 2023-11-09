@@ -1,5 +1,6 @@
 from typing import Optional, Dict
 
+import customtkinter as ctk
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 
 from duit.model.DataField import DataField
@@ -7,20 +8,33 @@ from duit.ui.annotations.VectorAnnotation import VectorAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
 from duit.ui.tk.widgets.CTkNumberEntry import CTkNumberEntry
 from duit.utils import _vector
-import customtkinter as ctk
 
 
 class VectorProperty(TkFieldProperty[VectorAnnotation, DataField]):
     def __init__(self, annotation: VectorAnnotation, model: Optional[DataField] = None):
+        """
+        Initialize a VectorProperty instance.
+
+        Args:
+            annotation (VectorAnnotation): The vector annotation associated with this property.
+            model (Optional[DataField]): The data model for this property.
+        """
         super().__init__(annotation, model)
 
     def create_field(self, master) -> CTkBaseClass:
+        """
+        Create a vector input field for the given vector annotation.
+
+        Args:
+            master: The parent widget.
+
+        Returns:
+            CTkBaseClass: The created vector input field.
+        """
         vector_attributes = _vector.get_vector_attributes(self.model.value)
         attribute_widgets: Dict[str, CTkNumberEntry] = {}
 
-        container = ctk.CTkFrame(master,
-                                 fg_color="transparent",
-                                 corner_radius=0)
+        container = ctk.CTkFrame(master, fg_color="transparent", corner_radius=0)
 
         labels = vector_attributes
         if self.annotation.labels is not None:
@@ -39,8 +53,7 @@ class VectorProperty(TkFieldProperty[VectorAnnotation, DataField]):
 
         column_index = 0
         for i, attribute_name in enumerate(vector_attributes):
-            field = CTkNumberEntry(container, 0.0,
-                                   decimal_precision=self.annotation.decimal_precision,
+            field = CTkNumberEntry(container, 0.0, decimal_precision=self.annotation.decimal_precision,
                                    width=self.annotation.max_width)
             field.enabled = not self.annotation.read_only or self.annotation.copy_content
             field.tooltip = self.annotation.tooltip

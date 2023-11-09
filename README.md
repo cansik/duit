@@ -1,12 +1,29 @@
-# Duit (Data UI Toolkit) [![PyPI](https://img.shields.io/pypi/v/duit)](https://pypi.org/project/duit/)
+# Duit (Data UI Toolkit)
+
+[![PyPI](https://img.shields.io/pypi/v/duit)](https://pypi.org/project/duit/)
+
 Duit is a toolkit to create simple user-interfaces for python.
-It is based on the ideas of [cansik/bildspur-base](https://github.com/cansik/bildspur-base) and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
+It is based on the ideas of [cansik/bildspur-base](https://github.com/cansik/bildspur-base)
+and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
 <img width="200" alt="python_1xlGn4l6Pb" src="https://user-images.githubusercontent.com/5220162/165138252-d7ac7542-974a-4573-ba88-35724e94b0d8.png">
 
 *Example UI rendered with [Open3D](https://github.com/isl-org/Open3D)*
 
+## Features
+
+- **Data Modeling**: duit provides a flexible data modeling framework to create structured data models and fields.
+
+- **Annotations**: Use annotations to attach metadata to data fields, making it easier to work with them.
+
+- **Command-line Arguments**: Easily parse and configure command-line arguments in your applications.
+
+- **Settings Serialization**: Serialize and deserialize settings data to and from various formats.
+
+- **User Interface**: Create simple user-interfaces for data fields.
+
 ## Installation
+
 To install duit with all dependencies call pip like this:
 
 ```bash
@@ -55,7 +72,9 @@ app.run()
 ```
 
 ## Settings
-To save and load settings have a look at the following example. Serialization from and to `json` is automatically handled by duit.
+
+To save and load settings have a look at the following example. Serialization from and to `json` is automatically
+handled by duit.
 
 ```python
 config = Config()
@@ -75,4 +94,5 @@ pip install -e ".[all]"
 ```
 
 ## About
+
 MIT License - Copyright (c) 2023 Florian Bruggisser

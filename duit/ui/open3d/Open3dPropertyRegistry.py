@@ -24,6 +24,11 @@ from duit.ui.open3d.properties.VectorProperty import VectorProperty
 
 
 def init_open3d_registry():
+    """
+    Initialize the Open3D property registry with mappings between UI annotations and Open3D property classes.
+    This allows Open3D widgets to be created based on the UI annotations used in data models.
+
+    """
     UI_PROPERTY_REGISTRY[NumberAnnotation] = NumberProperty
     UI_PROPERTY_REGISTRY[BooleanAnnotation] = BooleanProperty
     UI_PROPERTY_REGISTRY[SliderAnnotation] = SliderProperty

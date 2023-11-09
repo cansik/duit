@@ -9,22 +9,24 @@ from duit.ui.tk.widgets.CTkNumberEntry import CTkNumberEntry
 
 class SliderProperty(TkFieldProperty[SliderAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
-        frame = ctk.CTkFrame(master,
-                             fg_color="transparent",
-                             corner_radius=0)
+        """
+        Create a slider field for the given slider annotation.
+
+        Args:
+            master: The parent widget.
+
+        Returns:
+            CTkBaseClass: The created slider field.
+        """
+        frame = ctk.CTkFrame(master, fg_color="transparent", corner_radius=0)
         frame.grid_columnconfigure(0, weight=1)
 
         data_variable = ctk.IntVar() if isinstance(self.model.value, int) else ctk.DoubleVar()
-        field = ctk.CTkSlider(frame,
-                              variable=data_variable,
-                              from_=self.annotation.limit_min,
+        field = ctk.CTkSlider(frame, variable=data_variable, from_=self.annotation.limit_min,
                               to=self.annotation.limit_max)
         field.grid(row=0, column=0, padx=5, pady=0, sticky="ew")
 
-        number_entry = CTkNumberEntry(frame,
-                                      self.model.value,
-                                      self.annotation.limit_min,
-                                      self.annotation.limit_max,
+        number_entry = CTkNumberEntry(frame, self.model.value, self.annotation.limit_min, self.annotation.limit_max,
                                       width=80)
         number_entry.grid(row=0, column=1, padx=5, pady=0, sticky="nse")
 

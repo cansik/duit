@@ -1,6 +1,8 @@
-from Config import Config
-import open3d as o3d
 import argparse
+
+import open3d as o3d
+
+from Config import Config
 from DemoWindow import DemoWindow
 from duit.arguments.Arguments import Arguments
 from duit.settings.Settings import Settings

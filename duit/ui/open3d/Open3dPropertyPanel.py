@@ -15,6 +15,11 @@ from duit.ui.open3d import Open3dContext
 
 class Open3dPropertyPanel(gui.WidgetProxy):
     def __init__(self, window: gui.Window):
+        """
+        Initialize an Open3dPropertyPanel.
+
+        :param window: The Open3D window.
+        """
         gui.WidgetProxy.__init__(self)
 
         self.window = window

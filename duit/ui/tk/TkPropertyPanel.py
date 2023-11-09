@@ -16,6 +16,12 @@ from duit.ui.tk.TkFieldProperty import TkFieldProperty
 
 class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
     def __init__(self, master: Union[ctk.CTk, ctk.CTkFrame]):
+        """
+        Initializes a TkPropertyPanel.
+
+        Args:
+            master (Union[ctk.CTk, ctk.CTkFrame]): The parent widget.
+        """
         BasePropertyPanel.__init__(self)
         ctk.CTkScrollableFrame.__init__(self, master, corner_radius=0)
 
@@ -31,17 +37,32 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
         self.general_tab = self._add_tab("General")
 
     def _add_tab(self, title: str) -> ctk.CTkFrame:
+        """
+        Add a tab to the tab view.
+
+        Args:
+            title (str): The title of the tab.
+
+        Returns:
+            ctk.CTkFrame: The added tab frame.
+        """
         tab = self.tabview.add(title)
         tab.grid_columnconfigure(1, weight=1)
         return tab
 
     def _clean_widgets(self):
+        """
+        Clear the widgets in the property panel.
+        """
         for widget in self.winfo_children():
             widget.destroy()
 
         self._init_tab_view()
 
     def _create_panel(self):
+        """
+        Create the property panel with the widgets based on the annotations.
+        """
         self._clean_widgets()
 
         containers: Stack[ctk.CTkFrame] = Stack()

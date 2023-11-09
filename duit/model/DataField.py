@@ -7,7 +7,17 @@ T = TypeVar("T")
 
 
 class DataField(Generic[T]):
+    """
+    A generic data field that can hold a value of type T and provides event handling functionality.
+    """
+
     def __init__(self, value: T):
+        """
+        Initialize a DataField with the given value.
+
+        Args:
+            value (T): The initial value of the DataField.
+        """
         self._value: T = value
         self.publish_enabled: bool = True
         self.on_changed: Event[T] = Event[T]()
@@ -18,10 +28,22 @@ class DataField(Generic[T]):
 
     @property
     def value(self) -> T:
+        """
+        Get the current value of the DataField.
+
+        Returns:
+            T: The current value.
+        """
         return self._value
 
     @value.setter
     def value(self, new_value: T) -> None:
+        """
+        Set the value of the DataField and trigger the 'on_changed' event if the value changes.
+
+        Args:
+            new_value (T): The new value to set.
+        """
         old_value = self._value
         self._value = new_value
 
@@ -29,18 +51,37 @@ class DataField(Generic[T]):
             self.fire()
 
     def set_silent(self, value: T) -> None:
+        """
+        Set the value of the DataField without triggering the 'on_changed' event.
+
+        Args:
+            value (T): The new value to set.
+        """
         old_publish_value = self.publish_enabled
         self.publish_enabled = False
         self.value = value
         self.publish_enabled = old_publish_value
 
     def fire(self):
+        """
+        Trigger the 'on_changed' event with the current value.
+        """
         self.on_changed(self._value)
 
     def fire_latest(self):
+        """
+        Trigger the 'on_changed' event with the current value, invoking only the latest listener.
+        """
         self.on_changed.invoke_latest(self._value)
 
     def bind_to(self, model: "DataField[T]") -> None:
+        """
+        Bind this DataField to another DataField, propagating changes from this to the other.
+
+        Args:
+            model (DataField[T]): The target DataField to bind to.
+        """
+
         def on_change(*args: Any):
             old_publish_value = self.publish_enabled
             self.publish_enabled = False
@@ -50,12 +91,28 @@ class DataField(Generic[T]):
         self.on_changed.append(on_change)
 
     def bind_bidirectional(self, model: "DataField[T]") -> None:
+        """
+        Bind this DataField bidirectionally to another DataField.
+
+        Args:
+            model (DataField[T]): The target DataField to bind to bidirectionally.
+        """
         self.bind_to(model)
         model.bind_to(self)
 
     def bind_to_attribute(self, obj: Any, field_name: Any,
                           converter: Optional[Callable[[T], Any]] = None,
                           fire_latest: bool = False) -> None:
+        """
+        Bind this DataField to an attribute of an object.
+
+        Args:
+            obj (Any): The target object.
+            field_name (Any): The name of the attribute to bind to.
+            converter (Optional[Callable[[T], Any]]): A converter function to apply to the value.
+            fire_latest (bool): Whether to trigger the 'on_changed' event with the latest value.
+        """
+
         def on_change(*args: Any):
             if hasattr(obj, field_name):
                 output_value = self._value
@@ -71,6 +128,16 @@ class DataField(Generic[T]):
 
     @staticmethod
     def _is_equal(value: T, new_value: T) -> bool:
+        """
+        Check if two values are equal, taking care of iterable comparisons.
+
+        Args:
+            value (T): The first value.
+            new_value (T): The second value.
+
+        Returns:
+            bool: True if the values are equal, False otherwise.
+        """
         result = value == new_value
 
         # fix numpy and list comparisons
