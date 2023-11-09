@@ -7,7 +7,7 @@ class AnnotationList(Annotation):
     A composite annotation class that combines multiple annotations.
 
     Args:
-        *annotations (Annotation): Variable number of annotations to be combined.
+        *annotations (List[Annotation]): Variable number of annotations to be combined.
 
     Attributes:
         annotations (Tuple[Annotation]): A tuple containing the annotations to be combined.

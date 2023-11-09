@@ -59,52 +59,67 @@ pip install "duit[all]"
 
 ## Example
 
-To create a gui by code, create a new class with the data-fields you need.
+This is a very basic example on how to use `duit`. Read to [documentation](https://cansik.github.io/duit/duit.html#documentation) for a more information about the core concepts.
 
 ```python
-from examples.Color import Color
+import argparse
+
+from open3d.visualization import gui
+
+from duit import ui
+from duit.arguments.Argument import Argument
+from duit.arguments.Arguments import DefaultArguments
 from duit.model.DataField import DataField
-import duit.ui as ui
+from duit.settings.Settings import DefaultSettings
+from duit.ui.ContainerHelper import ContainerHelper
+from duit.ui.open3d.Open3dPropertyPanel import Open3dPropertyPanel
+from duit.ui.open3d.Open3dPropertyRegistry import init_open3d_registry
 
 
 class Config:
     def __init__(self):
-        self.hungry = DataField(True) | ui.Boolean("Hungry")
-        self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
-        self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
-        self.resolution = DataField(256) | ui.Options("Resolution", [64, 128, 256, 512, 1024])
-        self.color = DataField(Color.White) | ui.Enum("Color")
-        self.name = DataField("Test") | ui.Text("Name", readonly=True)
+        container_helper = ContainerHelper(self)
+
+        with container_helper.section("User"):
+            self.name = DataField("Cat") | ui.Text("Name")
+            self.age = DataField(21) | ui.Slider("Age", limit_min=18, limit_max=99)
+
+        with container_helper.section("Application"):
+            self.enabled = DataField(True) | ui.Boolean("Enabled") | Argument()
+
+
+def main():
+    # create initial config
+    config = Config()
+
+    # add arguments from config and parse them
+    parser = argparse.ArgumentParser()
+    args = DefaultArguments.add_and_configure(parser, config)
+
+    # store current config
+    DefaultSettings.save("config.json", config)
+
+    # create open3d gui for to display config
+    init_open3d_registry()
+
+    app = gui.Application.instance
+    app.initialize()
+
+    window: gui.Window = gui.Application.instance.create_window("Demo Window", 400, 200)
+    panel = Open3dPropertyPanel(window)
+    window.add_child(panel)
+    panel.data_context = config
+
+    app.run()
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-And use the open3d gui package to display them:
+Which results in the following GUI.
 
-```python
-init_open3d_registry()
-
-config = Config()
-config.age.value = 10
-
-app = o3d.visualization.gui.Application.instance
-app.initialize()
-
-win = DemoWindow(config)
-
-app.run()
-```
-
-## Settings
-
-To save and load settings have a look at the following example. Serialization from and to `json` is automatically
-handled by duit.
-
-```python
-config = Config()
-settings = Settings()
-
-settings.save("test.json", config)
-settings.load("test.json", config)
-```
+<img width="445" alt="example-window" src="https://github.com/cansik/duit/assets/5220162/0d71b1ab-9b42-4085-8d7f-1806a8ccd5b3">
 
 ### Development
 

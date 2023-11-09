@@ -128,8 +128,7 @@ setting `publish_enabled = false`.
 Another feature that the `duit.model.DataField.DataField` enables is the possibility to
 have [data bindings](https://en.wikipedia.org/wiki/Data_binding) between different attributes.
 
-For example, it is possible to update other datafields when changing the value of another datafield (**one-way binding
-**).
+For example, it is possible to update other datafields when changing the value of another datafield (**one-way binding**).
 
 ```python
 a = DataField("A")
