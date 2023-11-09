@@ -1,5 +1,6 @@
 # Duit (Data UI Toolkit)
 
+[![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/duit/)
 [![PyPI](https://img.shields.io/pypi/v/duit)](https://pypi.org/project/duit/)
 
 Duit is a toolkit to create simple user-interfaces for python.
