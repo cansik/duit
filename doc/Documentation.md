@@ -128,7 +128,8 @@ setting `publish_enabled = false`.
 Another feature that the `duit.model.DataField.DataField` enables is the possibility to
 have [data bindings](https://en.wikipedia.org/wiki/Data_binding) between different attributes.
 
-For example, it is possible to update other datafields when changing the value of another datafield (**one-way binding**).
+For example, it is possible to update other datafields when changing the value of another datafield (**one-way binding
+**).
 
 ```python
 a = DataField("A")
@@ -257,16 +258,25 @@ It is also important to notice that `duit.model.DataList.DataList` inherits from
 
 ## Annotation
 
-This chapter explains the core concepts of annotations and how custom annotations can be created. If you are interested in annotations provided by `duit`, please head over to the specific chapter:
+This chapter explains the core concepts of annotations and how custom annotations can be created. If you are interested
+in annotations provided by `duit`, please head over to the specific chapter:
 
 - [Settings](#settings)
 - [Arguments](#arguments)
 - [User-Interface](#user-interface)
 
-To be able to provide extended possibilities for `duit.model.DataField.DataField`, `duit` introduces the concept of field [annotations](https://docs.oracle.com/javase/tutorial/java/annotations/basics.html) to python. In python there are only so called [decorators](https://peps.python.org/pep-0318/) to extend functionality of an already existing method or function. To flag a class attribute, there is currently no concept available.
+To be able to provide extended possibilities for `duit.model.DataField.DataField`, `duit` introduces the concept of
+field [annotations](https://docs.oracle.com/javase/tutorial/java/annotations/basics.html) to python. In python there are
+only so called [decorators](https://peps.python.org/pep-0318/) to extend functionality of an already existing method or
+function. To flag a class attribute, there is currently no concept available.
 
 ### Custom Annotation
-To create a custom annotation that can be applied to a `duit.model.DataField.DataField`, a new class that inherits from the abstract class `duit.annotation.Annoation.Annoation` has to be implemented. An annotation is applied to a datafield by creating a private field attribute. This allows annotations to be applied to any python object in the future. The attribute name has to be provided as a static method. Here an example annotation which provides a help text for a datafield.
+
+To create a custom annotation that can be applied to a `duit.model.DataField.DataField`, a new class that inherits from
+the abstract class `duit.annotation.Annoation.Annoation` has to be implemented. An annotation is applied to a datafield
+by creating a private field attribute. This allows annotations to be applied to any python object in the future. The
+attribute name has to be provided as a static method. Here an example annotation which provides a help text for a
+datafield.
 
 ```python
 from duit.annotation.Annotation import Annotation, M
@@ -287,17 +297,27 @@ class MyHelpAnnotation(Annotation):
 ```
 
 ### Usage
-At the moment, the concept of annotations can only be applied to existing datafields. Since the @-notation is not possible to use due to python syntax restrictions, the annotation has to be applied by using the **right-or** (`__ror__`) operator. This operator has been chosen to not interfere with the existing type hint system and to be able to simply stack multiple annotations. Here an example on how to apply the custom `MyHelpAnnotation` to an existing datafield. Because the `_apply_annotation` method returns the same DataField type which has been applied to the method, syntax completion in IDEs still work for the `age` attribute.
 
+At the moment, the concept of annotations can only be applied to existing datafields. Since the @-notation is not
+possible to use due to python syntax restrictions, the annotation has to be applied by using the **right-or
+** (`__ror__`) operator. This operator has been chosen to not interfere with the existing type hint system and to be
+able to simply stack multiple annotations. Here an example on how to apply the custom `MyHelpAnnotation` to an existing
+datafield. Because the `_apply_annotation` method returns the same DataField type which has been applied to the method,
+syntax completion in IDEs still work for the `age` attribute.
 
 ```python
 age = DataField(21) | MyHelpAnnotation(help_text="The age of the user.")
 ```
 
-To find annotations inside objects, `duit` provides a helper class called `duit.annotation.AnnotationFinder.AnnotationFinder`. The class can find annotations of a specific type or subtype inside objects, and also recursively inside attributes of such an object. This allows for complex object structures, for example for configurations. To find our custom `MyHelpAnnotation` annotation, it is possible to use the annotation finder as shown in the following example.
+To find annotations inside objects, `duit` provides a helper class
+called `duit.annotation.AnnotationFinder.AnnotationFinder`. The class can find annotations of a specific type or subtype
+inside objects, and also recursively inside attributes of such an object. This allows for complex object structures, for
+example for configurations. To find our custom `MyHelpAnnotation` annotation, it is possible to use the annotation
+finder as shown in the following example.
 
 ```python
 from duit.annotation.AnnotationFinder import AnnotationFinder
+
 
 # create user class and instantiate an example object
 class User:
@@ -315,9 +335,90 @@ for field_name, (data_field, annotation) in annotations:
     print(f"Help text of attribute {field_name}: {annotation.help_text}")
 ```
 
-
 ## Settings
 
+The `duit.settings.Settings.Settings` class is an [annotation](#annotation)
+based [JSON](https://www.json.org/json-en.html) serializer and deserializer for `duit.model.DataField.DataField`. By
+default, every datafield already has this annotation on instantiation. Here an example on how to load and save objects
+into a file that contain datafields.
+
+```python
+from duit.settings.Settings import DefaultSettings
+
+
+# define and instantiate an example class User
+class User:
+    def __init__(self):
+        self.name = DataField("Test")
+        self.age = DataField(21)
+
+
+user1 = User()
+
+# save user
+DefaultSettings.save("test.json", user1)
+
+# load user
+user2 = DefaultSettings.load("test.json", User)
+```
+
+Of course there are also intermediate methods, which just serialize (to `dict`) or convert the object to a JSON string:
+
+```python
+from duit.settings.Settings import DefaultSettings
+
+# serialization
+result_dict: Dict[str, Any] = DefaultSettings.serialize(user)
+result_str = DefaultSettings.save_json(user)
+
+# deserialization
+obj_from_dict = DefaultSettings.deserialize(result_dict, User)
+obj_from_json = DefaultSettings.load_json(result_str, User)
+```
+
+### Setting Annotation
+
+By default, each `duit.model.DataField.DataField` contains a `duit.settings.Setting.Setting` annotation, which defines
+the JSON attribute name and if the datafield is exposed (default: `True`). To restrict serialization of a specific
+datafield, it is possible to overwrite the default settings annotation.
+
+```python
+from duit.settings.Setting import Setting
+
+
+class CustomUser:
+    def __init__(self):
+        self.name = DataField("Test") | Setting(exposed=False)  # this datafield is not serialized
+        self.age = DataField(21) | Setting(name="user-age")  # change the name of setting
+```
+
+The `CustomUser` would result in the following serialized JSON:
+
+```json
+{
+  "user-age": 21
+}
+```
+
+### Custom Settings
+
+Instead of using the `DefaultSettings` instance, it is possible to create multiple
+custom `duit.settings.Settings.Settings` instances, which contain different type adapters or have different
+configuration parameters. For simplicity, it is recommended to just use the `DefaultSettings` class.
+
+### Type Adapter
+
+A type adapter defines how a specific type is serialized and deserialized. A `duit.settings.Settings.Settings` class
+contains a list of type adapters which can be used to define the serialization behaviour of complex data types. For a
+custom type adapter example, please have a look at `duit.settings.serialiser.PathSerializer.PathSerializer`.
+
+To register a custom type, use the `serializers` list attribute fo the `duit.settings.Settings.Settings` class.
+
+```python
+DefaultSettings.serializers.append(YourCustomSerializer())
+```
+
 ## Arguments
+
 
 ## User-Interface
