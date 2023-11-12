@@ -576,4 +576,4 @@ class Config:
 When rendered, the following gui will be created, as well as all necessary bindings between the ui widgets and the
 datafields.
 
-![DocWindow](../doc/doc-window.png)
+<img width="500" alt="doc-window" src="../doc/doc-window.png">
