@@ -93,7 +93,10 @@ def main():
     # create initial config
     config = Config()
 
-    # add arguments from config and parse them
+    # register a custom listener for the enabled flag
+    config.enabled.on_changed += lambda e: print(f"Enabled: {e}")
+
+    # add arguments and parse
     parser = argparse.ArgumentParser()
     args = DefaultArguments.add_and_configure(parser, config)
 

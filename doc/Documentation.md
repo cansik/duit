@@ -420,5 +420,62 @@ DefaultSettings.serializers.append(YourCustomSerializer())
 
 ## Arguments
 
+Since data usually has to be parameterized, `duit` provides tools and methods to expose datafields as program arguments
+through [argparse](https://docs.python.org/3/library/argparse.html). It is possible to
+use `duit.arguments.Arguments.DefaultArguments` to add the params to an `argparse.ArgumentParser` and also copy
+the `argparse.NameSpace` attributes back into datafields. To expose a datafield as argument, use
+the `duit.arguments.Argument.Argument` annotation.
+
+```python
+import argparse
+
+from duit.arguments.Argument import Argument
+from duit.arguments.Arguments import DefaultArguments
+
+
+class Config:
+    def __init__(self):
+        self.device = DataField(0) | Argument(help="Device id.")
+        self.write_output = DataField(False) | Argument(help="Write output to console.")
+        self.debug_text = DataField("123") | Argument(dest="--dbg", help="Debug text.")
+
+
+config = Config()
+
+# create argument parser and automatically add and configure the config class
+parser = argparse.ArgumentParser()
+args = DefaultArguments.add_and_configure(parser, config)
+```
+
+Calling the script above with the `--help` parameter, the following help text will be created.
+
+```
+usage: ArgumentTest.py [-h] [--device DEVICE] [--write-output WRITE_OUTPUT]
+                       [--dbg DBG]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --device DEVICE       Device id.
+  --write-output WRITE_OUTPUT
+                        Write output to console.
+  --dbg DBG             Debug text.
+```
+
+### Custom Arguments
+
+Instead of using the `DefaultArguments` instance, it is possible to create multiple
+custom `duit.arguments.Arguments.Arguments` instances, which contain different type adapters or have different
+configuration parameters. For simplicity, it is recommended to just use the `duit.arguments.Arguments.DefaultArguments`
+class.
+
+### Custom Type Adapters
+
+To implement custom type adapters for the `Arguments` class, have a look at
+the `duit.arguments.adapters.PathTypeAdapter.PathTypeAdapter` example. Registering new type adapters can be done over
+the `type_adapters` attribute.
+
+```python
+DefaultArguments.type_adapters.append(MyCustomTypeAdapter())
+```
 
 ## User-Interface
