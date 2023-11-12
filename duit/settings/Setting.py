@@ -27,7 +27,7 @@ class Setting(Annotation):
         self.name = name
         self.exposed = exposed
 
-    def __ror__(self, model: M) -> M:
+    def _apply_annotation(self, model: M) -> M:
         """
         Apply the Setting annotation to a DataField model.
 

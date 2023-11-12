@@ -44,7 +44,7 @@ class Argument(Annotation):
         self.kwargs = kwargs
         self.auto_params = auto_params
 
-    def __ror__(self, model: M) -> M:
+    def _apply_annotation(self, model: M) -> M:
         """
         Apply the Argument annotation to a DataField model.
 

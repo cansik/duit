@@ -2,6 +2,7 @@
 
 [![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/duit/)
 [![PyPI](https://img.shields.io/pypi/v/duit)](https://pypi.org/project/duit/)
+[![Github](https://img.shields.io/badge/github-duit-green.svg?logo=github)](https://github.com/cansik/duit)
 
 Duit is a Python library that provides a set of tools for working with data in a structured and efficient way. The goal
 of duit is to make it easy for developers to create and manage complex data models and create simple user interfaces for

@@ -22,7 +22,7 @@ class AnnotationList(Annotation):
         """
         self.annotations = annotations
 
-    def __ror__(self, model: DataField) -> DataField:
+    def _apply_annotation(self, model: DataField) -> DataField:
         """
         Apply the combined annotations to a DataField model.
 

@@ -9,8 +9,20 @@ M = TypeVar("M", bound=DataField)
 class Annotation(ABC):
     """An abstract base class for annotations."""
 
-    @abstractmethod
     def __ror__(self, model: M) -> M:
+        """
+        Apply the annotation to a model.
+
+        Args:
+            model (M): The model to apply the annotation to.
+
+        Returns:
+            M: The modified model with the annotation applied.
+        """
+        return self._apply_annotation(model)
+
+    @abstractmethod
+    def _apply_annotation(self, model: M) -> M:
         """
         Apply the annotation to a model.
 

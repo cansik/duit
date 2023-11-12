@@ -26,7 +26,7 @@ class UIAnnotation(Annotation, ABC):
         self.read_only = read_only
         self._importance = importance
 
-    def __ror__(self, model: T) -> T:
+    def _apply_annotation(self, model: T) -> T:
         """
         Add the UI annotation to a data model.
 

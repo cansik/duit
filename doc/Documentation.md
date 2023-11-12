@@ -202,7 +202,7 @@ name.bind_to_attribute(user, "name", to_upper)
 
 Since attributes can not be passed by reference in python, the attribute name has to be supplied to the method as python
 string. This can lead to problems when refactoring tools are used. To support refactorings and reference the actual
-field, instead of its name, `duit` provides a helper method `duit.utils.name_reference.create_name_reference` to lookup
+field instead of its name, `duit` provides a helper method `duit.utils.name_reference.create_name_reference` to lookup
 names of object attributes. It works by wrapping the actual object with a decorator class, which only returns the name
 of the called attribute, instead of its value.
 
@@ -254,3 +254,70 @@ for i in data:
 ```
 
 It is also important to notice that `duit.model.DataList.DataList` inherits from `duit.model.DataField.DataField`.
+
+## Annotation
+
+This chapter explains the core concepts of annotations and how custom annotations can be created. If you are interested in annotations provided by `duit`, please head over to the specific chapter:
+
+- [Settings](#settings)
+- [Arguments](#arguments)
+- [User-Interface](#user-interface)
+
+To be able to provide extended possibilities for `duit.model.DataField.DataField`, `duit` introduces the concept of field [annotations](https://docs.oracle.com/javase/tutorial/java/annotations/basics.html) to python. In python there are only so called [decorators](https://peps.python.org/pep-0318/) to extend functionality of an already existing method or function. To flag a class attribute, there is currently no concept available.
+
+### Custom Annotation
+To create a custom annotation that can be applied to a `duit.model.DataField.DataField`, a new class that inherits from the abstract class `duit.annotation.Annoation.Annoation` has to be implemented. An annotation is applied to a datafield by creating a private field attribute. This allows annotations to be applied to any python object in the future. The attribute name has to be provided as a static method. Here an example annotation which provides a help text for a datafield.
+
+```python
+from duit.annotation.Annotation import Annotation, M
+
+
+class MyHelpAnnotation(Annotation):
+
+    def __init__(self, help_text: str):
+        self.help_text = help_text
+
+    @staticmethod
+    def _get_annotation_attribute_name() -> str:
+        return "__my_help_annotation"
+
+    def _apply_annotation(self, model: M) -> M:
+        model.__setattr__(self._get_annotation_attribute_name(), self)
+        return model
+```
+
+### Usage
+At the moment, the concept of annotations can only be applied to existing datafields. Since the @-notation is not possible to use due to python syntax restrictions, the annotation has to be applied by using the **right-or** (`__ror__`) operator. This operator has been chosen to not interfere with the existing type hint system and to be able to simply stack multiple annotations. Here an example on how to apply the custom `MyHelpAnnotation` to an existing datafield. Because the `_apply_annotation` method returns the same DataField type which has been applied to the method, syntax completion in IDEs still work for the `age` attribute.
+
+
+```python
+age = DataField(21) | MyHelpAnnotation(help_text="The age of the user.")
+```
+
+To find annotations inside objects, `duit` provides a helper class called `duit.annotation.AnnotationFinder.AnnotationFinder`. The class can find annotations of a specific type or subtype inside objects, and also recursively inside attributes of such an object. This allows for complex object structures, for example for configurations. To find our custom `MyHelpAnnotation` annotation, it is possible to use the annotation finder as shown in the following example.
+
+```python
+from duit.annotation.AnnotationFinder import AnnotationFinder
+
+# create user class and instantiate an example object
+class User:
+    age = DataField(21) | MyHelpAnnotation(help_text="The age of the user.")
+
+
+user = User()
+
+# create an annotation finder to find MyHelpAnnotations
+finder = AnnotationFinder(MyHelpAnnotation)
+annotations = finder.find(user)
+
+# display the results
+for field_name, (data_field, annotation) in annotations:
+    print(f"Help text of attribute {field_name}: {annotation.help_text}")
+```
+
+
+## Settings
+
+## Arguments
+
+## User-Interface
