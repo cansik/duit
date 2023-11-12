@@ -479,3 +479,101 @@ DefaultArguments.type_adapters.append(MyCustomTypeAdapter())
 ```
 
 ## User-Interface
+
+A strength of `duit` is to automatically generate a property viewer for a class containing datafields. This helps to
+quickly be able to change parameters in realtime and observer behaviour of a running application. To be future
+proof, `duit` is able to implement different GUI backends and can be integrated into new and existing ones. This
+documentation focuses on the [open3d](https://github.com/isl-org/Open3D) implementation, but for example
+a [tkinter](https://docs.python.org/3/library/tkinter.html) backend is implemented as well.
+
+Please be aware that for the gui backends, additional dependencies have to be installed. This can be done by adding the
+extra attribute to the installation command:
+
+```bash
+# open3d
+pip install "duit[open3d]"
+
+# tkinter
+pip install "duit[tkinter]"
+```
+
+### Property Panel
+
+The `duit` library implements a custom ui component, called `PropertyPanel`, which is able to display all datafields of
+an object as ui properties. Each backend has its own implementation of the `PropertyPanel`, as well as the datafield
+type specific properties. It is possible to change the `data_context` of a `PropertyPanel` to display the properties of
+another object.
+
+```python
+from open3d.visualization import gui
+
+from duit.ui.open3d.Open3dPropertyPanel import Open3dPropertyPanel
+from duit.ui.open3d.Open3dPropertyRegistry import init_open3d_registry
+
+# first the property registry for the specific backend has to be initialized
+# this step connects the ui-annotations with the actual property implementation
+init_open3d_registry()
+
+# create new 3d app
+app = gui.Application.instance
+app.initialize()
+
+# create a new window
+window: gui.Window = gui.Application.instance.create_window("Demo Window", 400, 200)
+
+# create a new property panel for open3d and add it to the window
+panel = Open3dPropertyPanel(window)
+window.add_child(panel)
+
+# set the data-context of the property panel to an existing object
+panel.data_context = config
+
+# run the application
+app.run()
+```
+
+### UI Annotations
+
+To tell the `PropertyPanel` how to render a datafield value, predefined ui-annotations can be used. All of them are
+exposed in the `duit.ui` module. Special about the ui-annotations is, that a list of ui-annotations can be applied to
+one field.
+
+```python
+from duit import ui
+
+
+class Config:
+    def __init__(self):
+        self.device = DataField(0) | ui.Number("Device")
+        self.write_output = DataField(False) | ui.Boolean("Write Output", readonly=True)
+        self.debug_text = DataField("123") | ui.Text("Dbg", tooltip="The debug text.")
+        self.threshold = DataField(127) | ui.Slider("Threshold", limit_min=0, limit_max=255)
+```
+
+### UI Sections
+
+To structure a configuration into different settings, it is possible to use section-annotations. Due to the complexity,
+it is recommended to use a helper class, which handles how the sections are defined. Here an example on how to define a
+subsection. Since the `with` scope is used, the programming interface for the `Config` class is not changed.
+
+```python
+from duit.ui.ContainerHelper import ContainerHelper
+
+
+class Config:
+    def __init__(self):
+        container_helper = ContainerHelper(self)
+
+        self.device = DataField(0) | ui.Number("Device")
+        self.write_output = DataField(False) | ui.Boolean("Write Output", readonly=True)
+
+        # create section for debug parameters
+        with container_helper.section("Debug"):
+            self.debug_text = DataField("123") | ui.Text("Dbg", tooltip="The debug text.")
+            self.threshold = DataField(127) | ui.Slider("Threshold", limit_min=0, limit_max=255)
+```
+
+When rendered, the following gui will be created, as well as all necessary bindings between the ui widgets and the
+datafields.
+
+![DocWindow](../doc/doc-window.png)
