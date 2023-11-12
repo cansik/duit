@@ -564,8 +564,9 @@ class Config:
     def __init__(self):
         container_helper = ContainerHelper(self)
 
-        self.device = DataField(0) | ui.Number("Device")
-        self.write_output = DataField(False) | ui.Boolean("Write Output", readonly=True)
+        with container_helper.section("User"):
+            self.device = DataField(0) | ui.Number("Device")
+            self.write_output = DataField(False) | ui.Boolean("Write Output", readonly=True)
 
         # create section for debug parameters
         with container_helper.section("Debug"):
