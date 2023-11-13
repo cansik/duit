@@ -12,7 +12,7 @@ and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
 <img width="800" alt="gui-demo" src="./doc/gui-demo.png">
 
-*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D) (left) and [tkinter](https://docs.python.org/3/library/tkinter.html) (right)*
+*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D) (left) and [tkinter](https://docs.python.org/3/library/tkinter.html) (right)*.
 
 ## Features
 
