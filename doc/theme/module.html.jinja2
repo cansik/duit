@@ -1,0 +1,8 @@
+{% extends "default/module.html.jinja2" %}
+
+{% block nav_footer %}
+    <footer>{% if logo_link %}<a href="{{ logo_link }}">{% endif %}
+            {{ footer_text }}
+            {% if logo_link %}</a>{% endif %}
+    </footer>
+{% endblock %}

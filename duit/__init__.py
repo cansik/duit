@@ -1,4 +1,4 @@
 """
 .. include:: ../README.md
-.. include:: ../doc/Documentation.md
+.. include:: ../DOCUMENTATION.md
 """

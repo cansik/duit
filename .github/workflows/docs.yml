@@ -27,10 +27,7 @@ jobs:
       - run: pip install -r dev-requirements.txt
 
       # build documentation into docs/.
-      - run: |
-          lib_version=$(python setup.py --version)
-          echo "Library Version: $lib_version"
-          pdoc -o docs/ --footer-text "duit v$lib_version" duit \!duit.vision
+      - run: ./generate-docs.sh
 
       - uses: actions/upload-pages-artifact@v2
         with:

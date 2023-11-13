@@ -10,9 +10,9 @@ data entry and display. The implementation is based on the ideas
 of [cansik/bildspur-base](https://github.com/cansik/bildspur-base)
 and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
-<img width="200" alt="python_1xlGn4l6Pb" src="https://user-images.githubusercontent.com/5220162/165138252-d7ac7542-974a-4573-ba88-35724e94b0d8.png">
+<img width="800" alt="gui-demo" src="./doc/gui-demo.png">
 
-*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D)*
+*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D) (left) and [tkinter](https://docs.python.org/3/library/tkinter.html) (right)*
 
 ## Features
 
@@ -32,7 +32,7 @@ and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 By default, only the data modeling, annotation, arguments and settings modules are installed.
 
 ```bash
-pip install "duit"
+pip install duit
 ```
 
 To support user interface creation for data fields, one of the following backends can be installed:
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
 Which results in the following GUI.
 
-<img width="445" alt="example-window" src="https://private-user-images.githubusercontent.com/5220162/281908528-0d71b1ab-9b42-4085-8d7f-1806a8ccd5b3.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTEiLCJleHAiOjE2OTk3OTM4MzMsIm5iZiI6MTY5OTc5MzUzMywicGF0aCI6Ii81MjIwMTYyLzI4MTkwODUyOC0wZDcxYjFhYi05YjQyLTQwODUtOGQ3Zi0xODA2YThjY2Q1YjMucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQUlXTkpZQVg0Q1NWRUg1M0ElMkYyMDIzMTExMiUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyMzExMTJUMTI1MjEzWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9ZTdhMWIxNzA2OWJiZjRiNzNiYzg0OThjZTM0ZDk4ZTRkODg2ZTkxZjJkNmFiNmZiNGVlOTA0NmRmZjFhNjc0YyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ.wclDp-a0xV37SZODzjUJFwJuPY5ZEXeaXzXOMEFslGM">
+<img width="480" alt="example-window" src="./doc/example-window.png">
 
 ### Development
 
