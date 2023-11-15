@@ -134,6 +134,12 @@ To develop it is recommended to clone this repository and install the dependenci
 pip install -e ".[all]"
 ```
 
+#### Generate Documentation
+
+```bash
+python setup.py doc
+```
+
 ## About
 
 MIT License - Copyright (c) 2023 Florian Bruggisser

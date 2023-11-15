@@ -27,7 +27,7 @@ jobs:
       - run: pip install -r dev-requirements.txt
 
       # build documentation into docs/.
-      - run: ./generate-docs.sh
+      - run: python setup.py doc
 
       - uses: actions/upload-pages-artifact@v2
         with:
