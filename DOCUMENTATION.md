@@ -31,7 +31,7 @@ on_new_age(16)
 on_new_age(17)
 ```
 
-Sometimes it can be beneficial to register a new handler and call it upon initialization. The `duit.event.Event.Event` class offers the `invoke_latest(T)` method to execute the most recently added event handler.
+Sometimes it can be beneficial to register a new handler and call it upon initialization. The `duit.event.Event.Event` class offers the `duit.event.Event.Event.invoke_latest()` method to execute the most recently added event handler.
 
 Additionally, it is possible to verify whether an event handler is already registered and remove it if necessary.
 
@@ -68,7 +68,7 @@ print(f"{name.value}: {age.value}")
 age.value += 1
 ```
 
-The `duit.model.DataField.DataField` can accept any data type, but requires initialization with a default value during setup. Data is stored in the `value` attribute and the internal system uses [generictypehints](https://docs.python.org/3/library/typing.html#building-generic-types-and-type-aliases) to aid code-completion and static type-checking tools.
+The `duit.model.DataField.DataField` can accept any data type, but requires initialization with a default value during setup. Data is stored in the `value` attribute and the internal system uses [generic-type-hints](https://docs.python.org/3/library/typing.html#building-generic-types-and-type-aliases) to aid code-completion and static type-checking tools.
 
 One benefit of encapsulating the data in an object is that the value can now be passed by reference.
 
@@ -84,7 +84,7 @@ print(age.value)  # outputs 23
 
 ### Observable
 
-The `duit.model.DataField.DataField` class applies the observer pattern, allowing other system components to monitor value changes. The event triggered by a change in data is named `on_changed`. It consistently updates the event handlers with the **latest** value.
+The `duit.model.DataField.DataField` class applies the observer pattern, allowing other system components to monitor value changes. The event triggered by a change in data is named `duit.model.DataField.DataField.on_changed()`. It consistently updates the event handlers with the **latest** value.
 
 ```python
 # create event handler
@@ -100,14 +100,11 @@ name.on_changed += on_name_changed
 name.value = "Hello World"
 ```
 
-If the `value` attribute is set with the exact same value (`__eq__`), the event will not trigger. However, it is still possible to manually trigger the event by calling the `fire()` or `fire_latest()` method. In some cases, it may be necessary to set the value without triggering an event. This can be achieved using the `set_silent(T)` method or by disabling the event invocation entirely by setting `publish_enabled = false`.
+If the `value` attribute is set with the exact same value (`__eq__`), the event will not trigger. However, it is still possible to manually trigger the event by calling the `duit.model.DataField.DataField.fire()` or `duit.model.DataField.DataField.fire_latest()` method. In some cases, it may be necessary to set the value without triggering an event. This can be achieved using the `duit.model.DataField.DataField.set_silent()` method or by disabling the event invocation entirely by setting `publish_enabled = false`.
 
 ### Data Binding
 
-Another feature that the `duit.model.DataField.DataField` allows is the ability to have data bindings](https://en.wikipedia.org/wiki/Data_binding) between different attributes.
-
-For example, it is possible to update other data fields when the value of another data field is changed (**one-way binding
-**).
+Another feature that the `duit.model.DataField.DataField` allows is the ability to have [data bindings](https://en.wikipedia.org/wiki/Data_binding) between different attributes. For example, it is possible to update other data fields when the value of another data field is changed (**one-way binding**).
 
 ```python
 a = DataField("A")
@@ -145,7 +142,7 @@ b.value = "X"  # a gets updated to X
 
 #### Attribute Binding
 
-Sometimes it can be helpful to bind directly to basic Python attributes of variables. The `bind_to_attribute()` method supports this behaviour.
+Sometimes it can be helpful to bind directly to basic Python attributes of variables. The `duit.model.DataField.DataField.bind_to_attribute()` method supports this behaviour.
 
 ```python
 # example user class containing basic python attributes
@@ -176,7 +173,7 @@ name.bind_to_attribute(user, "name", to_upper)
 
 #### Named Reference
 
-Since attributes cannot be passed by reference in Python, the attribute name must be passed to the method as a Python string. This can cause problems when using refactoring tools. To support refactoring and to reference the actual field instead of its name, `duit` provides a helper method `duit.utils.name_reference.create_name_reference` to look up the names of object attributes. It works by wrapping the actual object with a decorator class, which only returns the name of the called attribute instead of its value.
+Since attributes cannot be passed by reference in Python, the attribute name must be passed to the method as a Python string. This can cause problems when using refactoring tools. To support refactoring and to reference the actual field instead of its name, `duit` provides a helper method `duit.utils.name_reference.create_name_reference()` to look up the names of object attributes. It works by wrapping the actual object with a decorator class, which only returns the name of the called attribute instead of its value.
 
 ```python
 from duit.model.DataField import DataField
@@ -239,7 +236,7 @@ function. There is currently no concept for annotating a class attribute.
 
 ### Custom Annotation
 
-To create a custom annotation that can be applied to a `duit.model.DataField.DataField`, a new class must be implemented that inherits from the abstract class `duit.annotation.Annoation.Annoation`. An annotation is applied to a data field by creating a private field attribute. This allows annotations to be applied to any Python object in the future. The attribute name must be provided as a static method. Here is an example annotation that provides a help text for a data field.
+To create a custom annotation that can be applied to a `duit.model.DataField.DataField`, a new class must be implemented that inherits from the abstract class `duit.annotation.Annotation.Annotation`. An annotation is applied to a data field by creating a private field attribute. This allows annotations to be applied to any Python object in the future. The attribute name must be provided as a static method. Here is an example annotation that provides a help text for a data field.
 
 ```python
 from duit.annotation.Annotation import Annotation, M
@@ -351,7 +348,7 @@ The `CustomUser` would result in the following serialized JSON:
 
 ### Custom Settings
 
-Instead of using the `DefaultSettings` instance, it is possible to create multiple custom `duit.settings.Settings.Settings` instances, that contain different type adapters or have different configuration parameters. For simplicity, it is recommended to just use the `DefaultSettings` class.
+Instead of using the `duit.settings.Settings.DefaultSettings` instance, it is possible to create multiple custom `duit.settings.Settings.Settings` instances, that contain different type adapters or have different configuration parameters. For simplicity, it is recommended to just use the `duit.settings.Settings.DefaultSettings` class.
 
 ### Type Adapter
 
@@ -404,11 +401,11 @@ optional arguments:
 
 ### Custom Arguments
 
-Instead of using the `DefaultArguments` instance, it is possible to create multiple custom `duit.arguments.Arguments.Arguments` instances that contain different type adapters or have different configuration parameters. For simplicity it is recommended to use only the `duit.arguments.Arguments.DefaultArguments` class.
+Instead of using the `duit.arguments.Arguments.DefaultArguments` instance, it is possible to create multiple custom `duit.arguments.Arguments.Arguments` instances that contain different type adapters or have different configuration parameters. For simplicity it is recommended to use only the `duit.arguments.Arguments.DefaultArguments` class.
 
 ### Custom Type Adapters
 
-To implement custom type adapters for the `Arguments` class, see the `duit.arguments.adapters.PathTypeAdapter.PathTypeAdapter` example. Registering new type adapters can be done using the `type_adapters` attribute.
+To implement custom type adapters for the `duit.arguments.Arguments.Arguments` class, see the `duit.arguments.adapters.PathTypeAdapter.PathTypeAdapter` example. Registering new type adapters can be done using the `type_adapters` attribute.
 
 ```python
 DefaultArguments.type_adapters.append(MyCustomTypeAdapter())
@@ -430,7 +427,7 @@ pip install "duit[tkinter]"
 
 ### Property Panel
 
-The `duit` library implements a custom UI component called `PropertyPanel`, which is able to display all datafields of an object as UI properties. Each backend has its own implementation of the `PropertyPanel`, as well as the datafield type specific properties. It is possible to change the `data_context` of a `PropertyPanel` to display the properties of another object.
+The `duit` library implements a custom UI component called `duit.ui.BasePropertyPanel.BasePropertyPanel`, which is able to display all datafields of an object as UI properties. Each backend has its own implementation of the `duit.ui.BasePropertyPanel.BasePropertyPanel`, as well as the datafield type specific properties (e.g. `duit.ui.open3d.Open3dPropertyPanel.Open3dPropertyPanel`). It is possible to change the `data_context` of a `duit.ui.BasePropertyPanel.BasePropertyPanel` to display the properties of another object.
 
 ```python
 from open3d.visualization import gui
@@ -462,7 +459,7 @@ app.run()
 
 ### UI Annotations
 
-To tell the `PropertyPanel` how to render a datafield value, predefined ui annotations can be used. They are all exposed in the `duit.ui` module. The special thing about ui annotations is that more than one ui annotation can be applied to a field.
+To tell the `duit.ui.BasePropertyPanel.BasePropertyPanel` how to render a datafield value, predefined ui annotations can be used. They are all exposed in the `duit.ui` module. The special thing about ui annotations is that more than one ui annotation can be applied to a field.
 
 ```python
 from duit import ui

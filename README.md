@@ -137,7 +137,11 @@ pip install -e ".[all]"
 #### Generate Documentation
 
 ```bash
+# create documentation into "./docs
 python setup.py doc
+
+# launch pdoc webserver
+python setup.py doc --launch
 ```
 
 ## About

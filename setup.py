@@ -1,4 +1,5 @@
 import distutils
+from distutils.command.install import install
 from pathlib import Path
 from typing import List
 
@@ -61,18 +62,24 @@ install_required, extras_required = parse_requirements()
 
 
 class GenerateDoc(distutils.cmd.Command):
-    description = 'generate pdoc documentation'
-    user_options = []
+    description = "generate pdoc documentation"
+
+    user_options = install.user_options + [
+        ("output=", None, "Output path for the documentation."),
+        ("launch", None, "Launch webserver to display documentation.")
+    ]
+
+    def initialize_options(self):
+        install.initialize_options(self)
+        self.output: str = "docs"
+        self.launch: bool = False
+
+    def finalize_options(self):
+        pass
 
     def run(self) -> None:
         generate_doc(PACKAGE_NAME, PACKAGE_VERSION, PACKAGE_URL, required_packages,
-                     "docs", PACKAGE_DOC_MODULES)
-
-    def initialize_options(self) -> None:
-        pass
-
-    def finalize_options(self) -> None:
-        pass
+                     Path(self.output), PACKAGE_DOC_MODULES, launch=bool(self.launch))
 
 
 # read readme
