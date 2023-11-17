@@ -5,8 +5,6 @@ from typing import List
 
 from setuptools import setup, find_packages
 
-from scripts.generate_doc import generate_doc
-
 PACKAGE_NAME = "duit"
 PACKAGE_VERSION = "0.1.9"
 PACKAGE_URL = "https://github.com/cansik/duit"
@@ -78,6 +76,7 @@ class GenerateDoc(distutils.cmd.Command):
         pass
 
     def run(self) -> None:
+        from scripts.generate_doc import generate_doc
         generate_doc(PACKAGE_NAME, PACKAGE_VERSION, PACKAGE_URL, required_packages,
                      Path(self.output), PACKAGE_DOC_MODULES, launch=bool(self.launch))
 
