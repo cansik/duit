@@ -112,7 +112,7 @@ b = DataField("B")
 c = DataField("C")
 
 # bind a to b / c
-a.bind_to(a)
+a.bind_to(b)
 a.bind_to(c)
 
 # update value in a
