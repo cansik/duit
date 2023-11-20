@@ -1,7 +1,7 @@
 import logging
 import tkinter as tk
 import typing
-from typing import Union, Optional
+from typing import Union
 
 import customtkinter as ctk
 
@@ -12,6 +12,7 @@ from duit.ui.annotations import find_all_ui_annotations
 from duit.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
 from duit.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
 from duit.ui.tk.TkFieldProperty import TkFieldProperty
+from duit.ui.tk.widgets.CTkCollapsable import CTkCollapsable
 
 
 class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
@@ -25,30 +26,10 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
         BasePropertyPanel.__init__(self)
         ctk.CTkScrollableFrame.__init__(self, master, corner_radius=0)
 
-        self.tabview: Optional[ctk.CTkTabview] = None
-        self.general_tab: Optional[ctk.CTkFrame] = None
+        # self.pack(padx=5, pady=5, fill=tk.BOTH)
 
-        self._init_tab_view()
-
-    def _init_tab_view(self):
-        self.tabview = ctk.CTkTabview(self)
-        self.tabview.pack(padx=5, pady=5, fill=tk.BOTH)
-
-        self.general_tab = self._add_tab("General")
-
-    def _add_tab(self, title: str) -> ctk.CTkFrame:
-        """
-        Add a tab to the tab view.
-
-        Args:
-            title (str): The title of the tab.
-
-        Returns:
-            ctk.CTkFrame: The added tab frame.
-        """
-        tab = self.tabview.add(title)
-        tab.grid_columnconfigure(1, weight=1)
-        return tab
+        self.frame: typing.Optional[ctk.CTkFrame] = None
+        self._clean_widgets()
 
     def _clean_widgets(self):
         """
@@ -57,7 +38,9 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
         for widget in self.winfo_children():
             widget.destroy()
 
-        self._init_tab_view()
+        self.frame = ctk.CTkFrame(self)
+        self.frame.pack(padx=5, pady=5, fill=tk.BOTH)
+        self.frame.grid_columnconfigure(1, weight=1)
 
     def _create_panel(self):
         """
@@ -65,8 +48,8 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
         """
         self._clean_widgets()
 
-        containers: Stack[ctk.CTkFrame] = Stack()
-        containers.push(self.general_tab)
+        containers: Stack[tk.Frame] = Stack()
+        containers.push(self.frame)
 
         annotations = find_all_ui_annotations(self.data_context)
         row_counter = 0
@@ -77,8 +60,13 @@ class TkPropertyPanel(BasePropertyPanel, ctk.CTkScrollableFrame):
                 ann_type = type(ann)
 
                 if isinstance(ann, StartSectionAnnotation):
-                    tab = self._add_tab(ann.name)
-                    containers.push(tab)
+                    collapsable = CTkCollapsable(master=containers.peek(), text=ann.name, shown=not ann.collapsed)
+                    collapsable.grid(row=row_counter, column=0, pady=4, columnspan=2, sticky="we")
+                    collapsable.frame.grid_columnconfigure(1, weight=1)
+                    collapsable.frame.pack()
+                    containers.push(collapsable.frame)
+
+                    row_counter += 1
                     continue
 
                 if isinstance(ann, EndSectionAnnotation):
