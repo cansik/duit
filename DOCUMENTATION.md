@@ -346,6 +346,21 @@ The `CustomUser` would result in the following serialized JSON:
 }
 ```
 
+### Setting Order
+To define the load and save order, it is possible to adjust the priority (ascending order - low to high) of each `duit.settings.Setting.Setting`. This can be helpful, when settings have to be loaded and saved in a specific order.
+
+In the following example, the order of the fields for loading will be: `c` - `b` - `a`. To save the fields will be processed in order `b` - `a` - `c`.
+
+```python
+class Config:
+    def __init__(self):
+        self.a = DataField("A")
+        self.b = DataField("B") | Setting(name="b-field", load_order=5, save_order=10)
+        self.c = DataField("C") | Setting(load_order=1)
+```
+
+By default, the orders are set to `sys.maxsize`.
+
 ### Custom Settings
 
 Instead of using the `duit.settings.Settings.DefaultSettings` instance, it is possible to create multiple custom `duit.settings.Settings.Settings` instances, that contain different type adapters or have different configuration parameters. For simplicity, it is recommended to just use the `duit.settings.Settings.DefaultSettings` class.

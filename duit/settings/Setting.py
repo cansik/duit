@@ -1,3 +1,4 @@
+import sys
 from typing import Optional, TypeVar
 
 from duit.annotation.Annotation import Annotation
@@ -10,22 +11,23 @@ M = TypeVar("M", bound=DataField)
 class Setting(Annotation):
     """
     An annotation for marking data fields as settings.
-
-    Args:
-        name (Optional[str]): The name of the setting. If not provided, the field name is used.
-        exposed (bool): Whether the setting should be exposed in the user interface. Default is True.
     """
 
-    def __init__(self, name: Optional[str] = None, exposed: bool = True):
+    def __init__(self, name: Optional[str] = None, exposed: bool = True,
+                 load_order: int = sys.maxsize, save_order: int = sys.maxsize):
         """
         Initialize a Setting annotation.
 
         Args:
             name (Optional[str]): The name of the setting. If not provided, the field name is used.
             exposed (bool): Whether the setting should be exposed in the user interface. Default is True.
+            load_order (int): The order how the settings are being deserialized. Default is sys.maxsize.
+            save_order (int): The order how the settings are being serialized. Default is sys.maxsize.
         """
         self.name = name
         self.exposed = exposed
+        self.load_order = load_order
+        self.save_order = save_order
 
     def _apply_annotation(self, model: M) -> M:
         """

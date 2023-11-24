@@ -1,6 +1,8 @@
 import json
 import logging
+import typing
 from collections.abc import Hashable
+from functools import partial
 from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
 
 import vector
@@ -13,6 +15,7 @@ from duit.settings.serialiser.DefaultSerializer import DefaultSerializer
 from duit.settings.serialiser.EnumSerializer import EnumSerializer
 from duit.settings.serialiser.PathSerializer import PathSerializer
 from duit.settings.serialiser.VectorSerializer import VectorSerializer
+from duit.utils.name_reference import create_name_reference
 
 T = TypeVar('T')
 
@@ -51,6 +54,7 @@ class Settings(Generic[T]):
             return True
 
         self._annotation_finder = AnnotationFinder(Setting, _is_field_valid, recursive=False)
+        self._ann_ref = create_name_reference(Setting())
 
     def load(self, file_path: str, obj: T) -> T:
         """
@@ -149,11 +153,13 @@ class Settings(Generic[T]):
         if isinstance(obj, Hashable):
             obj_history.add(obj)
 
-        # extract datamodel fields
+        # extract data-model fields
         fields = self._annotation_finder.find(obj)
+        field_list = sorted(fields.items(), key=partial(self._annotation_sorting, self._ann_ref.save_order))
+        field_list = typing.cast(List[Tuple[str, Tuple[DataField, Setting]]], field_list)
 
         # fill datamodel fields into data
-        for name, values in fields.items():
+        for name, values in field_list:
             field, setting = values
 
             if setting.name is not None:
@@ -199,8 +205,13 @@ class Settings(Generic[T]):
 
         # create string to field index
         fields_table: Dict[str, Any] = {}
+
         fields = self._annotation_finder.find(obj)
-        for name, values in fields.items():
+        field_list = sorted(fields.items(), key=partial(self._annotation_sorting, self._ann_ref.load_order))
+        field_list = typing.cast(List[Tuple[str, Tuple[DataField, Setting]]], field_list)
+
+        # create name to field table
+        for name, values in field_list:
             field, setting = values
 
             if setting.name is not None:
@@ -208,10 +219,12 @@ class Settings(Generic[T]):
             fields_table.update({name: field})
 
         # map data to fields
-        for key, raw_value in data.items():
-            if key not in fields_table:
+        for name, values in field_list:
+            field, setting = values
+            key = name if setting.name is None else setting.name
+            if key not in data:
                 continue
-            field: DataField = fields_table[key]
+            raw_value = data[key]
 
             # check if is subtype
             success, sub_obj = self._deserialize(field.value, raw_value, obj_history)
@@ -234,6 +247,12 @@ class Settings(Generic[T]):
             if serializer.handles_type(field.value):
                 return serializer
         return self.default_serializer
+
+    @staticmethod
+    def _annotation_sorting(sort_key: str, item: Tuple[str, Tuple[DataField, Setting]]) -> int:
+        _, values = item
+        _, ann = values
+        return getattr(ann, sort_key)
 
     @staticmethod
     def _is_jsonable(x):
