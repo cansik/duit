@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Any, Optional, Callable
+from typing import TypeVar, Generic, Any, Optional, Callable, Iterable
 
 from duit.event.Event import Event
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
@@ -141,7 +141,7 @@ class DataField(Generic[T]):
         result = value == new_value
 
         # fix numpy and list comparisons
-        if hasattr(result, '__iter__'):
+        if isinstance(result, Iterable):
             return all(result)
 
         return result
@@ -154,7 +154,7 @@ class DataField(Generic[T]):
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, DataField):
-            return self._is_equal_method(self.value, other.value)
+            return self._is_equal(self.value, other.value)
         return False
 
     def __getstate__(self):

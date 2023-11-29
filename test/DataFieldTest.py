@@ -1,11 +1,23 @@
 import unittest
 
+from duit.model.DataField import DataField
 from duit.model.DataList import DataList
 
 
 class DataFieldTest(unittest.TestCase):
-    def basic_data_model_test(self):
-        self.assertEqual(True, False)  # add assertion here
+    def test_un_equal(self):
+        self.a = DataField("a")
+        self.b = DataField("b")
+        self.assertFalse(self.a == self.b)
+
+    def test_equal(self):
+        self.a = DataField("a")
+        self.b = DataField("a")
+        self.assertTrue(self.a == self.b)
+
+    def test_to_string(self):
+        self.a = DataField("a")
+        self.assertEqual("DataField[str] (a)", str(self.a))
 
 
 class DataListTest(unittest.TestCase):
