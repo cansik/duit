@@ -1,5 +1,6 @@
 from typing import Union
 
+from duit.annotation.Annotation import Annotation, M
 from duit.model.DataField import DataField
 from duit.model.DataFieldPlugin import DataFieldPlugin
 
@@ -16,9 +17,24 @@ class RangePlugin(DataFieldPlugin[Number]):
         return max(min(self.max_value, new_value), self.min_value)
 
 
+class Range(Annotation):
+
+    def __init__(self, min_value: Number, max_value: Number):
+        self.min_value = min_value
+        self.max_value = max_value
+
+    def _apply_annotation(self, model: M) -> M:
+        model.plugins.append(RangePlugin(self.min_value, self.max_value))
+        return model
+
+    @staticmethod
+    def _get_annotation_attribute_name() -> str:
+        return ""
+
+
 def main():
-    field = DataField(500)
-    field.plugins.append(RangePlugin(0, 1000))
+    field = DataField(500) | Range(0, 1000)
+    # field.plugins.append(RangePlugin(0, 1000))
 
     field.on_changed += lambda x: print(f"Value: {x}")
 
