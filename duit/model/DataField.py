@@ -1,5 +1,8 @@
-from typing import TypeVar, Generic, Any, Optional, Callable, Iterable
+from __future__ import annotations
 
+from typing import TypeVar, Generic, Any, Optional, Callable, Iterable, List
+
+import duit.model.DataFieldPlugin
 from duit.event.Event import Event
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
 
@@ -21,6 +24,7 @@ class DataField(Generic[T]):
         self._value: T = value
         self.publish_enabled: bool = True
         self.on_changed: Event[T] = Event[T]()
+        self.plugins: List[duit.model.DataFieldPlugin.DataFieldPlugin] = []
 
         # Add serialization attribute by default
         from duit.settings.Setting import Setting
@@ -34,7 +38,13 @@ class DataField(Generic[T]):
         Returns:
             T: The current value.
         """
-        return self._value
+        value = self._value
+
+        if self.plugins:
+            for plugin in self.plugins:
+                value = plugin.on_get_value(self, value)
+
+        return value
 
     @value.setter
     def value(self, new_value: T) -> None:
@@ -45,6 +55,11 @@ class DataField(Generic[T]):
             new_value (T): The new value to set.
         """
         old_value = self._value
+
+        if self.plugins:
+            for plugin in self.plugins:
+                new_value = plugin.on_set_value(self, old_value, new_value)
+
         self._value = new_value
 
         if self.publish_enabled and not self._is_equal(self._value, old_value):
@@ -66,7 +81,13 @@ class DataField(Generic[T]):
         """
         Trigger the 'on_changed' event with the current value.
         """
-        self.on_changed(self._value)
+        value = self._value
+
+        if self.plugins:
+            for plugin in self.plugins:
+                value = plugin.on_fire(self, value)
+
+        self.on_changed(value)
 
     def fire_latest(self):
         """
