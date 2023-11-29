@@ -258,10 +258,18 @@ class MyHelpAnnotation(Annotation):
 
 ### Usage
 
-Currently, the concept of annotation can only be applied to existing data fields. Since the @ notation cannot be used due to Python syntax restrictions, the annotation must be applied using the **right-or** (`__ror__`) operator. This operator was chosen so as not to interfere with the existing type hint system, and to be able to easily stack multiple annotations. Here is an example of applying the custom `MyHelpAnnotation` to an existing data field. Because the `_apply_annotation` method returns the same DataField type that was applied to the method, syntax completion in IDEs still works for the `age` attribute.
+Currently, the concept of annotation can only be applied to existing data fields. Since the @ notation cannot be used due to Python syntax restrictions, the annotation must be applied using the **right-or** (`__ror__`) operator. This operator was chosen so as not to interfere with the existing type hint system, and to be able to easily stack multiple annotations to any object. Here is an example of applying the custom `MyHelpAnnotation` to an existing data field. Because the `_apply_annotation` method returns the same DataField type that was applied to the method, syntax completion in IDEs still works for the `age` attribute.
 
 ```python
 age = DataField(21) | MyHelpAnnotation(help_text="The age of the user.")
+```
+
+Multiple annotations can quickly lead to a long line length, which is usually limited in Python. To create multi-line annotation chains it is recommended to use the parenthesis syntax:
+
+```python
+is_active = (DataField(False)
+                  | FirstAnnotation()
+                  | SecondAnnotation())
 ```
 
 To find annotations inside objects, `duit` provides a helper class called `duit.annotation.AnnotationFinder.AnnotationFinder`. The class can find annotations of a certain type or subtype within objects, and also recursively within attributes of such an object. This allows for complex object structures, such as for example configurations. To find our custom annotation `MyHelpAnnotation`, it is possible to use the annotation finder as shown in the following example.
@@ -347,9 +355,9 @@ The `CustomUser` would result in the following serialized JSON:
 ```
 
 ### Setting Order
-To define the load and save order, it is possible to adjust the priority (ascending order - low to high) of each `duit.settings.Setting.Setting`. This can be helpful, when settings have to be loaded and saved in a specific order.
+To define the loading and saving order, it is possible to set the priority (ascending order - low to high) of each `duit.settings.Setting.Setting`. This can be useful if settings need to be loaded and saved in a particular order.
 
-In the following example, the order of the fields for loading will be: `c` - `b` - `a`. To save the fields will be processed in order `b` - `a` - `c`.
+In the following example, the order of the fields to be loaded will be `c` - `b` - `a`. When saving, the fields are processed in the order `b` - `a` - `c`.
 
 ```python
 class Config:
@@ -359,7 +367,7 @@ class Config:
         self.c = DataField("C") | Setting(load_order=1)
 ```
 
-By default, the orders are set to `sys.maxsize`.
+Orders are set to `sys.maxsize` by default.
 
 ### Custom Settings
 
