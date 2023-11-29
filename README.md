@@ -1,6 +1,7 @@
 # Duit (Data UI Toolkit)
 
 [![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/duit/)
+[![Duit Test](https://github.com/cansik/duit/actions/workflows/test.yml/badge.svg)](https://github.com/cansik/duit/actions/workflows/test.yml)
 [![PyPI](https://img.shields.io/pypi/v/duit)](https://pypi.org/project/duit/)
 [![Github](https://img.shields.io/badge/github-duit-green.svg?logo=github)](https://github.com/cansik/duit)
 
