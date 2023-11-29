@@ -42,7 +42,10 @@ class Settings(Generic[T]):
         ]
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
-        self.non_unpackable_type = [vector.Vector]
+        self.non_unpackable_types = [vector.Vector]
+
+        self._is_serializing: bool = False
+        self._is_deserializing: bool = False
 
         # setup annotation finder
         def _is_field_valid(field: DataField, annotation: Setting):
@@ -96,7 +99,10 @@ class Settings(Generic[T]):
         Returns:
             T: The object with applied settings.
         """
-        return self._deserialize(obj, data)
+        self._is_deserializing = True
+        result = self._deserialize(obj, data)
+        self._is_deserializing = False
+        return result
 
     def save(self, file_path: str, obj: T):
         """
@@ -136,7 +142,10 @@ class Settings(Generic[T]):
         Returns:
             Dict[str, Any]: The dictionary containing the settings.
         """
-        return self._serialize(obj)
+        self._is_serializing = True
+        result = self._serialize(obj)
+        self._is_serializing = False
+        return result
 
     def _serialize(self, obj: Any,
                    data: Optional[Dict[str, Any]] = None,
@@ -196,7 +205,7 @@ class Settings(Generic[T]):
         if not isinstance(data, Dict):
             return False, None
 
-        for t in self.non_unpackable_type:
+        for t in self.non_unpackable_types:
             if isinstance(obj, t):
                 return False, None
 
@@ -261,6 +270,14 @@ class Settings(Generic[T]):
             return True
         except (TypeError, OverflowError):
             return False
+
+    @property
+    def is_serializing(self) -> bool:
+        return self._is_serializing
+
+    @property
+    def is_deserializing(self) -> bool:
+        return self.is_deserializing
 
 
 DefaultSettings = Settings()
