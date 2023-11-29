@@ -132,3 +132,4 @@ dmypy.json
 test.json
 .DS_Store
 docs/**/*
+test/**/*.json
