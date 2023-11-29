@@ -9,6 +9,7 @@ T = TypeVar("T")
 
 
 class DataFieldPlugin(ABC, Generic[T]):
+    # todo: implement plugin order
     def on_set_value(self, field: duit.model.DataField.DataField[T], old_value: T, new_value: T) -> T:
         return new_value
 

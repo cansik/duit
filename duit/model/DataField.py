@@ -180,5 +180,6 @@ class DataField(Generic[T]):
 
     def __getstate__(self):
         d = dict(self.__dict__)
-        del d["on_changed"]
+        # reset the event because handlers may not be pickled
+        d["on_changed"] = Event()
         return d
