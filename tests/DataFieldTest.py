@@ -24,16 +24,18 @@ class DataListTest(unittest.TestCase):
     def test_list(self):
         field = DataList([1, 2, 3])
 
+        self.events_fired = 0
+
         def on_fire(value):
-            print(f"list has changed: {value}")
+            self.events_fired += 1
 
         field.on_changed += on_fire
 
         field.append(5)
         field.append(7)
 
-        for i in field:
-            print(i)
+        self.assertEqual([1, 2, 3, 5, 7], field.value)
+        self.assertEqual(2, self.events_fired)
 
 
 if __name__ == '__main__':

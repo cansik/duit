@@ -132,4 +132,4 @@ dmypy.json
 test.json
 .DS_Store
 docs/**/*
-test/settings-test.json
+playground/settings-test.json

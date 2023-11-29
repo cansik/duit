@@ -10,8 +10,8 @@ from duit.model.DataField import DataField
 from duit.model.SelectableDataList import SelectableDataList
 from duit.settings.Setting import Setting
 from duit.ui.annotations.PathAnnotation import DialogType
-from test.Color import Color
-from test.SubConfig import SubConfig
+from playground.Color import Color
+from playground.SubConfig import SubConfig
 
 
 class Config:

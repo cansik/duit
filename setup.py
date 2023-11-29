@@ -6,12 +6,12 @@ from typing import List
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = "duit"
-PACKAGE_VERSION = "0.1.9.1"
+PACKAGE_VERSION = "0.1.10"
 PACKAGE_URL = "https://github.com/cansik/duit"
 
 PACKAGE_DOC_MODULES = ["duit", "!duit.vision"]
 
-required_packages = find_packages(exclude=["test", "examples", "scripts"])
+required_packages = find_packages(exclude=["tests", "examples", "scripts", "playground"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
