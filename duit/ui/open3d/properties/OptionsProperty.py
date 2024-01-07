@@ -35,11 +35,7 @@ class OptionsProperty(Open3dFieldProperty[OptionsAnnotation, DataField]):
 
         :return: The selection box or combobox widget.
         """
-        # Workaround for issue https://github.com/isl-org/Open3D/issues/6024
-        if sys.platform == "darwin":
-            field = SelectionBox()
-        else:
-            field = gui.Combobox()
+        field = gui.Combobox()
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
 

@@ -27,7 +27,11 @@ def main():
     def on_hungry(value):
         print(f"hungry changed to: {value}")
 
+    def on_resolution_changed(value):
+        print(f"Resolution: {value}")
+
     config.hungry.on_changed += on_hungry
+    config.resolution.on_changed += on_resolution_changed
 
     app.mainloop()
 
