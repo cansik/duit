@@ -236,7 +236,20 @@ field.clear_plugins()
 ```
 
 #### Plugin Order [⚠️](#experimental)
-Each `duit.model.DataFieldPlugin.DataFieldPlugin` contains a field `order_index: int`, which specifies the order the plugin is applied. The order is set by default to `0` and will be ordered ascending (lowest first). With the order it is possible to order the plugins when they are registered.
+Each `duit.model.DataFieldPlugin.DataFieldPlugin` contains a field `order_index: int`, which specifies the order the plugin is applied. The order is set by default to `0` and will be ordered ascending (lowest first). The order is used to order the plugins when they are registered.
+
+The order is defined as the following:
+
+```
+# on_get_value order
+internal value -> plugin-1, plugin-2, plugin-3 -> return value
+
+# on_set_value order is reversed
+value.set -> plugin-3, plugin-2, plugin-1 -> internal value
+
+# on_fire the order is set like in get order
+on_fire -> plugin-1, plugin-2, plugin-3 -> fire value
+```
 
 ## Data List
 

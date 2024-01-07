@@ -57,7 +57,7 @@ class DataField(Generic[T]):
         old_value = self._value
 
         if self._plugins:
-            for plugin in self._plugins:
+            for plugin in reversed(self._plugins):
                 new_value = plugin.on_set_value(self, old_value, new_value)
 
         self._value = new_value
