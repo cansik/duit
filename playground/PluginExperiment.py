@@ -2,7 +2,7 @@ from typing import Union
 
 from duit.annotation.Annotation import Annotation, M
 from duit.model.DataField import DataField
-from duit.model.DataFieldPlugin import DataFieldPlugin
+from duit.model.DataFieldPlugin import DataFieldPlugin, T
 
 Number = Union[int, float]
 
@@ -39,7 +39,11 @@ class Range(Annotation):
 
 def main():
     class TestPlugin(DataFieldPlugin):
-        pass
+        def on_get_value(self, _: DataField[T], value: T) -> T:
+            return int(value)
+
+        def on_set_value(self, _: DataField[T], old_value: T, new_value: T) -> T:
+            return str(new_value)
 
     test_plugin = TestPlugin()
     test_plugin.order_index = -1

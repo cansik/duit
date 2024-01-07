@@ -186,9 +186,9 @@ name.bind_to_attribute(user, user_ref.name)
 
 ### Plugins
 
-Sometimes it is necessary to modify the value while it is being written or read. To extend the functionality of a `duit.model.DataField.DataField` and intercept at certain key points in the process, it is possible to write a `duit.model.DataFieldPlugin.DataFieldPlugin`. A plugin is an abstract class, which contains method stubs for handling the value `set`, `get` and `fire()` methods. By overwriting the handlers, additional functionality can be added to a `duit.model.DataField.DataField`. It is important to notice, that adding plugins to a `duit.model.DataField.DataField` can lead to performance and logic problems and should only be done, if the default API of a `duit.model.DataField.DataField` is not enough.
+Sometimes it is necessary to modify the value as it is being written or read. To extend the functionality of a `duit.model.DataField.DataField` and intercept at certain key points in the process, it is possible to write a `duit.model.DataFieldPlugin.DataFieldPlugin`. A plugin is an abstract class that contains method stubs for handling the `set`, `get` and `fire()` value methods. By overriding the handlers, additional functionality can be added to a `duit.model.DataField.DataField`. It is important to note that adding plugins to a `duit.model.DataField.DataField` can lead to performance and logic problems and should only be done if the default API of a `duit.model.DataField.DataField` is not sufficient.
 
-For example, it can be necessary to limit a numeric value between a `min` and `max` number. To achieve this, it is possible to write the following plugin. 
+For example, it may be necessary to constrain a numeric value between a `min` and a `max` number. To achieve this, it is possible to write the following plugin. 
 
 ```python
 from typing import Union
@@ -214,7 +214,7 @@ class RangePlugin(DataFieldPlugin[Number]):
         return max(min(self.max_value, new_value), self.min_value)
 ```
 
-The code snippet creates a `RangePlugin`, which changes to inserted value to be between the specified `min` and `max` values. The plugin also checks on register, if the `duit.model.DataField.DataField` contains a `Number` type, otherwise it raises an exception. Please check the API documentation of the `duit.model.DataFieldPlugin.DataFieldPlugin` for more handlers that can be overwritten.
+The code snippet creates a `RangePlugin` that changes the inserted value to be between the specified `min` and `max` values. The plugin also checks on register if the `duit.model.DataField.DataField` contains a `Number` type, otherwise it throws an exception. Please refer to the API documentation of the `duit.model.DataFieldPlugin.DataFieldPlugin` for more handlers that can be overridden.
 
 To register the plugin on an existing `duit.model.DataField.DataField`, the `duit.model.DataField.DataField.register_plugin()` method can be used.
 
@@ -236,7 +236,22 @@ field.clear_plugins()
 ```
 
 #### Plugin Order [⚠️](#experimental)
-Each `duit.model.DataFieldPlugin.DataFieldPlugin` contains a field `order_index: int`, which specifies the order the plugin is applied. The order is set by default to `0` and will be ordered ascending (lowest first). With the order it is possible to order the plugins when they are registered.
+Each `duit.model.DataFieldPlugin.DataFieldPlugin` contains a field `order_index: int` which specifies the order in which the plugin is applied. The order is set to `0` by default and is ascending (lowest first). The order is used to order the plugins when they are registered.
+
+The order is defined as follows:
+
+```
+# on_get_value order
+internal value -> plugin-1, plugin-2, plugin-3 -> return value
+
+# on_set_value order is reversed
+value.set -> plugin-3, plugin-2, plugin-1 -> internal value
+
+# on_fire the order is set like in get order
+on_fire -> plugin-1, plugin-2, plugin-3 -> fire value
+```
+
+This means that the lower the `order_index` of a plugin, the closer it is to the actual value stored in a `duit.model.DataField.DataField`.
 
 ## Data List
 
