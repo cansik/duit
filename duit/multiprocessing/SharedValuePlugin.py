@@ -10,7 +10,7 @@ class SharedValuePlugin(DataFieldPlugin):
 
     def __init__(self, shared_value: mp.Value):
         super().__init__()
-        self.order_index = sys.maxsize  # should always be the last plugin
+        self.order_index = -sys.maxsize  # should always be the last plugin
         self.shared_value = shared_value
 
     def on_set_value(self, field: DataField[Any], old_value: Any, new_value: Any) -> Any:
