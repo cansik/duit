@@ -148,21 +148,42 @@ class DataField(Generic[T]):
             self.fire_latest()
 
     def register_plugin(self, *plugins: duit.model.DataFieldPlugin.DataFieldPlugin):
+        """
+        Register one or more DataField plugins with this DataField.
+
+        Args:
+            *plugins (duit.model.DataFieldPlugin.DataFieldPlugin): One or more DataField plugins to register.
+        """
         self._plugins += plugins
         self._plugins = sorted(self._plugins, key=lambda x: x.order_index)
         for plugin in self._plugins:
             plugin.on_register(self)
 
     def unregister_plugin(self, *plugins: duit.model.DataFieldPlugin.DataFieldPlugin):
+        """
+        Unregister one or more DataField plugins from this DataField.
+
+        Args:
+            *plugins (duit.model.DataFieldPlugin.DataFieldPlugin): One or more DataField plugins to unregister.
+        """
         for plugin in plugins:
             self._plugins.remove(plugin)
             plugin.on_unregister(self)
 
     def clear_plugins(self):
+        """
+        Clear all registered DataField plugins from this DataField.
+        """
         self._plugins.clear()
 
     @property
     def plugins(self) -> Sequence[duit.model.DataFieldPlugin.DataFieldPlugin]:
+        """
+        Get the sequence of registered DataField plugins.
+
+        Returns:
+            Sequence[duit.model.DataFieldPlugin.DataFieldPlugin]: A sequence of DataField plugins.
+        """
         return tuple(self._plugins)
 
     @staticmethod
