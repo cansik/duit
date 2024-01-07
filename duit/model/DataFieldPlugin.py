@@ -9,6 +9,16 @@ T = TypeVar("T")
 
 
 class DataFieldPlugin(ABC, Generic[T]):
+
+    def __init__(self):
+        self.order_index: int = 0
+
+    def on_register(self, field: duit.model.DataField.DataField[T]):
+        pass
+
+    def on_unregister(self, field: duit.model.DataField.DataField[T]):
+        pass
+
     def on_set_value(self, field: duit.model.DataField.DataField[T], old_value: T, new_value: T) -> T:
         return new_value
 

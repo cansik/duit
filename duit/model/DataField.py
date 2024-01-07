@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TypeVar, Generic, Any, Optional, Callable, Iterable, List
+from typing import TypeVar, Generic, Any, Optional, Callable, Iterable, List, Sequence
 
 import duit.model.DataFieldPlugin
 from duit.event.Event import Event
@@ -24,7 +24,7 @@ class DataField(Generic[T]):
         self._value: T = value
         self.publish_enabled: bool = True
         self.on_changed: Event[T] = Event[T]()
-        self.plugins: List[duit.model.DataFieldPlugin.DataFieldPlugin] = []
+        self._plugins: List[duit.model.DataFieldPlugin.DataFieldPlugin] = []
 
         # Add serialization attribute by default
         from duit.settings.Setting import Setting
@@ -40,8 +40,8 @@ class DataField(Generic[T]):
         """
         value = self._value
 
-        if self.plugins:
-            for plugin in self.plugins:
+        if self._plugins:
+            for plugin in self._plugins:
                 value = plugin.on_get_value(self, value)
 
         return value
@@ -56,8 +56,8 @@ class DataField(Generic[T]):
         """
         old_value = self._value
 
-        if self.plugins:
-            for plugin in self.plugins:
+        if self._plugins:
+            for plugin in self._plugins:
                 new_value = plugin.on_set_value(self, old_value, new_value)
 
         self._value = new_value
@@ -83,8 +83,8 @@ class DataField(Generic[T]):
         """
         value = self._value
 
-        if self.plugins:
-            for plugin in self.plugins:
+        if self._plugins:
+            for plugin in self._plugins:
                 value = plugin.on_fire(self, value)
 
         self.on_changed(value)
@@ -146,6 +146,24 @@ class DataField(Generic[T]):
 
         if fire_latest:
             self.fire_latest()
+
+    def register_plugin(self, *plugins: duit.model.DataFieldPlugin.DataFieldPlugin):
+        self._plugins += plugins
+        self._plugins = sorted(self._plugins, key=lambda x: x.order_index)
+        for plugin in self._plugins:
+            plugin.on_register(self)
+
+    def unregister_plugin(self, *plugins: duit.model.DataFieldPlugin.DataFieldPlugin):
+        for plugin in plugins:
+            self._plugins.remove(plugin)
+            plugin.on_unregister(self)
+
+    def clear_plugins(self):
+        self._plugins.clear()
+
+    @property
+    def plugins(self) -> Sequence[duit.model.DataFieldPlugin.DataFieldPlugin]:
+        return tuple(self._plugins)
 
     @staticmethod
     def _is_equal(value: T, new_value: T) -> bool:
