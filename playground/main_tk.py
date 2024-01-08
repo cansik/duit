@@ -1,7 +1,7 @@
 import tkinter as tk
+from tkinter import Menu
 
 import customtkinter as ctk
-
 from Config import Config
 from duit.ui.tk.TkPropertyPanel import TkPropertyPanel
 from duit.ui.tk.TkPropertyRegistry import init_tk_registry
@@ -12,16 +12,29 @@ def main():
 
     config = Config()
 
-    ctk.set_appearance_mode("dark")  # Modes: system (default), light, dark
-    ctk.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("dark-blue")
 
     app = ctk.CTk()
     app.title("Configuration")
     app.geometry("400x600")
 
+    # Create a menu bar
+    menubar = Menu(app)
+    app.config(menu=menubar)
+
+    # Create a File menu
+    file_menu = Menu(menubar, tearoff=0)
+    menubar.add_cascade(label="File", menu=file_menu)
+
+    # Add an exit command to the File menu
+    def exit_app():
+        app.destroy()
+
+    file_menu.add_command(label="Exit", command=exit_app)
+
     panel = TkPropertyPanel(app)
     panel.pack(fill=tk.BOTH, expand=True)
-
     panel.data_context = config
 
     def on_hungry(value):
