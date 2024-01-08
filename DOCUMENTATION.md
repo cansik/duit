@@ -184,6 +184,75 @@ user_ref = create_name_reference(user)
 name.bind_to_attribute(user, user_ref.name)
 ```
 
+### Plugins
+
+Sometimes it is necessary to modify the value as it is being written or read. To extend the functionality of a `duit.model.DataField.DataField` and intercept at certain key points in the process, it is possible to write a `duit.model.DataFieldPlugin.DataFieldPlugin`. A plugin is an abstract class that contains method stubs for handling the `set`, `get` and `fire()` value methods. By overriding the handlers, additional functionality can be added to a `duit.model.DataField.DataField`. It is important to note that adding plugins to a `duit.model.DataField.DataField` can lead to performance and logic problems and should only be done if the default API of a `duit.model.DataField.DataField` is not sufficient.
+
+For example, it may be necessary to constrain a numeric value between a `min` and a `max` number. To achieve this, it is possible to write the following plugin. 
+
+```python
+from typing import Union
+
+from duit.model.DataField import DataField
+from duit.model.DataFieldPlugin import DataFieldPlugin
+
+Number = Union[int, float]
+
+
+class RangePlugin(DataFieldPlugin[Number]):
+
+    def __init__(self, min_value: Number, max_value: Number):
+        super().__init__()
+        self.min_value = min_value
+        self.max_value = max_value
+
+    def on_register(self, field: DataField[Number]):
+        if not isinstance(field.value, Number.__args__):
+            raise ValueError(f"Value of data-field {field} is not Number!")
+
+    def on_set_value(self, field: DataField[Number], old_value: Number, new_value: Number) -> Number:
+        return max(min(self.max_value, new_value), self.min_value)
+```
+
+The code snippet creates a `RangePlugin` that changes the inserted value to be between the specified `min` and `max` values. The plugin also checks on register if the `duit.model.DataField.DataField` contains a `Number` type, otherwise it throws an exception. Please refer to the API documentation of the `duit.model.DataFieldPlugin.DataFieldPlugin` for more handlers that can be overridden.
+
+To register the plugin on an existing `duit.model.DataField.DataField`, the `duit.model.DataField.DataField.register_plugin()` method can be used.
+
+```python
+range_plugin = RangePlugin(0, 1000)
+
+field = DataField(500)
+field.register_plugin(range_plugin)
+```
+
+To unregister a plugin, use the `duit.model.DataField.DataField.unregister_plugin()` method.
+
+```python
+# unregister a single plugin
+field.unregister_plugin(range_plugin)
+
+# remove all plugins
+field.clear_plugins()
+```
+
+#### Plugin Order [⚠️](#experimental)
+Each `duit.model.DataFieldPlugin.DataFieldPlugin` contains a field `order_index: int` which specifies the order in which the plugin is applied. The order is set to `0` by default and is ascending (lowest first). The order is used to order the plugins when they are registered.
+
+The order is defined as follows:
+
+```
+# on_get_value order
+internal value -> plugin-1, plugin-2, plugin-3 -> return value
+
+# on_set_value order is reversed
+value.set -> plugin-3, plugin-2, plugin-1 -> internal value
+
+# on_fire the order is set like in get order
+on_fire -> plugin-1, plugin-2, plugin-3 -> fire value
+```
+
+This means that the lower the `order_index` of a plugin, the closer it is to the actual value stored in a `duit.model.DataField.DataField`.
+
 ## Data List
 
 Since only the change of the whole value within a `duit.model.DataField.DataField` is registered, changes of values within a value are not triggered. The following example illustrates this behaviour:
@@ -522,3 +591,6 @@ When rendered, the following GUI is created, as well as any necessary bindings b
 data fields.
 
 <img width="480" alt="doc-window" src="./doc/doc-window.png">
+
+### Experimental
+Everything marked as experimental in this documentation has an exclamation mark emoji ⚠️behind its chapter title. That means that the functionality is very likely to change in the future and should be used with cautious.
