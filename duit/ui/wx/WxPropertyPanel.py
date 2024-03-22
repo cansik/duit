@@ -60,7 +60,7 @@ class WxPropertyPanel(PanelMixin):
 
                 if isinstance(ann, StartSectionAnnotation):
                     collapsible_pane = wx.CollapsiblePane(scrollable_panel, label=ann.name, style=wx.CP_NO_TLW_RESIZE)
-                    collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_collapsbile_resized)
+                    collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_collapsible_resized)
                     pane = collapsible_pane.GetPane()
                     new_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=5, hgap=5)
                     new_sizer.SetFlexibleDirection(wx.HORIZONTAL)
@@ -95,7 +95,7 @@ class WxPropertyPanel(PanelMixin):
 
         scrollable_panel.Layout()
 
-    def on_collapsbile_resized(self, event):
+    def on_collapsible_resized(self, event):
         self.Layout()
         # self.GetSizer().Layout()
         # self.FitInside()
