@@ -15,10 +15,11 @@ class PanelMeta(type(wx.Panel), type(BasePropertyPanel)):
     pass
 
 
-class PanelMixin(wx.Panel, BasePropertyPanel, ABC, metaclass=PanelMeta):
+class PanelMixin(wx.ScrolledWindow, BasePropertyPanel, ABC, metaclass=PanelMeta):
     def __init__(self, *args, **kwargs):
-        wx.Panel.__init__(self, *args, **kwargs)
+        wx.ScrolledWindow.__init__(self, *args, **kwargs)
         BasePropertyPanel.__init__(self)
+        self.SetScrollbars(1, 1, 1000, 1000)
 
 
 class WxPropertyPanel(PanelMixin):
@@ -35,54 +36,48 @@ class WxPropertyPanel(PanelMixin):
     def _create_panel(self):
         self._clean_widgets()
 
-        current_panel = self
+        scrollable_panel = self
 
         vbox = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(vbox)
+        scrollable_panel.SetSizer(vbox)
 
-        root_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=5, hgap=5)
-        current_sizer = root_sizer
-        current_sizer.SetFlexibleDirection(wx.HORIZONTAL)
-        current_sizer.AddGrowableCol(1, 1)
+        non_section_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=5, hgap=5)
+        non_section_sizer.SetFlexibleDirection(wx.HORIZONTAL)
+        non_section_sizer.AddGrowableCol(1, 1)
 
-        vbox.Add(current_sizer, 1, wx.EXPAND)
+        # Initial setup for non-section widgets
+        current_panel = scrollable_panel
+        current_sizer = non_section_sizer
 
         annotations = find_all_ui_annotations(self.data_context)
 
-        # Initialize stack for panels and sizers
-        panel_sizer_stack = Stack()
-
         for var_name, (model, anns) in annotations.items():
             anns = sorted(anns)
+            in_section = False
 
             for ann in anns:
                 ann_type = type(ann)
 
                 if isinstance(ann, StartSectionAnnotation):
-                    # Create a new collapsible pane and flex grid sizer
-                    collapsible_pane = wx.CollapsiblePane(current_panel, label=ann.name)
-
+                    collapsible_pane = wx.CollapsiblePane(scrollable_panel, label=ann.name, style=wx.CP_NO_TLW_RESIZE)
+                    collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_collapsbile_resized)
                     pane = collapsible_pane.GetPane()
                     new_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=5, hgap=5)
                     new_sizer.SetFlexibleDirection(wx.HORIZONTAL)
                     new_sizer.AddGrowableCol(1, 1)
                     pane.SetSizer(new_sizer)
 
-                    current_sizer.Add(collapsible_pane, 0, wx.EXPAND | wx.ALL, 5)
-                    current_panel.Layout()
+                    vbox.Add(collapsible_pane, 0, wx.EXPAND | wx.ALL, 5)
 
-                    # Push current context onto stack
-                    panel_sizer_stack.push((current_panel, current_sizer))
-
-                    # Set new context
                     current_panel = pane
                     current_sizer = new_sizer
+                    in_section = True
                     continue
 
                 if isinstance(ann, EndSectionAnnotation):
-                    if not panel_sizer_stack.is_empty:
-                        # Pop the last panel and sizer from the stack
-                        current_panel, current_sizer = panel_sizer_stack.pop()
+                    in_section = False
+                    current_panel = scrollable_panel
+                    current_sizer = non_section_sizer
                     continue
 
                 if ann_type not in UI_PROPERTY_REGISTRY:
@@ -94,8 +89,13 @@ class WxPropertyPanel(PanelMixin):
 
                 for widget in widgets:
                     current_sizer.Add(widget, 0, wx.EXPAND | wx.ALL, 5)
-                    current_panel.Layout()
 
-                current_sizer.Layout()
+        if not in_section:
+            vbox.Add(non_section_sizer, 1, wx.EXPAND)
 
-        current_panel.Layout()
+        scrollable_panel.Layout()
+
+    def on_collapsbile_resized(self, event):
+        self.Layout()
+        # self.GetSizer().Layout()
+        # self.FitInside()
