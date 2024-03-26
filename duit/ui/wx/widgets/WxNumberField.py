@@ -3,15 +3,13 @@ from typing import Union
 import wx
 
 from duit.event.Event import Event
+from duit.ui.wx import WxUtils
 
 
 class WxNumberField(wx.TextCtrl):
-    MAX_INT32 = 2 ** 31 - 1
-    MIN_INT32 = 2 ** 31 * -1
-
     def __init__(self, parent: wx.Window, id: int = wx.ID_ANY, value: Union[int, float] = 0,
-                 min_value: Union[int, float] = MIN_INT32,
-                 max_value: Union[int, float] = MAX_INT32,
+                 min_value: Union[int, float] = WxUtils.MIN_INT32,
+                 max_value: Union[int, float] = WxUtils.MAX_INT32,
                  precision: Union[int] = 3,
                  integer_only: bool = False,
                  *args, **kwargs):

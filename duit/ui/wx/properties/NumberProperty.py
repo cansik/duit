@@ -9,9 +9,6 @@ from duit.ui.wx.widgets.WxNumberField import WxNumberField
 
 
 class NumberProperty(WxFieldProperty[NumberAnnotation, DataField]):
-    MAX_INT32 = 2 ** 31 - 1
-    MIN_INT32 = 2 ** 31 * -1
-
     """
     Property class for handling NumberAnnotation.
 
@@ -40,7 +37,7 @@ class NumberProperty(WxFieldProperty[NumberAnnotation, DataField]):
         initial_value = self.model.value
 
         field = WxNumberField(parent,
-                              value=str(initial_value),
+                              value=initial_value,
                               min_value=self.annotation.limit_min,
                               max_value=self.annotation.limit_max,
                               precision=self.annotation.decimal_precision,

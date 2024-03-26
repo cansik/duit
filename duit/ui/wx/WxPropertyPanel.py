@@ -3,7 +3,6 @@ from abc import ABC
 
 import wx
 
-from duit.collections.Stack import Stack
 from duit.ui.BasePropertyPanel import BasePropertyPanel
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from duit.ui.annotations import find_all_ui_annotations
@@ -19,12 +18,16 @@ class PanelMixin(wx.ScrolledWindow, BasePropertyPanel, ABC, metaclass=PanelMeta)
     def __init__(self, *args, **kwargs):
         wx.ScrolledWindow.__init__(self, *args, **kwargs)
         BasePropertyPanel.__init__(self)
-        self.SetScrollbars(1, 1, 1000, 1000)
+        self.SetScrollbars(1, 1, 100, 1000)
 
 
 class WxPropertyPanel(PanelMixin):
-    def __init__(self, parent: wx.Window):
+    def __init__(self, parent: wx.Window, vgap: int = 5, hgap: int = 3):
         super().__init__(parent=parent)
+
+        self.vgap = 5
+        self.hgap = 5
+
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         self._clean_widgets()
@@ -41,7 +44,7 @@ class WxPropertyPanel(PanelMixin):
         vbox = wx.BoxSizer(wx.VERTICAL)
         scrollable_panel.SetSizer(vbox)
 
-        non_section_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=5, hgap=5)
+        non_section_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=self.vgap, hgap=self.hgap)
         non_section_sizer.SetFlexibleDirection(wx.HORIZONTAL)
         non_section_sizer.AddGrowableCol(1, 1)
 
@@ -64,7 +67,7 @@ class WxPropertyPanel(PanelMixin):
                     collapsible_pane.Collapse(ann.collapsed)
                     collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_collapsible_resized)
                     pane = collapsible_pane.GetPane()
-                    new_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=5, hgap=5)
+                    new_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=self.vgap, hgap=self.hgap)
                     new_sizer.SetFlexibleDirection(wx.HORIZONTAL)
                     new_sizer.AddGrowableCol(1, 1)
                     pane.SetSizer(new_sizer)
@@ -90,14 +93,13 @@ class WxPropertyPanel(PanelMixin):
                 widgets = property_field.create_widgets(current_panel)
 
                 for widget in widgets:
-                    current_sizer.Add(widget, 0, wx.EXPAND | wx.ALL, 5)
+                    current_sizer.Add(widget, 0, wx.EXPAND | wx.ALL, 3)
 
         if not in_section:
             vbox.Add(non_section_sizer, 1, wx.EXPAND)
 
+        self.FitInside()
         scrollable_panel.Layout()
 
     def on_collapsible_resized(self, event):
         self.Layout()
-        # self.GetSizer().Layout()
-        # self.FitInside()
