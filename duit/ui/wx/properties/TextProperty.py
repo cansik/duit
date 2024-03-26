@@ -21,16 +21,14 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
 
         field = wx.TextCtrl(parent, value="", style=style)
 
-        # Set initial value from the model if it exists
         if self.model.value is not None:
             field.SetValue(str(self.model.value))
 
         def on_ui_changed(event):
-            # Update the model value when the text changes
-            self.model.value = field.GetValue()
-            event.Skip()
+            if field.GetValue() != self.model.value:
+                self.model.value = field.GetValue()
 
-        field.Bind(wx.EVT_TEXT, on_ui_changed)
+        field.Bind(wx.EVT_KILL_FOCUS, on_ui_changed)
         self.model.on_changed(lambda value: field.SetValue(str(value)))
 
         return field

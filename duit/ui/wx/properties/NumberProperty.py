@@ -5,6 +5,7 @@ import wx
 from duit.model.DataField import DataField
 from duit.ui.annotations import NumberAnnotation
 from duit.ui.wx.WxFieldProperty import WxFieldProperty
+from duit.ui.wx.widgets.WxNumberField import WxNumberField
 
 
 class NumberProperty(WxFieldProperty[NumberAnnotation, DataField]):
@@ -38,27 +39,24 @@ class NumberProperty(WxFieldProperty[NumberAnnotation, DataField]):
         """
         initial_value = self.model.value
 
-        if isinstance(initial_value, int):
-            field = wx.SpinCtrl(parent, value=str(initial_value), size=(100, -1))
-        else:
-            field = wx.SpinCtrlDouble(parent, value=str(initial_value), size=(100, -1))
-            field.SetDigits(self.annotation.decimal_precision)
-
-        field.SetRange(max(self.annotation.limit_min, self.MIN_INT32), min(self.annotation.limit_max, self.MAX_INT32))
+        field = WxNumberField(parent,
+                              value=str(initial_value),
+                              min_value=self.annotation.limit_min,
+                              max_value=self.annotation.limit_max,
+                              precision=self.annotation.decimal_precision,
+                              integer_only=isinstance(initial_value, int))
 
         field.Enable(not self.annotation.read_only or self.annotation.copy_content)
         field.SetToolTip(self.annotation.tooltip)
 
         def on_dm_changed(value):
-            field.SetValue(value)
+            field.number_value = value
 
-        def on_ui_changed(_):
-            self.model.value = field.GetValue()
+        def on_ui_changed(value):
+            self.model.value = field.number_value
 
         self.model.on_changed.append(on_dm_changed)
-
-        field.Bind(wx.EVT_SPINCTRL, on_ui_changed)
-        field.Bind(wx.EVT_SPINCTRLDOUBLE, on_ui_changed)
+        field.on_changed += on_ui_changed
 
         self.model.fire_latest()
         return field
