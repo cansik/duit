@@ -15,7 +15,9 @@ class WxNumberSlider(wx.Slider):
                  precision: Union[int] = 3,
                  integer_only: bool = False,
                  *args, **kwargs):
-        super().__init__(parent, id, *args, **kwargs)
+
+        style = kwargs.pop('style', 0) | wx.SL_HORIZONTAL
+        super().__init__(parent, id, style=style, *args, **kwargs)
 
         self.Bind(wx.EVT_SLIDER, self._on_slider_event)
 
