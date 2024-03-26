@@ -1,4 +1,3 @@
-import sys
 from typing import Optional, Any, List
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -7,7 +6,6 @@ from open3d.visualization import gui
 from duit.model.DataField import DataField
 from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
-from duit.ui.open3d.widgets.SelectionBox import SelectionBox
 
 
 class OptionsProperty(Open3dFieldProperty[OptionsAnnotation, DataField]):
