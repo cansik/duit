@@ -5,7 +5,7 @@ from duit.ui.wx.WxFieldProperty import WxFieldProperty
 
 
 class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
-    def create_field(self, parent) -> wx.Window:
+    def create_field(self, parent: wx.Window) -> wx.Window:
         """
         Create a text entry widget for the given text annotation in wxPython.
 
