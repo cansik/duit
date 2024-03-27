@@ -56,7 +56,7 @@ class VectorProperty(WxFieldProperty[VectorAnnotation, DataField]):
             field.precision = self.annotation.decimal_precision
 
             field.Enable(not self.annotation.read_only or self.annotation.copy_content)
-            field.SetToolTipString(self.annotation.tooltip)
+            field.SetToolTip(self.annotation.tooltip)
 
             def on_ui_changed(value: Union[int, float]):
                 if self.annotation.read_only:
@@ -69,7 +69,7 @@ class VectorProperty(WxFieldProperty[VectorAnnotation, DataField]):
             label = labels[i]
 
             if self.annotation.hide_labels:
-                field.SetToolTipString(f"{label}")
+                field.SetToolTip(f"{label}")
             else:
                 label = wx.StaticText(parent, label=f"{label}:")
                 container.Add(label, flag=wx.ALIGN_CENTER_VERTICAL | wx.ALL, border=5)
