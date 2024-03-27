@@ -1,4 +1,3 @@
-import sys
 from typing import Optional, Any, List
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -7,7 +6,6 @@ from open3d.visualization import gui
 from duit.model.SelectableDataList import SelectableDataList
 from duit.ui.annotations.ListAnnotation import ListAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
-from duit.ui.open3d.widgets.SelectionBox import SelectionBox
 
 
 class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
@@ -35,11 +33,7 @@ class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
 
         :return: The combobox or selection box widget.
         """
-        # Workaround for issue https://github.com/isl-org/Open3D/issues/6024
-        if sys.platform == "darwin":
-            field = SelectionBox()
-        else:
-            field = gui.Combobox()
+        field = gui.Combobox()
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
 
