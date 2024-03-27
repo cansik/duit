@@ -28,6 +28,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install prerequisites
+        shell: bash
+        run: |
+          pip install -U pip
+          pip install -U six wheel setuptools
+          
+          sudo apt-get install build-essential libgtk-3-dev
+
       # install pip packages
       - name: Install duit
         shell: bash
