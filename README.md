@@ -13,7 +13,7 @@ and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
 <img width="800" alt="gui-demo" src="./doc/gui-demo.png">
 
-*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D) (left) and [tkinter](https://docs.python.org/3/library/tkinter.html) (right)*.
+*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D) (left), [tkinter](https://docs.python.org/3/library/tkinter.html) (center) and [wx](https://pypi.org/project/wxPython/) (right)*.
 
 ## Features
 
@@ -51,6 +51,12 @@ To install `tkinter` use the following command:
 
 ```bash
 pip install "duit[tkinter]"
+```
+
+To install `wx` use the following command:
+
+```bash
+pip install "duit[wx]"
 ```
 
 To install duit with all backends call pip like this:
@@ -147,4 +153,4 @@ python setup.py doc --launch
 
 ## About
 
-MIT License - Copyright (c) 2023 Florian Bruggisser
+MIT License - Copyright (c) 2024 Florian Bruggisser
