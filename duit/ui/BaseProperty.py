@@ -20,7 +20,7 @@ class BaseProperty(Generic[T, M], ABC):
         self.model = model
 
     @abstractmethod
-    def create_widgets(self) -> Iterable[Any]:
+    def create_widgets(self, *args) -> Iterable[Any]:
         """
         Create and return widgets for the property.
 

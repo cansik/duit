@@ -505,7 +505,7 @@ DefaultArguments.type_adapters.append(MyCustomTypeAdapter())
 
 ## User-Interface
 
-A strength of `duit` is that it automatically generates a property viewer for a class containing data fields. This helps to quickly change parameters in real time and observe the behaviour of a running application. To be future-proof, `duit` is able to implement different GUI backends and can be integrated into new and existing ones. This documentation focuses on the [open3d](https://github.com/isl-org/Open3D) implementation, but for example a [tkinter](https://docs.python.org/3/library/tkinter.html) backend is also implemented.
+A strength of `duit` is that it automatically generates a property viewer for a class containing data fields. This helps to quickly change parameters in real time and observe the behaviour of a running application. To be future-proof, `duit` is able to implement different GUI backends and can be integrated into new and existing ones. This documentation focuses on the [open3d](https://github.com/isl-org/Open3D) implementation, but for example a [tkinter](https://docs.python.org/3/library/tkinter.html) and [wx](https://pypi.org/project/wxPython/) backend is also implemented.
 
 Please note that additional dependencies need to be installed for the GUI backends. This can be done by adding the extra attribute to the install command:
 

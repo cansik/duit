@@ -26,6 +26,14 @@ def main():
     def on_code_changed(index):
         print(config.codes[index])
 
+    def on_hungry(value):
+        print(f"hungry changed to: {value}")
+
+    def on_resolution_changed(value):
+        print(f"Resolution: {value}")
+
+    config.hungry.on_changed += on_hungry
+    config.resolution.on_changed += on_resolution_changed
     config.codes.on_index_changed += on_code_changed
 
     print(f"City: {config.location.value.city.value}")

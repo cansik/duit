@@ -23,6 +23,7 @@ class Config:
         self.hungry = DataField(True) | ui.Boolean("Hungry") | Setting(exposed=False)
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
         self.humidity = DataField(18.5) | ui.Number("Humidity", readonly=True)
+        self.humidity2 = DataField(18.5) | ui.Number("Humidity 2")
         self.temperature = DataField(30.2) | ui.Slider("Temperature", 0, 40)
         self.progress = DataField(0.75) | ui.Progress("A very\nlong label")
         self.sunshine = DataField(0.5) | ui.Slider("Sunshine", 0, 1, show_number_field=False)

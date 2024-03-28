@@ -1,19 +1,17 @@
 from typing import Optional, Any, List
 
-from open3d.cpu.pybind.visualization.gui import Widget
-from open3d.visualization import gui
+import wx
 
 from duit.model.SelectableDataList import SelectableDataList
 from duit.ui.annotations.ListAnnotation import ListAnnotation
-from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
+from duit.ui.wx.WxFieldProperty import WxFieldProperty
 
 
-class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
+class ListProperty(WxFieldProperty[ListAnnotation, SelectableDataList]):
     """
     Property class for handling ListAnnotation.
 
     This property generates a combobox or selection box widget for selecting from a list of options.
-
     """
 
     def __init__(self, annotation: ListAnnotation, model: Optional[SelectableDataList] = None):
@@ -25,7 +23,7 @@ class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
         """
         super().__init__(annotation, model)
 
-    def create_field(self) -> Widget:
+    def create_field(self, parent) -> wx.ComboBox:
         """
         Create the field widget for the ListProperty.
 
@@ -33,29 +31,31 @@ class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
 
         :return: The combobox or selection box widget.
         """
-        field = gui.Combobox()
-        field.enabled = not self.annotation.read_only
-        field.tooltip = self.annotation.tooltip
+        field = wx.ComboBox(parent, choices=[], style=wx.CB_DROPDOWN | wx.CB_READONLY)
+        field.Enable(not self.annotation.read_only)
+        field.SetToolTip(self.annotation.tooltip)
 
         def on_dm_changed(value):
-            field.clear_items()
+            def update_ui():
+                index = field.GetSelection()
+                field.Clear()
 
-            for option in self.options:
-                field.add_item(self.get_option_name(option))
+                for option in self.options:
+                    field.Append(self.get_option_name(option))
 
-        def on_dm_selection_changed(index):
-            if index is not None:
-                field.selected_index = index
+                field.SetSelection(index)
 
-        def on_ui_selection_changed(value, index):
-            self.model.selected_index = index
+            wx.CallAfter(update_ui)
+
+        def on_ui_selection_changed(event):
+            index = field.GetSelection()
+            if index != wx.NOT_FOUND:
+                self.model.selected_index = index
 
         self.model.on_changed += on_dm_changed
-        self.model.on_index_changed += on_dm_selection_changed
-        field.set_on_selection_changed(on_ui_selection_changed)
+        field.Bind(wx.EVT_COMBOBOX, on_ui_selection_changed)
 
         self.model.fire_latest()
-        self.model.on_index_changed.invoke_latest(self.model.selected_index)
         return field
 
     @property
