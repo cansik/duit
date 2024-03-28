@@ -22,4 +22,4 @@ class SharedContext:
         value_type = type(value)
 
         shared_value: mp.Value = self.manager.Value(value_type, value)
-        field.plugins.append(SharedValuePlugin(shared_value))
+        field.register_plugin(SharedValuePlugin(shared_value))
