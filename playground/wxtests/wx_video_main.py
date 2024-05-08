@@ -6,11 +6,12 @@ import cv2
 import wx
 
 from duit.ui.wx.widgets.WxGLImageCanvas import WxGLImageCanvas
+from duit.ui.wx.widgets.WxGfxImageCanvas import WxGfxImageCanvas
 
 if __name__ == "__main__":
     app = wx.App(False)
     frame = wx.Frame(None, title='WxImageViewer Demo', size=(800, 600))
-    image_canvas = WxGLImageCanvas(frame)
+    image_canvas = WxGfxImageCanvas(frame)
     frame.Show()
 
 
