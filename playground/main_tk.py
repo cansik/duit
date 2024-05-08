@@ -12,6 +12,8 @@ def main():
 
     config = Config()
 
+    config.sunshine.on_changed += lambda x: print(f"Sunshine is now: {x}")
+
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("dark-blue")
 
