@@ -36,6 +36,8 @@ class WxGfxImageCanvas(WgpuWidget):
         self._update_texture_requested = True
 
     def _animate(self):
+        render_needed = self._update_texture_requested or self._update_projection_requested
+
         if self._update_texture_requested:
             self._update_texture()
             self._update_texture_requested = False
@@ -44,8 +46,9 @@ class WxGfxImageCanvas(WgpuWidget):
             self._update_projection()
             self._update_projection_requested = False
 
-        self.renderer.render(self.scene, self.camera)
-        self.request_draw()
+        if render_needed:
+            self.renderer.render(self.scene, self.camera)
+            self.request_draw()
 
     def _update_texture(self):
         if self._image is None:
