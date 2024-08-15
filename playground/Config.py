@@ -21,6 +21,7 @@ class Config:
         self.age = DataField(5) | AnnotationList(
             ui.StartSection("Options", collapsed=False, is_active_field=self.is_active), ui.Number("Age"))
         self.hungry = DataField(True) | ui.Boolean("Hungry") | Setting(exposed=False)
+        self.title = DataField("Hello world") | ui.Title(text_color=(15, 115, 97))
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
         self.humidity = DataField(18.5) | ui.Number("Humidity", readonly=True)
         self.humidity2 = DataField(18.5) | ui.Number("Humidity 2")
