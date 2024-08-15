@@ -62,7 +62,7 @@ class WxGfxImageCanvas(WgpuWidget):
         if self.gfx_image is None:
             self.gfx_image = gfx.Image(
                 gfx.Geometry(grid=self.texture),
-                gfx.ImageBasicMaterial(clim=(0, 255)),
+                gfx.ImageBasicMaterial(clim=(0, 255), pick_write=True),
             )
 
             self.scene.add(self.gfx_image)
@@ -72,6 +72,12 @@ class WxGfxImageCanvas(WgpuWidget):
             self.camera.height = h
             self.camera.show_object(self.gfx_image, view_dir=(0, 0, -1), scale=0.5)
             self.camera.local.scale_y = -1  # flip image
+
+            # add click event handler
+            def test(data):
+                print(data)
+
+            self.gfx_image.add_event_handler(test, "click")
 
         self.texture.data[:] = self._image[:]
         self.texture.update_range((0, 0, 0), (w, h, 1))
