@@ -514,7 +514,10 @@ Please note that additional dependencies need to be installed for the GUI backen
 pip install "duit[open3d]"
 
 # tkinter
-pip install "duit[tkinter]"
+pip install "duit[tk]"
+
+# wx
+pip install "duit[wx]"
 ```
 
 ### Property Panel
