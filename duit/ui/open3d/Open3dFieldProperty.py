@@ -12,16 +12,19 @@ from duit.ui.open3d.Open3dProperty import Open3dProperty
 
 
 class Open3dFieldProperty(Generic[T, M], Open3dProperty[T, M], ABC):
-    def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
+    def __init__(self, annotation: UIAnnotation, model: Optional[M] = None,
+                 hide_label: bool = False, raw_output: bool = False):
         """
         Initialize an Open3dFieldProperty.
 
         :param annotation: The UIAnnotation associated with this property.
         :param model: The data model for this property (default is None).
         :param hide_label: Whether to hide the label associated with the property (default is False).
+        :param raw_output: Whether to return the raw output of the create_field method (default is False).
         """
         super().__init__(annotation, model)
         self.hide_label = hide_label
+        self.raw_output = raw_output
 
     def create_widgets(self) -> Iterable[Widget]:
         """
@@ -37,7 +40,10 @@ class Open3dFieldProperty(Generic[T, M], Open3dProperty[T, M], ABC):
             fields = [fields]
 
         if self.hide_label:
-            return gui.Label(""), *fields
+            fields = gui.Label(""), *fields
+
+        if self.hide_label or self.raw_output:
+            return fields
 
         label = gui.Label(f"{self.annotation.name}:")
         label.font_id = Open3dContext.OPEN3D_LABEL_FONT_ID
