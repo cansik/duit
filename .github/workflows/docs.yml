@@ -23,7 +23,6 @@ jobs:
           python-version: '3.11'
 
       # install relevant file
-      - run: pip install glfw
       - run: pip install -r requirements.txt
       - run: pip install -r dev-requirements.txt
 
