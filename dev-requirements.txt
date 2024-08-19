@@ -1,2 +1,2 @@
 PyOpenGL
-pdoc~=14.1.0
+pdoc~=14.5.1
