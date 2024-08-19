@@ -28,10 +28,11 @@ class Open3dPropertyPanel(gui.WidgetProxy):
         Open3dContext.OPEN3D_FONT_EM = self.em
         Open3dContext.OPEN3D_MAIN_WINDOW = self.window
 
-        title_font = gui.FontDescription(typeface=gui.FontDescription.SANS_SERIF,
-                                         style=gui.FontStyle.BOLD)
-        title_font_id = gui.Application.instance.add_font(title_font)
-        Open3dContext.OPEN3D_TITLE_FONT_ID = title_font_id
+        # currently does not work on windows
+        # title_font = gui.FontDescription(typeface=gui.FontDescription.SANS_SERIF,
+        #                                  style=gui.FontStyle.BOLD)
+        # title_font_id = gui.Application.instance.add_font(title_font)
+        # Open3dContext.OPEN3D_TITLE_FONT_ID = title_font_id
 
         self.widget: gui.Vert = gui.Vert()
         self.container_margins = gui.Margins(self.em, 0.25 * self.em, self.em, 0.25 * self.em)
