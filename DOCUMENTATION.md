@@ -42,6 +42,49 @@ if on_birthday in on_new_age:
 
 The choice to utilise the `+=` and `-=` operators is based on their reliability and simplicity in the C# programming language. Additionally, traditional methods such as `contains()`, `append()`, and `remove()` have been implemented.
 
+### Waiting for Events
+
+In certain cases, it is useful to block execution until the next event occurs. The `duit.event.Event.Event.wait()` method allows the program to pause and wait for an event to be fired, returning the value passed when the event was triggered.
+
+```python
+# Wait for the next event (blocks until the event is fired)
+result = on_new_age.wait()
+print(f"The next age is {result}")
+```
+
+Optionally, a `timeout` can be specified in seconds. If no event is fired within the given time frame, `wait()` will return `None`:
+
+```python
+# Wait for the next event with a timeout of 2 seconds
+result = on_new_age.wait(timeout=2)
+if result is None:
+    print("No event occurred within the timeout")
+else:
+    print(f"The next age is {result}")
+```
+
+### Streaming Events
+
+For scenarios where continuous event listening is required, the `duit.event.Event.Event.stream()` method provides an iterator that yields values as events are fired. This is particularly useful when handling streams of data.
+
+```python
+# Stream events as they are fired
+for age in on_new_age.stream():
+    print(f"Streaming age: {age}")
+```
+
+Similar to `wait()`, the `stream()` method can accept a `timeout` parameter. If no event is fired within the timeout period, it will yield `None`.
+
+```python
+# Stream events with a 1-second timeout
+for age in on_new_age.stream(timeout=1):
+    if age is None:
+        print("Timeout reached, no event occurred within 1 second")
+        break
+    else:
+        print(f"Streaming age: {age}")
+```
+
 ## Data Field
 
 The `duit.model.DataField.DataField` serves as a generic wrapper for data attributes, typically in the form of a state representation for an application.  

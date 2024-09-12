@@ -1,4 +1,5 @@
-from typing import TypeVar, Generic, Callable, List
+import threading
+from typing import TypeVar, Generic, Callable, List, Optional, Iterator
 
 T = TypeVar('T')
 H = Callable[[T], None]
@@ -6,7 +7,8 @@ H = Callable[[T], None]
 
 class Event(Generic[T]):
     """
-    A generic event class that allows you to register and trigger event handlers.
+    A generic event class that allows you to register and trigger event handlers,
+    and also provides a way to wait for the next event to be fired.
 
     Attributes:
         _handlers (List[H]): A list to store event handlers.
@@ -14,9 +16,12 @@ class Event(Generic[T]):
 
     def __init__(self):
         """
-        Initialize the Event instance with an empty list of handlers.
+        Initialize the Event instance with an empty list of handlers
+        and a threading event to allow waiting for events.
         """
         self._handlers: List[H] = []
+        self._latest_value: Optional[T] = None
+        self._event_trigger = threading.Event()
 
     def append(self, handler: H) -> None:
         """
@@ -51,12 +56,17 @@ class Event(Generic[T]):
     def invoke(self, value: T) -> None:
         """
         Invoke all registered event handlers with the provided value.
+        Also set the threading event to allow waiting mechanisms to proceed.
 
         Args:
             value (T): The value to pass to the event handlers.
         """
+        self._latest_value = value
         for handler in self._handlers:
             handler(value)
+
+        # Trigger the event for waiting threads
+        self._event_trigger.set()
 
     def invoke_latest(self, value: T) -> None:
         """
@@ -133,3 +143,40 @@ class Event(Generic[T]):
             value (T): The value to pass to the event handlers.
         """
         self.invoke(value)
+
+    def wait(self, timeout: Optional[float] = None) -> Optional[T]:
+        """
+        Wait for the next event to be fired, with an optional timeout.
+
+        Args:
+            timeout (Optional[float]): The maximum time (in seconds) to wait.
+                                        If None, wait indefinitely.
+
+        Returns:
+            Optional[T]: The value passed when the event was triggered,
+                         or None if the timeout was reached.
+        """
+        event_occurred = self._event_trigger.wait(timeout)
+
+        # If the event occurred, clear the event and return the latest value
+        if event_occurred:
+            self._event_trigger.clear()
+            return self._latest_value
+        else:
+            # Return None if the timeout is reached
+            return None
+
+    def stream(self, timeout: Optional[float] = None) -> Iterator[Optional[T]]:
+        """
+        Continuously yield the value whenever the event is triggered, with an optional timeout.
+
+        Args:
+            timeout (Optional[float]): The maximum time (in seconds) to wait
+                                       between yielding values. If None, wait indefinitely.
+
+        Yields:
+            Optional[T]: The value passed each time the event is triggered,
+                         or None if the timeout was reached.
+        """
+        while True:
+            yield self.wait(timeout)
