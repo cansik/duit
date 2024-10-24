@@ -1,0 +1,53 @@
+name: Duit Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - name: ubuntu
+            host: ubuntu-latest
+            args:
+        python-version: [ '3.11' ]
+
+    runs-on: ${{ matrix.os.host }}
+
+    name: python ${{ matrix.python-version }} on ${{ matrix.os.host }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install prerequisites
+        shell: bash
+        run: |
+          sudo apt-get install build-essential libgtk-3-dev
+
+      # install pip packages
+      - name: Install duit
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          pip install -U pip
+          pip install -U six wheel setuptools
+          
+          pip install -r dev-requirements.txt
+          pip install -r requirements.txt
+
+      # run test
+      - name: Test duit
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          python -m unittest discover -s ./tests -t ./ -v

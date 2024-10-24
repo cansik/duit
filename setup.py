@@ -1,9 +1,17 @@
+import distutils
+from distutils.command.install import install
 from pathlib import Path
 from typing import List
 
 from setuptools import setup, find_packages
 
-required_packages = find_packages(exclude=["test", "examples"])
+PACKAGE_NAME = "duit"
+PACKAGE_VERSION = "0.1.14.0"
+PACKAGE_URL = "https://github.com/cansik/duit"
+
+PACKAGE_DOC_MODULES = ["duit", "!duit.vision"]
+
+required_packages = find_packages(exclude=["tests", "examples", "scripts", "playground"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
@@ -50,15 +58,38 @@ def parse_requirements():
 
 install_required, extras_required = parse_requirements()
 
+
+class GenerateDoc(distutils.cmd.Command):
+    description = "generate pdoc documentation"
+
+    user_options = install.user_options + [
+        ("output=", None, "Output path for the documentation."),
+        ("launch", None, "Launch webserver to display documentation.")
+    ]
+
+    def initialize_options(self):
+        install.initialize_options(self)
+        self.output: str = "docs"
+        self.launch: bool = False
+
+    def finalize_options(self):
+        pass
+
+    def run(self) -> None:
+        from scripts.generate_doc import generate_doc
+        generate_doc(PACKAGE_NAME, PACKAGE_VERSION, PACKAGE_URL, required_packages,
+                     Path(self.output), PACKAGE_DOC_MODULES, launch=bool(self.launch))
+
+
 # read readme
 current_dir = Path(__file__).parent
 long_description = (current_dir / "README.md").read_text()
 
 setup(
-    name="duit",
-    version="0.1.8",
+    name=PACKAGE_NAME,
+    version=PACKAGE_VERSION,
     packages=required_packages,
-    url="https://github.com/cansik/duit",
+    url=PACKAGE_URL,
     license="MIT License",
     author="Florian Bruggisser",
     author_email="github@broox.ch",
@@ -66,5 +97,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_required,
-    extras_require=extras_required
+    extras_require=extras_required,
+    cmdclass={
+        "doc": GenerateDoc,
+    },
 )

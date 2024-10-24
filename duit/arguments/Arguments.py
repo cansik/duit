@@ -1,8 +1,8 @@
 import argparse
 from collections import defaultdict
-from typing import Any, Dict, Tuple, List
+from typing import Any, List
 
-from duit.arguments import ARGUMENT_ANNOTATION_ATTRIBUTE_NAME
+from duit.annotation.AnnotationFinder import AnnotationFinder
 from duit.arguments.Argument import Argument
 from duit.arguments.adapters.BaseTypeAdapter import BaseTypeAdapter
 from duit.arguments.adapters.DefaultTypeAdapter import DefaultTypeAdapter
@@ -13,7 +13,19 @@ from duit.model.DataField import DataField
 
 
 class Arguments:
+    """
+    A class for handling command-line arguments based on annotations in objects.
+
+    Attributes:
+        type_adapters (List[BaseTypeAdapter]): A list of type adapters to handle specific data types.
+        default_serializer (BaseTypeAdapter): The default type adapter for serialization.
+        _annotation_finder (AnnotationFinder): An instance of AnnotationFinder for finding Argument annotations in objects.
+    """
+
     def __init__(self):
+        """
+        Initialize an Arguments instance with default configuration.
+        """
         self.type_adapters: List[BaseTypeAdapter] = [
             EnumTypeAdapter(),
             VectorTypeAdapter(),
@@ -21,16 +33,41 @@ class Arguments:
         ]
         self.default_serializer: BaseTypeAdapter = DefaultTypeAdapter()
 
+        # setup annotation finder
+        def _is_field_valid(field: DataField, annotation: Argument):
+            if callable(field.value):
+                return False
+            return True
+
+        self._annotation_finder = AnnotationFinder(Argument, _is_field_valid, recursive=True)
+
     def add_and_configure(self, parser: argparse.ArgumentParser, obj: Any) -> argparse.Namespace:
+        """
+        Add command-line arguments to the parser and configure them based on annotations in the object.
+
+        Args:
+            parser (argparse.ArgumentParser): The argparse parser to which the arguments will be added.
+            obj (Any): The object containing annotations for command-line arguments.
+
+        Returns:
+            argparse.Namespace: The parsed namespace containing the configured command-line arguments.
+        """
         self.add_arguments(parser, obj)
         args = parser.parse_args()
         self.configure(args, obj)
         return args
 
     def add_arguments(self, parser: argparse.ArgumentParser, obj: Any):
+        """
+        Add command-line arguments to the parser based on annotations in the object.
+
+        Args:
+            parser (argparse.ArgumentParser): The argparse parser to which the arguments will be added.
+            obj (Any): The object containing annotations for command-line arguments.
+        """
         groups = defaultdict(list)
 
-        for name, (field, argument) in self._find_all_argument_annotations(obj).items():
+        for name, (field, argument) in self._annotation_finder.find(obj).items():
             if argument.dest is None:
                 argument.dest = f"--{self._to_argument_str(name)}"
 
@@ -52,37 +89,42 @@ class Arguments:
                 type_adapter.add_argument(p, argument, field.value)
 
     def configure(self, args: argparse.Namespace, obj: Any):
-        for name, (field, argument) in self._find_all_argument_annotations(obj).items():
+        """
+        Configure object fields based on the parsed command-line arguments.
+
+        Args:
+            args (argparse.Namespace): The parsed namespace containing the command-line arguments.
+            obj (Any): The object containing annotations for command-line arguments.
+        """
+        for name, (field, argument) in self._annotation_finder.find(obj).items():
             dest = name if argument.dest is None else argument.dest
             ns_dest = self._to_namespace_str(dest)
             type_adapter = self._get_matching_type_adapter(field)
             field.value = type_adapter.parse_argument(args, ns_dest, argument, field.value)
 
     def update_namespace(self, namespace: argparse.Namespace, obj: Any):
-        for name, (field, argument) in self._find_all_argument_annotations(obj).items():
+        """
+        Update the argparse namespace with the object's field values.
+
+        Args:
+            namespace (argparse.Namespace): The argparse namespace to be updated.
+            obj (Any): The object containing annotations for command-line arguments.
+        """
+        for name, (field, argument) in self._annotation_finder.find(obj).items():
             dest = name if argument.dest is None else argument.dest
             ns_dest = self._to_namespace_str(dest)
             namespace.__setattr__(ns_dest, field.value)
 
-    @staticmethod
-    def _find_all_argument_annotations(obj: Any) -> Dict[str, Tuple[DataField, Argument]]:
-        annotations = {}
-
-        if not hasattr(obj, "__dict__"):
-            return annotations
-
-        for n, v in obj.__dict__.items():
-            if isinstance(v, DataField):
-                if hasattr(v, ARGUMENT_ANNOTATION_ATTRIBUTE_NAME):
-                    if callable(v.value):
-                        continue
-                    annotations[n] = (v, v.__getattribute__(ARGUMENT_ANNOTATION_ATTRIBUTE_NAME))
-                else:
-                    # todo: check for infinite recursion
-                    annotations.update(Arguments._find_all_argument_annotations(v.value))
-        return annotations
-
     def _get_matching_type_adapter(self, field: DataField) -> BaseTypeAdapter:
+        """
+        Get the type adapter that matches the data type of a field.
+
+        Args:
+            field (DataField): The DataField with a specific data type.
+
+        Returns:
+            BaseTypeAdapter: The type adapter that matches the data type, or the default serializer if no match is found.
+        """
         for type_adapter in self.type_adapters:
             if type_adapter.handles_type(field.value):
                 return type_adapter
@@ -90,11 +132,33 @@ class Arguments:
 
     @staticmethod
     def _to_argument_str(name: str) -> str:
+        """
+        Convert a name to a format suitable for command-line arguments (replace underscores with dashes).
+
+        Args:
+            name (str): The original name.
+
+        Returns:
+            str: The name in the format suitable for command-line arguments.
+        """
         return name.replace("_", "-")
 
     @staticmethod
     def _to_namespace_str(name: str) -> str:
+        """
+        Convert a command-line argument name to a namespace attribute name (replace dashes with underscores).
+
+        Args:
+            name (str): The command-line argument name.
+
+        Returns:
+            str: The corresponding namespace attribute name.
+        """
+
         if name.startswith("--"):
             name = name[2:]
 
         return name.replace("-", "_")
+
+
+DefaultArguments = Arguments()

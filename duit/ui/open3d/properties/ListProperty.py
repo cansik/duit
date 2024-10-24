@@ -1,4 +1,3 @@
-import sys
 from typing import Optional, Any, List
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -7,19 +6,34 @@ from open3d.visualization import gui
 from duit.model.SelectableDataList import SelectableDataList
 from duit.ui.annotations.ListAnnotation import ListAnnotation
 from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
-from duit.ui.open3d.widgets.SelectionBox import SelectionBox
 
 
 class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
+    """
+    Property class for handling ListAnnotation.
+
+    This property generates a combobox or selection box widget for selecting from a list of options.
+
+    """
+
     def __init__(self, annotation: ListAnnotation, model: Optional[SelectableDataList] = None):
+        """
+        Initialize a ListProperty.
+
+        :param annotation: The ListAnnotation associated with this property.
+        :param model: The data model for this property (default is None).
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
-        # workaround for issue https://github.com/isl-org/Open3D/issues/6024
-        if sys.platform == "darwin":
-            field = SelectionBox()
-        else:
-            field = gui.Combobox()
+        """
+        Create the field widget for the ListProperty.
+
+        This method generates a combobox or selection box widget based on the platform, for selecting options from a list.
+
+        :return: The combobox or selection box widget.
+        """
+        field = gui.Combobox()
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
 
@@ -46,7 +60,18 @@ class ListProperty(Open3dFieldProperty[ListAnnotation, SelectableDataList]):
 
     @property
     def options(self) -> List[Any]:
+        """
+        Get the list of available options.
+
+        :return: A list of available options.
+        """
         return self.model.value
 
     def get_option_name(self, option) -> str:
+        """
+        Get the name of an option.
+
+        :param option: The option for which to retrieve the name.
+        :return: The name of the option.
+        """
         return str(option)

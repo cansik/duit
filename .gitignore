@@ -131,3 +131,5 @@ dmypy.json
 .idea
 test.json
 .DS_Store
+docs/**/*
+playground/settings-test.json

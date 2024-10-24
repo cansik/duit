@@ -10,10 +10,14 @@ from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
 class ProgressProperty(Open3dFieldProperty[ProgressAnnotation, DataField]):
+    """A property that renders a progress bar for a DataField."""
+
     def __init__(self, annotation: ProgressAnnotation, model: Optional[DataField] = None):
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """Creates a progress bar for the DataField."""
+
         field = gui.ProgressBar()
         field.tooltip = self.annotation.tooltip
 

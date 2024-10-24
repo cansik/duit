@@ -10,6 +10,15 @@ from duit.ui.tk.TkFieldProperty import TkFieldProperty
 
 class OptionsProperty(TkFieldProperty[BooleanAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
+        """
+        Create an options field for the given boolean annotation.
+
+        Args:
+            master: The parent widget.
+
+        Returns:
+            CTkBaseClass: The created options field.
+        """
         option_var = ctk.StringVar(value="")
 
         field = ctk.CTkOptionMenu(master, variable=option_var)
@@ -34,7 +43,22 @@ class OptionsProperty(TkFieldProperty[BooleanAnnotation, DataField]):
 
     @property
     def options(self) -> List[Any]:
+        """
+        Get the list of options associated with the annotation.
+
+        Returns:
+            List[Any]: The list of options.
+        """
         return self.annotation.options
 
     def get_option_name(self, option) -> str:
+        """
+        Get the name of an option as a string.
+
+        Args:
+            option: The option.
+
+        Returns:
+            str: The name of the option as a string.
+        """
         return str(option)

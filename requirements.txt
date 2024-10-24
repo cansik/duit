@@ -3,12 +3,16 @@ vector
 pyperclip
 
 # extra open3d
-open3d>=0.17.0
+open3d~=0.18.0
 numpy
 
 # extra tk
-tk>=0.1.0
-customtkinter>=5.1.2
+tk~=0.1.0
+customtkinter~=5.2.2
+
+# extra wx
+wxPython~=4.2.1
 
 # extra nicegui
 nicegui~=1.3.12
+

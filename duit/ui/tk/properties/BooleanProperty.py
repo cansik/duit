@@ -10,6 +10,15 @@ from duit.ui.tk.TkFieldProperty import TkFieldProperty
 
 class BooleanProperty(TkFieldProperty[BooleanAnnotation, DataField]):
     def create_field(self, master) -> CTkBaseClass:
+        """
+        Create and return the GUI field for the boolean property.
+
+        Args:
+            master: The master widget where the field will be created.
+
+        Returns:
+            CTkBaseClass: The created GUI field.
+        """
         check_var = tkinter.BooleanVar()
 
         field = ctk.CTkSwitch(master, text="", variable=check_var)

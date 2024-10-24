@@ -11,9 +11,22 @@ from duit.ui.open3d.widgets.CopyToClipboardButton import CopyToClipboardButton
 
 class TextProperty(Open3dFieldProperty[TextAnnotation, DataField]):
     def __init__(self, annotation: TextAnnotation, model: Optional[DataField] = None):
+        """
+        Initializes a TextProperty instance.
+
+        Args:
+            annotation (TextAnnotation): The TextAnnotation associated with this property.
+            model (Optional[DataField]): The data model field to bind this property to.
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """
+        Creates a GUI widget for the text property.
+
+        Returns:
+            Widget: The created GUI widget for the text property.
+        """
         field = gui.TextEdit()
         field.placeholder_text = self.annotation.placeholder_text
         field.enabled = not self.annotation.read_only

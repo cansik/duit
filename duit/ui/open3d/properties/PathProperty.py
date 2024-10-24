@@ -11,10 +11,30 @@ from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
 class PathProperty(Open3dFieldProperty[PathAnnotation, DataField]):
+    """
+    Property class for handling PathAnnotation.
+
+    This property generates a text input field for entering or selecting file or directory paths.
+
+    """
+
     def __init__(self, annotation: PathAnnotation, model: Optional[DataField] = None):
+        """
+        Initialize a PathProperty.
+
+        :param annotation: The PathAnnotation associated with this property.
+        :param model: The data model for this property (default is None).
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """
+        Create the field widget for the PathProperty.
+
+        This method generates a text input field for entering or selecting file or directory paths.
+
+        :return: The text input field widget.
+        """
         field = gui.TextEdit()
         field.placeholder_text = self.annotation.placeholder_text
         field.enabled = not self.annotation.read_only

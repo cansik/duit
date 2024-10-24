@@ -10,9 +10,22 @@ from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 class BooleanProperty(Open3dFieldProperty[BooleanAnnotation, DataField]):
     def __init__(self, annotation: BooleanAnnotation, model: Optional[DataField] = None):
+        """
+        Initialize a BooleanProperty.
+
+        :param annotation: The BooleanAnnotation associated with this property.
+        :param model: The data model for this property (default is None).
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """
+        Create the field widget for the BooleanProperty.
+
+        This method generates a checkbox widget for the BooleanProperty.
+
+        :return: The checkbox widget.
+        """
         field = gui.Checkbox("")
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip

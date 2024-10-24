@@ -9,10 +9,30 @@ from duit.ui.open3d.Open3dFieldProperty import Open3dFieldProperty
 
 
 class NumberProperty(Open3dFieldProperty[NumberAnnotation, DataField]):
+    """
+    Property class for handling NumberAnnotation.
+
+    This property generates a numeric input field for editing numeric values.
+
+    """
+
     def __init__(self, annotation: NumberAnnotation, model: Optional[DataField] = None):
+        """
+        Initialize a NumberProperty.
+
+        :param annotation: The NumberAnnotation associated with this property.
+        :param model: The data model for this property (default is None).
+        """
         super().__init__(annotation, model)
 
     def create_field(self) -> Widget:
+        """
+        Create the field widget for the NumberProperty.
+
+        This method generates a numeric input field (int or double) for editing numeric values.
+
+        :return: The numeric input field widget.
+        """
         edit_type = gui.NumberEdit.INT if isinstance(self.model.value, int) else gui.NumberEdit.DOUBLE
         field = gui.NumberEdit(edit_type)
         field.set_limits(self.annotation.limit_min, self.annotation.limit_max)
