@@ -9,6 +9,7 @@ from duit.ui.annotations.PathAnnotation import PathAnnotation
 from duit.ui.annotations.ProgressAnnotation import ProgressAnnotation
 from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.annotations.TextAnnotation import TextAnnotation
+from duit.ui.annotations.TitleAnnoation import TitleAnnotation
 from duit.ui.annotations.VectorAnnotation import VectorAnnotation
 from duit.ui.open3d.properties.ListProperty import ListProperty
 from duit.ui.open3d.properties.ActionProperty import ActionProperty
@@ -20,6 +21,7 @@ from duit.ui.open3d.properties.PathProperty import PathProperty
 from duit.ui.open3d.properties.ProgressProperty import ProgressProperty
 from duit.ui.open3d.properties.SliderProperty import SliderProperty
 from duit.ui.open3d.properties.TextProperty import TextProperty
+from duit.ui.open3d.properties.TitleProperty import TitleProperty
 from duit.ui.open3d.properties.VectorProperty import VectorProperty
 
 
@@ -40,3 +42,4 @@ def init_open3d_registry():
     UI_PROPERTY_REGISTRY[PathAnnotation] = PathProperty
     UI_PROPERTY_REGISTRY[ListAnnotation] = ListProperty
     UI_PROPERTY_REGISTRY[ProgressAnnotation] = ProgressProperty
+    UI_PROPERTY_REGISTRY[TitleAnnotation] = TitleProperty

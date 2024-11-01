@@ -5,6 +5,7 @@ from typing import Any, List
 from duit.annotation.AnnotationFinder import AnnotationFinder
 from duit.arguments.Argument import Argument
 from duit.arguments.adapters.BaseTypeAdapter import BaseTypeAdapter
+from duit.arguments.adapters.BooleanTypeAdapter import BooleanTypeAdapter
 from duit.arguments.adapters.DefaultTypeAdapter import DefaultTypeAdapter
 from duit.arguments.adapters.EnumTypeAdapter import EnumTypeAdapter
 from duit.arguments.adapters.PathTypeAdapter import PathTypeAdapter
@@ -27,6 +28,7 @@ class Arguments:
         Initialize an Arguments instance with default configuration.
         """
         self.type_adapters: List[BaseTypeAdapter] = [
+            BooleanTypeAdapter(),
             EnumTypeAdapter(),
             VectorTypeAdapter(),
             PathTypeAdapter()

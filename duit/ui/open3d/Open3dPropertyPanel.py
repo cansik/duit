@@ -2,7 +2,6 @@ import logging
 from typing import Any
 
 from open3d.visualization import gui
-from open3d.visualization.gui import Widget
 
 from duit.collections.Stack import Stack
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
@@ -28,6 +27,12 @@ class Open3dPropertyPanel(gui.WidgetProxy):
         # set global font em to be used in widgets
         Open3dContext.OPEN3D_FONT_EM = self.em
         Open3dContext.OPEN3D_MAIN_WINDOW = self.window
+
+        # currently does not work on windows
+        # title_font = gui.FontDescription(typeface=gui.FontDescription.SANS_SERIF,
+        #                                  style=gui.FontStyle.BOLD)
+        # title_font_id = gui.Application.instance.add_font(title_font)
+        # Open3dContext.OPEN3D_TITLE_FONT_ID = title_font_id
 
         self.widget: gui.Vert = gui.Vert()
         self.container_margins = gui.Margins(self.em, 0.25 * self.em, self.em, 0.25 * self.em)
@@ -61,7 +66,7 @@ class Open3dPropertyPanel(gui.WidgetProxy):
     def _create_properties(self, obj: Any, root_widget: gui.Widget):
         self.stack_depth += 1
 
-        containers: Stack[Widget] = Stack()
+        containers: Stack[gui.Widget] = Stack()
         containers.push(gui.VGrid(2, self.container_spacing, self.container_margins))
 
         annotations = find_all_ui_annotations(obj)

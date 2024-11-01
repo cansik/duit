@@ -50,7 +50,7 @@ pip install "duit[open3d]"
 To install `tkinter` use the following command:
 
 ```bash
-pip install "duit[tkinter]"
+pip install "duit[tk]"
 ```
 
 To install `wx` use the following command:

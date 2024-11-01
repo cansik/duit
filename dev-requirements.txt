@@ -1,1 +1,2 @@
-pdoc~=14.1.0
+PyOpenGL
+pdoc~=14.5.1
