@@ -14,5 +14,5 @@ customtkinter~=5.2.2
 wxPython~=4.2.1
 
 # extra nicegui
-nicegui~=1.3.12
+nicegui~=2.4.0
 
