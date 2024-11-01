@@ -19,6 +19,19 @@ class DataFieldTest(unittest.TestCase):
         self.a = DataField("a")
         self.assertEqual("DataField[str] (a)", str(self.a))
 
+    def test_event_register(self):
+        self.counter = 0
+        self.a = DataField("a")
+
+        @self.a.on_changed.register
+        def on_change(value: str):
+            self.counter += 1
+
+        self.a.value = "b"
+        self.a.value = "c"
+
+        self.assertEqual(self.counter, 2)
+
 
 class DataListTest(unittest.TestCase):
     def test_list(self):
