@@ -17,3 +17,4 @@ config = Config()
 # create argument parser and automatically add and configure the config class
 parser = argparse.ArgumentParser()
 args = DefaultArguments.add_and_configure(parser, config)
+print(args)
