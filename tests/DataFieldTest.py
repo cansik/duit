@@ -1,3 +1,4 @@
+import pickle
 import unittest
 
 from duit.model.DataField import DataField
@@ -31,6 +32,13 @@ class DataFieldTest(unittest.TestCase):
         self.a.value = "c"
 
         self.assertEqual(self.counter, 2)
+
+    def test_pickle_datafield(self):
+        self.a = DataField("a")
+        data = pickle.dumps(self.a)
+        self.ca = pickle.loads(data)
+
+        self.assertEqual(self.a, self.ca)
 
 
 class DataListTest(unittest.TestCase):

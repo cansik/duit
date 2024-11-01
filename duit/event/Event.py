@@ -193,3 +193,18 @@ class Event(Generic[T]):
         """
         while True:
             yield self.wait(timeout)
+
+    def __getstate__(self):
+        """
+        Custom method to remove the _event_trigger from the state when pickling.
+        """
+        state = self.__dict__.copy()
+        state['_event_trigger'] = None  # Exclude the event trigger from pickling
+        return state
+
+    def __setstate__(self, state):
+        """
+        Custom method to restore the _event_trigger after unpickling.
+        """
+        self.__dict__.update(state)
+        self._event_trigger = threading.Event()  # Reinitialize the event
