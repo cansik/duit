@@ -5,6 +5,7 @@ from collections.abc import Hashable
 from functools import partial
 from typing import Generic, TypeVar, Optional, Any, Dict, Set, Tuple, List
 
+import numpy as np
 import vector
 
 from duit.annotation.AnnotationFinder import AnnotationFinder
@@ -13,6 +14,7 @@ from duit.settings.Setting import Setting
 from duit.settings.serialiser.BaseSerializer import BaseSerializer
 from duit.settings.serialiser.DefaultSerializer import DefaultSerializer
 from duit.settings.serialiser.EnumSerializer import EnumSerializer
+from duit.settings.serialiser.NumpySerializer import NumpySerializer
 from duit.settings.serialiser.PathSerializer import PathSerializer
 from duit.settings.serialiser.VectorSerializer import VectorSerializer
 from duit.utils.name_reference import create_name_reference
@@ -38,11 +40,12 @@ class Settings(Generic[T]):
         self.serializers: List[BaseSerializer] = [
             EnumSerializer(),
             VectorSerializer(),
-            PathSerializer()
+            PathSerializer(),
+            NumpySerializer()
         ]
         self.default_serializer: BaseSerializer = DefaultSerializer()
 
-        self.non_unpackable_types = [vector.Vector]
+        self.non_unpackable_types = [vector.Vector, np.ndarray]
 
         self._is_serializing: bool = False
         self._is_deserializing: bool = False
@@ -181,7 +184,7 @@ class Settings(Generic[T]):
             if success:
                 data[name] = value
             else:
-                logging.warning(f"Could not serialize {name}: {field.value}")
+                logging.warning(f"Could not serialize '{name}': {field.value}")
 
             # call again for each datamodel value to catch subfields
             result = self._serialize(field.value, {}, obj_history)
@@ -189,6 +192,7 @@ class Settings(Generic[T]):
                 data[name] = result
 
             if not self._is_jsonable(data[name]):
+                logging.warning(f"Could not convert '{name}' to json: {field.value}")
                 data.pop(name)
                 continue
 

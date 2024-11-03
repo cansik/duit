@@ -1,10 +1,10 @@
 # base packages
 vector
 pyperclip
+numpy
 
 # extra open3d
 open3d~=0.18.0
-numpy
 
 # extra tk
 tk~=0.1.0
