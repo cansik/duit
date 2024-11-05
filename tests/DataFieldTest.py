@@ -1,4 +1,7 @@
+import pickle
 import unittest
+
+import numpy as np
 
 from duit.model.DataField import DataField
 from duit.model.DataList import DataList
@@ -15,9 +18,47 @@ class DataFieldTest(unittest.TestCase):
         self.b = DataField("a")
         self.assertTrue(self.a == self.b)
 
+    def test_equal_numpy(self):
+        data1 = np.zeros((15, 20, 3), dtype=np.uint8)
+        data2 = np.zeros((15, 20, 3), dtype=np.uint8)
+
+        self.a = DataField(data1)
+        self.b = DataField(data2)
+
+        self.assertTrue(self.a == self.b)
+
+    def test_un_equal_numpy(self):
+        data1 = np.zeros((15, 20, 3), dtype=np.uint8)
+        data2 = np.ones((15, 10, 3), dtype=np.uint8)
+
+        self.a = DataField(data1)
+        self.b = DataField(data2)
+
+        self.assertFalse(self.a == self.b)
+
     def test_to_string(self):
         self.a = DataField("a")
         self.assertEqual("DataField[str] (a)", str(self.a))
+
+    def test_event_register(self):
+        self.counter = 0
+        self.a = DataField("a")
+
+        @self.a.on_changed.register
+        def on_change(value: str):
+            self.counter += 1
+
+        self.a.value = "b"
+        self.a.value = "c"
+
+        self.assertEqual(self.counter, 2)
+
+    def test_pickle_datafield(self):
+        self.a = DataField("a")
+        data = pickle.dumps(self.a)
+        self.ca = pickle.loads(data)
+
+        self.assertEqual(self.a, self.ca)
 
 
 class DataListTest(unittest.TestCase):
