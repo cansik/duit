@@ -33,12 +33,13 @@ class WxFieldProperty(Generic[T, M], WxProperty[T, M], ABC):
         Returns:
             Iterable[wx.Window]: An iterable of wxPython widgets.
         """
+        filed = self.create_field(parent)
+
         if self.hide_label:
-            return [self.create_field(parent)]
+            return [filed]
 
         label = wx.StaticText(parent, label=f"{self.annotation.name}:")
-        field = self.create_field(parent)
-        return label, field
+        return label, filed
 
     @abstractmethod
     def create_field(self, parent) -> wx.Window:

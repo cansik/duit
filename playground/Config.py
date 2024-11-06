@@ -18,6 +18,8 @@ class Config:
     def __init__(self):
         self.is_active = DataField(False) | ui.Boolean("Active")
 
+        self.title = DataField("Information") | ui.Title()
+
         self.age = DataField(5) | AnnotationList(
             ui.StartSection("Options", collapsed=False, is_active_field=self.is_active), ui.Number("Age"))
         self.hungry = DataField(True) | ui.Boolean("Hungry") | Setting(exposed=False)

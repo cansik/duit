@@ -1,5 +1,6 @@
 import logging
 from abc import ABC
+from functools import partial
 
 import wx
 
@@ -73,6 +74,18 @@ class WxPropertyPanel(PanelMixin):
                     pane.SetSizer(new_sizer)
 
                     vbox.Add(collapsible_pane, 0, wx.EXPAND | wx.ALL, 5)
+
+                    # implementation of active field link
+                    if ann.is_active_field is not None:
+                        def _show_or_hide(value: bool, w: wx.Control):
+                            if value:
+                                w.Show()
+                            else:
+                                w.Hide()
+                            w.GetParent().Layout()
+
+                        ann.is_active_field.on_changed += partial(_show_or_hide, w=collapsible_pane)
+                        ann.is_active_field.fire_latest()
 
                     current_panel = pane
                     current_sizer = new_sizer
