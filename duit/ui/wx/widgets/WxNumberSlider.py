@@ -75,7 +75,7 @@ class WxNumberSlider(wx.Slider):
         self._update = False
         value = (self.number_value - self.min_value) / (self.max_value - self.min_value)
         slider_value = value * self.SLIDER_RESOLUTION
-        self.SetValue(slider_value)
+        self.SetValue(int(slider_value))
         self._update = True
 
     def _on_slider_event(self, event):

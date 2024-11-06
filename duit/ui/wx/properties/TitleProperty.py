@@ -4,13 +4,12 @@ import wx
 
 from duit.annotation.Annotation import M
 from duit.model.DataField import DataField
-from duit.ui.annotations import UIAnnotation
 from duit.ui.annotations.TitleAnnoation import TitleAnnotation
 from duit.ui.wx.WxFieldProperty import WxFieldProperty
 
 
 class TitleProperty(WxFieldProperty[TitleAnnotation, DataField]):
-    def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
+    def __init__(self, annotation: TitleAnnotation, model: Optional[M] = None, hide_label: bool = False):
         super().__init__(annotation, model, hide_label=True)
 
     def create_field(self, parent: wx.Window) -> wx.Window:
@@ -29,12 +28,15 @@ class TitleProperty(WxFieldProperty[TitleAnnotation, DataField]):
 
         field = wx.StaticText(parent, style=style)
 
-        font = field.GetFont()
-        # font.SetPointSize(14)  # Set font size (e.g., 14 points)
+        font: wx.Font = field.GetFont()
+        font.SetPointSize(14)  # Set font size (e.g., 14 points)
         font.SetWeight(wx.FONTWEIGHT_BOLD)  # Set font weight to bold
 
         # Apply the modified font
         field.SetFont(font)
+
+        if self.annotation.text_color is not None:
+            field.SetForegroundColour(wx.Colour(*self.annotation.text_color))
 
         if self.model.value is not None:
             field.SetLabelText(str(self.model.value))

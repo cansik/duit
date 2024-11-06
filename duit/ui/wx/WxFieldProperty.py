@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, Iterable
+from typing import Generic, Optional, Iterable, Sequence
 
 import wx
 
@@ -33,13 +33,16 @@ class WxFieldProperty(Generic[T, M], WxProperty[T, M], ABC):
         Returns:
             Iterable[wx.Window]: An iterable of wxPython widgets.
         """
-        filed = self.create_field(parent)
+        result = self.create_field(parent)
+
+        if isinstance(result, Sequence):
+            return result
 
         if self.hide_label:
-            return [filed]
+            return [wx.Panel(parent), result]
 
         label = wx.StaticText(parent, label=f"{self.annotation.name}:")
-        return label, filed
+        return label, result
 
     @abstractmethod
     def create_field(self, parent) -> wx.Window:
