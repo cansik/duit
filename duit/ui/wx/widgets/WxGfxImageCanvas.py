@@ -9,7 +9,19 @@ from duit.event.Event import Event
 
 
 class WxGfxImageCanvas(WgpuWidget):
+    """
+    A custom widget for displaying and interacting with images using the pygfx library within a wxPython interface.
+    Extends the WgpuWidget to enable GPU-accelerated rendering with image processing capabilities.
+    """
+
     def __init__(self, parent, image: np.ndarray = None):
+        """
+        Initializes the WxGfxImageCanvas with an optional image, sets up the rendering scene, and binds resize events.
+
+        Args:
+            parent: The parent widget.
+            image (np.ndarray, optional): Initial image to be displayed. Defaults to None.
+        """
         super().__init__(parent)
 
         self._image: Optional[np.ndarray] = image
@@ -32,15 +44,31 @@ class WxGfxImageCanvas(WgpuWidget):
 
     @property
     def image(self) -> Optional[np.ndarray]:
+        """
+        Gets or sets the image displayed on the canvas.
+
+        Returns:
+            Optional[np.ndarray]: The current image displayed on the canvas, if any.
+        """
         return self._image
 
     @image.setter
     def image(self, image: Optional[np.ndarray]):
+        """
+        Sets the image to be displayed on the canvas and flags the texture and camera for update.
+
+        Args:
+            image (Optional[np.ndarray]): New image to display, or None to clear the image.
+        """
         self._image = image
         self._update_texture_requested = True
         self._resize_requested = True  # Ensure camera updates when image changes
 
     def _animate(self):
+        """
+        Animation loop handler for updating and rendering the scene as needed.
+        Triggers updates to texture and camera if flagged, and requests another frame for animation.
+        """
         render_needed = self._update_texture_requested or self._resize_requested
 
         if self._update_texture_requested:
@@ -57,6 +85,10 @@ class WxGfxImageCanvas(WgpuWidget):
         self.request_draw(self._animate)
 
     def _update_texture(self):
+        """
+        Updates the texture used by the renderer to match the current image data.
+        Creates and manages gfx.Texture and gfx.Image instances for rendering the image.
+        """
         if self._image is None:
             if self.gfx_image is not None:
                 self.scene.remove(self.gfx_image)
@@ -80,6 +112,10 @@ class WxGfxImageCanvas(WgpuWidget):
         self.texture.update_range((0, 0, 0), self._image.shape[:2] + (1,))
 
     def _update_camera(self):
+        """
+        Updates the orthographic camera settings to maintain the correct aspect ratio of the displayed image
+        relative to the widget size, centering the image in the display area.
+        """
         if self._image is None:
             return
 
@@ -106,5 +142,11 @@ class WxGfxImageCanvas(WgpuWidget):
         self.camera.update_projection_matrix()
 
     def on_size(self, event):
+        """
+        Event handler for widget resize events. Flags the canvas for resizing and processes the event.
+
+        Args:
+            event: The wxPython size event.
+        """
         self._resize_requested = True
         event.Skip()
