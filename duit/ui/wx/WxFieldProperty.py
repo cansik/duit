@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, Iterable, Sequence
+from typing import Generic, Optional, Iterable, Sequence, Callable
 
 import wx
 
@@ -22,6 +22,7 @@ class WxFieldProperty(Generic[T, M], WxProperty[T, M], ABC):
         """
         super().__init__(annotation, model)
         self.hide_label = hide_label
+        self.is_ui_silent: bool = False
 
     def create_widgets(self, parent) -> Iterable[wx.Window]:
         """
@@ -56,3 +57,11 @@ class WxFieldProperty(Generic[T, M], WxProperty[T, M], ABC):
             wx.Window: The field widget.
         """
         pass
+
+    def silent_ui_update(self, handler: Callable, *args, **kwargs):
+        def ui_task():
+            self.is_ui_silent = True
+            handler(*args, *kwargs)
+            self.is_ui_silent = False
+
+        wx.CallAfter(ui_task)

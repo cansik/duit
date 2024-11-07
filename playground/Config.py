@@ -16,7 +16,7 @@ from playground.SubConfig import SubConfig
 
 class Config:
     def __init__(self):
-        self.is_active = DataField(False) | ui.Boolean("Active")
+        self.is_active = DataField(True) | ui.Boolean("Active")
 
         self.title = DataField("Information") | ui.Title()
 

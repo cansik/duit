@@ -1,4 +1,5 @@
 import wx
+
 from duit.model.DataField import DataField
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.wx.WxFieldProperty import WxFieldProperty
@@ -25,10 +26,16 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
             field.SetValue(str(self.model.value))
 
         def on_ui_changed(event):
+            if self.is_ui_silent:
+                return
+
             if field.GetValue() != self.model.value:
                 self.model.value = field.GetValue()
 
+        def on_model_changed(value: str):
+            self.silent_ui_update(field.SetValue, str(value))
+
         field.Bind(wx.EVT_KILL_FOCUS, on_ui_changed)
-        self.model.on_changed(lambda value: field.SetValue(str(value)))
+        self.model.on_changed += on_model_changed
 
         return field

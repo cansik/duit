@@ -42,14 +42,21 @@ class VectorProperty(WxFieldProperty[VectorAnnotation, DataField]):
             labels = self.annotation.labels
 
         def update_model():
+            if self.is_ui_silent:
+                return
+
             for attribute_name in vector_attributes:
                 setattr(self.model.value, attribute_name, attribute_widgets[attribute_name].number_value)
             self.model.fire()
 
         def update_ui():
             value = self.model.value
-            for attribute_name in vector_attributes:
-                attribute_widgets[attribute_name].number_value = getattr(value, attribute_name)
+
+            def _update_handler():
+                for attribute_name in vector_attributes:
+                    attribute_widgets[attribute_name].number_value = getattr(value, attribute_name)
+
+            self.silent_ui_update(_update_handler)
 
         for i, attribute_name in enumerate(vector_attributes):
             field = WxNumberField(parent, size=(self.annotation.max_width, -1))

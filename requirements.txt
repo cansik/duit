@@ -11,4 +11,4 @@ tk~=0.1.0
 customtkinter~=5.2.2
 
 # extra wx
-wxPython~=4.2.2
+wxPython~=4.2.1

@@ -28,9 +28,12 @@ class BooleanProperty(WxFieldProperty[BooleanAnnotation, DataField]):
 
         # Define event handlers
         def on_dm_changed(value):
-            field.SetValue(value)
+            self.silent_ui_update(field.SetValue, value)
 
         def on_ui_changed(event):
+            if self.is_ui_silent:
+                return
+
             self.model.value = field.GetValue()
 
         # Bind events

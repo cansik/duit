@@ -39,7 +39,7 @@ class TitleProperty(WxFieldProperty[TitleAnnotation, DataField]):
             field.SetForegroundColour(wx.Colour(*self.annotation.text_color))
 
         if self.model.value is not None:
-            field.SetLabelText(str(self.model.value))
+            wx.CallAfter(field.SetLabelText, str(self.model.value))
 
         self.model.on_changed(lambda value: field.SetLabelText(str(value)))
 

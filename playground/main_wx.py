@@ -1,3 +1,6 @@
+import threading
+import time
+
 import wx
 
 from Config import Config
@@ -44,6 +47,13 @@ def main():
 
     config.hungry.on_changed.append(on_hungry)
     config.resolution.on_changed.append(on_resolution_changed)
+
+    def update_loop():
+        while True:
+            time.sleep(0.1)
+            config.age.value += 1
+
+    threading.Thread(target=update_loop, daemon=True).start()
 
     frame.Show(True)
     app.MainLoop()
