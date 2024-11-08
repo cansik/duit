@@ -133,3 +133,4 @@ test.json
 .DS_Store
 docs/**/*
 playground/settings-test.json
+*.mp4
