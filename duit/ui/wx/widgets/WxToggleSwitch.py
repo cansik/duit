@@ -19,7 +19,7 @@ class WxToggleSwitch(wx.CheckBox):
             label: str = "",
             value: bool = False,
             on_color: wx.Colour = wx.Colour(0, 122, 255),
-            size: wx.Size = wx.Size(44, 22),
+            size: wx.Size = wx.Size(40, 20),
             style: int = 0
     ):
         """
