@@ -23,11 +23,11 @@ class PanelMixin(wx.ScrolledWindow, BasePropertyPanel, ABC, metaclass=PanelMeta)
 
 
 class WxPropertyPanel(PanelMixin):
-    def __init__(self, parent: wx.Window, vgap: int = 5, hgap: int = 3):
+    def __init__(self, parent: wx.Window, vgap: int = 3, hgap: int = 3):
         super().__init__(parent=parent)
 
-        self.vgap = 5
-        self.hgap = 5
+        self.vgap = vgap
+        self.hgap = hgap
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
