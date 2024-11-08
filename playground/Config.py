@@ -46,7 +46,7 @@ class Config:
         self.save = DataField(Path()) | ui.Path("Save", dialog_type=DialogType.SaveFile)
 
         self.check1 = DataField(False) | ui.Boolean("Check 1") | ui.StartSection("Boxes")
-        self.check2 = DataField(False) | ui.Boolean("Check 2")
+        self.check2 = DataField(True) | ui.Boolean("Check 2")
         self.check3 = DataField(False) | ui.Boolean("Check 3") | ui.EndSection()
 
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")
