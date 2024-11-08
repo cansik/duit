@@ -12,6 +12,7 @@ def main():
     init_wx_registry()
 
     config = Config()
+    config.name1.on_changed += lambda v: print(v)
 
     app = wx.App(False)
     frame = wx.Frame(None, title="Configuration", size=(400, 600))

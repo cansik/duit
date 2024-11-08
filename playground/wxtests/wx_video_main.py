@@ -29,7 +29,7 @@ if __name__ == "__main__":
                 success = True
                 continue
 
-            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # image = cv2.resize(image, (640, 480))
             image_canvas.image = image
             time.sleep(0.030)

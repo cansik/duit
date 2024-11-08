@@ -16,7 +16,7 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
         Returns:
             wx.TextCtrl: The created text entry widget.
         """
-        style = 0
+        style = wx.TE_PROCESS_ENTER  # Ensure wx.TE_PROCESS_ENTER is included
         if self.annotation.read_only:
             style |= wx.TE_READONLY
 
@@ -36,6 +36,9 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
             self.silent_ui_update(field.SetValue, str(value))
 
         field.Bind(wx.EVT_KILL_FOCUS, on_ui_changed)
+        # Bind to the event that detects pressing the "Enter" key
+        field.Bind(wx.EVT_TEXT_ENTER, on_ui_changed)
+
         self.model.on_changed += on_model_changed
 
         return field

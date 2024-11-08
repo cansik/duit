@@ -31,6 +31,7 @@ class WxNumberField(wx.TextCtrl):
         super().__init__(parent, id, value=str(value), style=style, *args, **kwargs)
 
         self.Bind(wx.EVT_KILL_FOCUS, self._validate_text)
+        self.Bind(wx.EVT_TEXT_ENTER, self._validate_text)
 
         self.min_value: Union[int, float] = min_value
         self.max_value: Union[int, float] = max_value
