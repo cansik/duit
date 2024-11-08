@@ -20,6 +20,8 @@ class PanelMixin(wx.ScrolledWindow, BasePropertyPanel, ABC, metaclass=PanelMeta)
         wx.ScrolledWindow.__init__(self, *args, **kwargs)
         BasePropertyPanel.__init__(self)
         self.SetScrollbars(1, 1, 100, 1000)
+        self.SetScrollRate(5, 5)  # Adjust scroll rate for smoother scrolling
+        self.SetExtraStyle(wx.WS_EX_PROCESS_UI_UPDATES | wx.BUFFER_VIRTUAL_AREA)  # Optional double-buffering
 
 
 class WxPropertyPanel(PanelMixin):
