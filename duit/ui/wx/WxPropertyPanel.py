@@ -108,7 +108,7 @@ class WxPropertyPanel(PanelMixin):
                 widgets = property_field.create_widgets(current_panel)
 
                 for widget in widgets:
-                    current_sizer.Add(widget, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 3)
+                    current_sizer.Add(widget, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
         if not in_section:
             vbox.Add(non_section_sizer, 1, wx.EXPAND)
