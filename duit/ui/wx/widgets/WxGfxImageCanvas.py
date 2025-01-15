@@ -3,8 +3,9 @@ from typing import Optional
 import numpy as np
 import pygfx as gfx
 import wx
-from duit.event.Event import Event
 from wgpu.gui.wx import WgpuWidget
+
+from duit.event.Event import Event
 
 
 class WxGfxImageCanvas(WgpuWidget):
@@ -118,7 +119,7 @@ class WxGfxImageCanvas(WgpuWidget):
             self.camera.local.scale_y = -1  # Flip image vertically
 
         self.texture.data[:] = self._image[:]
-        self.texture.update_range((0, 0, 0), self._image.shape[:2] + (1,))
+        self.texture.update_full()
 
     def _update_camera(self):
         """
