@@ -3,9 +3,8 @@ from typing import Optional
 import numpy as np
 import pygfx as gfx
 import wx
-from wgpu.gui.wx import WgpuWidget
-
 from duit.event.Event import Event
+from wgpu.gui.wx import WgpuWidget
 
 
 class WxGfxImageCanvas(WgpuWidget):
@@ -61,13 +60,12 @@ class WxGfxImageCanvas(WgpuWidget):
         Args:
             image (Optional[np.ndarray]): New image to display, or None to clear the image.
         """
-        # Check if the two images have the same shape (update)
-        if self._image is not None:
-            if self._image.shape[0] != image.shape[0] or self._image.shape[1] != image.shape[1]:
-                self._reinit_image_requested = True
-
         if image is None:
             self._reinit_image_requested = True
+        else:
+            # Check if the two images have the same shape (update)
+            if self._image.shape[0] != image.shape[0] or self._image.shape[1] != image.shape[1]:
+                self._reinit_image_requested = True
 
         self._image = image
         self._update_texture_requested = True
@@ -98,12 +96,14 @@ class WxGfxImageCanvas(WgpuWidget):
         Updates the texture used by the renderer to match the current image data.
         Creates and manages gfx.Texture and gfx.Image instances for rendering the image.
         """
-        if self._image is None or self._reinit_image_requested:
+        if self._reinit_image_requested:
             self._reinit_image_requested = False
             if self.gfx_image is not None:
                 self.scene.remove(self.gfx_image)
                 self.gfx_image = None
                 self.texture = None
+
+        if self._image is None:
             return
 
         if self.texture is None:
