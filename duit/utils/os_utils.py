@@ -89,7 +89,7 @@ def is_macos() -> bool:
 
     :return: True if macOS, False otherwise.
     """
-    return getOperatingSystem().os_type == OSType.MACOS
+    return get_operating_system().os_type == OSType.MACOS
 
 
 def is_linux() -> bool:
@@ -98,7 +98,7 @@ def is_linux() -> bool:
 
     :return: True if Linux, False otherwise.
     """
-    return getOperatingSystem().os_type == OSType.LINUX
+    return get_operating_system().os_type == OSType.LINUX
 
 
 def is_windows() -> bool:
@@ -107,4 +107,4 @@ def is_windows() -> bool:
 
     :return: True if Windows, False otherwise.
     """
-    return getOperatingSystem().os_type == OSType.WINDOWS
+    return get_operating_system().os_type == OSType.WINDOWS
