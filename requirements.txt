@@ -12,3 +12,7 @@ customtkinter~=5.2.2
 
 # extra wx
 wxPython~=4.2.1.0
+
+# extra imgui
+wgpu~=0.19
+imgui_bundle~=1.6
