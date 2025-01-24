@@ -41,7 +41,8 @@ class Arguments:
                 return False
             return True
 
-        self._annotation_finder = AnnotationFinder(Argument, _is_field_valid, recursive=True)
+        self._annotation_finder: AnnotationFinder[Argument] = AnnotationFinder(Argument, _is_field_valid,
+                                                                               recursive=True)
 
     def add_and_configure(self, parser: argparse.ArgumentParser, obj: Any) -> argparse.Namespace:
         """
@@ -101,6 +102,10 @@ class Arguments:
         for name, (field, argument) in self._annotation_finder.find(obj).items():
             dest = name if argument.dest is None else argument.dest
             ns_dest = self._to_namespace_str(dest)
+
+            if not argument.allow_none and getattr(args, ns_dest) is None:
+                continue
+
             type_adapter = self._get_matching_type_adapter(field)
             field.value = type_adapter.parse_argument(args, ns_dest, argument, field.value)
 

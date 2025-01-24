@@ -1,5 +1,5 @@
 import argparse
-from typing import Any
+from typing import Any, Optional
 
 import vector
 
@@ -41,11 +41,13 @@ class VectorTypeAdapter(BaseTypeAdapter):
             None
         """
         components = _vector.get_vector_attributes(obj)
+        default_value: Optional[vector.Vector] = argument.kwargs.get("default", None)
 
         argument.kwargs["metavar"] = components
         argument.kwargs["type"] = float
         argument.kwargs["nargs"] = len(components)
-        argument.kwargs["default"] = [getattr(obj, c) for c in components]
+        argument.kwargs["default"] = [getattr(default_value, c)
+                                      for c in components] if default_value is not None else None
 
         parser.add_argument(argument.dest, *argument.args, **argument.kwargs)
 
