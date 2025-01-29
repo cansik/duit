@@ -48,7 +48,8 @@ class WxCollapsiblePane(wx.Panel):
             size: wx.Size = wx.DefaultSize,
             style: int = wx.TAB_TRAVERSAL,
             name: str = "WxCollapsiblePane",
-            content_padding: int = 15
+            content_padding: int = 15,
+            font_size: int = 14
     ):
         super().__init__(parent, id=id, pos=pos, size=size, style=style, name=name)
 
@@ -69,6 +70,15 @@ class WxCollapsiblePane(wx.Panel):
             self._header_panel, label=self._get_arrow_label(), style=wx.ALIGN_CENTER_VERTICAL
         )
         self._header_label = wx.StaticText(self._header_panel, label=self._label_text)
+
+        # Set font of icon and header label
+        font: wx.Font = self._toggle_icon.GetFont()
+        font.SetPointSize(font_size)
+        font.SetWeight(wx.FONTWEIGHT_BOLD)
+
+        # Apply the modified font
+        self._toggle_icon.SetFont(font)
+        self._header_label.SetFont(font)
 
         # Set up header background
         self._header_panel.SetBackgroundColour(self._get_header_color())
