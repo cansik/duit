@@ -86,10 +86,11 @@ class WxPropertyPanel(PanelMixin):
                             logging.info(f"Stack ({self.stack_depth}) depth is at limit {self.max_stack_depth}.")
                             continue
 
+                    # setup pane
                     collapsible_pane = WxCollapsiblePane(panel, label=ann.name, style=wx.CP_NO_TLW_RESIZE)
-
                     collapsible_pane.Collapse(ann.collapsed)
                     collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_collapsible_resized)
+
                     pane = collapsible_pane.GetPane()
                     new_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=self.vgap, hgap=self.hgap)
                     new_sizer.SetFlexibleDirection(wx.HORIZONTAL)
@@ -109,6 +110,13 @@ class WxPropertyPanel(PanelMixin):
 
                         ann.is_active_field.on_changed += partial(_show_or_hide, w=collapsible_pane)
                         ann.is_active_field.fire_latest()
+
+                    if ann.name_field is not None:
+                        def _update_label(value: str, w: WxCollapsiblePane):
+                            w.SetLabel(value)
+
+                        ann.name_field.on_changed += partial(_update_label, w=collapsible_pane)
+                        ann.name_field.fire_latest()
 
                     if is_sub_section:
                         # add widgets and continue
