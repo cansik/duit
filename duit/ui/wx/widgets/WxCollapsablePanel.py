@@ -75,8 +75,11 @@ class WxCollapsiblePane(wx.Panel):
 
         # Bind clicks on header
         self._header_panel.Bind(wx.EVT_LEFT_DOWN, self._on_header_click)
+        self._header_panel.Bind(wx.EVT_LEFT_DCLICK, self._on_header_click)
         self._toggle_icon.Bind(wx.EVT_LEFT_DOWN, self._on_header_click)
+        self._toggle_icon.Bind(wx.EVT_LEFT_DCLICK, self._on_header_click)
         self._header_label.Bind(wx.EVT_LEFT_DOWN, self._on_header_click)
+        self._header_label.Bind(wx.EVT_LEFT_DCLICK, self._on_header_click)
 
         # Add header items to sizer
         self._header_sizer.Add(self._toggle_icon, 0, wx.ALL | wx.ALIGN_CENTER_VERTICAL, 5)
