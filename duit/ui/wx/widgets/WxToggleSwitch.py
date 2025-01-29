@@ -3,6 +3,8 @@ import time
 import wx
 import wx.adv
 
+from duit.ui.wx.WxUtils import is_dark_mode
+
 
 class WxToggleSwitch(wx.CheckBox):
     """
@@ -37,7 +39,7 @@ class WxToggleSwitch(wx.CheckBox):
         super().__init__(parent, id, label=label, style=style)
         self._value = value
         self._on_color = on_color
-        self._is_dark_mode = self.IsDarkMode()
+        self._is_dark_mode = is_dark_mode()
         self._off_color = wx.Colour(80, 80, 80) if self._is_dark_mode else wx.Colour(200, 200, 200)
         self._switch_radius = size.GetHeight() // 2
 
@@ -56,23 +58,6 @@ class WxToggleSwitch(wx.CheckBox):
 
         self._animation_duration = 100  # milliseconds
         self.SetValue(value)  # Initialize the state
-
-    def IsDarkMode(self) -> bool:
-        """
-        Determines if the current system appearance is in dark mode.
-
-        Returns:
-            bool: True if the system is in dark mode, False otherwise.
-        """
-        if hasattr(wx, 'SystemSettings') and hasattr(wx.SystemSettings, 'GetAppearance'):
-            return wx.SystemSettings().GetAppearance().IsDark()
-        elif wx.Platform == '__WXMAC__':
-            try:
-                return wx.SystemAppearance().IsDark()
-            except TypeError:
-                return False
-        else:
-            return False
 
     def GetValue(self) -> bool:
         """

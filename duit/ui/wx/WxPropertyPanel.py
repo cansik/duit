@@ -1,6 +1,7 @@
 import logging
 from abc import ABC
 from functools import partial
+from typing import Any, Union
 
 import wx
 
@@ -9,6 +10,8 @@ from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from duit.ui.annotations import find_all_ui_annotations
 from duit.ui.annotations.container.EndSectionAnnotation import EndSectionAnnotation
 from duit.ui.annotations.container.StartSectionAnnotation import StartSectionAnnotation
+from duit.ui.annotations.container.SubSectionAnnotation import SubSectionAnnotation
+from duit.ui.wx.widgets.WxCollapsablePanel import WxCollapsiblePane
 
 
 class PanelMeta(type(wx.Panel), type(BasePropertyPanel)):
@@ -31,6 +34,9 @@ class WxPropertyPanel(PanelMixin):
         self.vgap = vgap
         self.hgap = hgap
 
+        self.max_stack_depth = 5
+        self.stack_depth = 0
+
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
         self._clean_widgets()
@@ -42,20 +48,29 @@ class WxPropertyPanel(PanelMixin):
     def _create_panel(self):
         self._clean_widgets()
 
-        scrollable_panel = self
+        if self._data_context is None:
+            return
+
+        self._create_properties(self._data_context, self)
+
+        self.FitInside()
+        self.Layout()
+
+    def _create_properties(self, obj: Any, panel: Union[wx.Panel, "WxPropertyPanel"]):
+        self.stack_depth += 1
 
         vbox = wx.BoxSizer(wx.VERTICAL)
-        scrollable_panel.SetSizer(vbox)
+        panel.SetSizer(vbox)
 
         non_section_sizer = wx.FlexGridSizer(rows=0, cols=2, vgap=self.vgap, hgap=self.hgap)
         non_section_sizer.SetFlexibleDirection(wx.HORIZONTAL)
         non_section_sizer.AddGrowableCol(1, 1)
 
         # Initial setup for non-section widgets
-        current_panel = scrollable_panel
+        current_panel = panel
         current_sizer = non_section_sizer
 
-        annotations = find_all_ui_annotations(self.data_context)
+        annotations = find_all_ui_annotations(obj)
 
         for var_name, (model, anns) in annotations.items():
             anns = sorted(anns)
@@ -64,8 +79,14 @@ class WxPropertyPanel(PanelMixin):
             for ann in anns:
                 ann_type = type(ann)
 
-                if isinstance(ann, StartSectionAnnotation):
-                    collapsible_pane = wx.CollapsiblePane(scrollable_panel, label=ann.name, style=wx.CP_NO_TLW_RESIZE)
+                is_sub_section = isinstance(ann, SubSectionAnnotation)
+                if isinstance(ann, StartSectionAnnotation) or is_sub_section:
+                    if is_sub_section:
+                        if self.stack_depth > self.max_stack_depth:
+                            logging.info(f"Stack ({self.stack_depth}) depth is at limit {self.max_stack_depth}.")
+                            continue
+
+                    collapsible_pane = WxCollapsiblePane(panel, label=ann.name, style=wx.CP_NO_TLW_RESIZE)
 
                     collapsible_pane.Collapse(ann.collapsed)
                     collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_collapsible_resized)
@@ -75,7 +96,7 @@ class WxPropertyPanel(PanelMixin):
                     new_sizer.AddGrowableCol(1, 1)
                     pane.SetSizer(new_sizer)
 
-                    vbox.Add(collapsible_pane, 0, wx.EXPAND | wx.ALL, 5)
+                    vbox.Add(collapsible_pane, 0, wx.EXPAND | wx.ALL, 0)
 
                     # implementation of active field link
                     if ann.is_active_field is not None:
@@ -89,6 +110,11 @@ class WxPropertyPanel(PanelMixin):
                         ann.is_active_field.on_changed += partial(_show_or_hide, w=collapsible_pane)
                         ann.is_active_field.fire_latest()
 
+                    if is_sub_section:
+                        # add widgets and continue
+                        self._create_properties(model.value, pane)
+                        continue
+
                     current_panel = pane
                     current_sizer = new_sizer
                     in_section = True
@@ -96,7 +122,7 @@ class WxPropertyPanel(PanelMixin):
 
                 if isinstance(ann, EndSectionAnnotation):
                     in_section = False
-                    current_panel = scrollable_panel
+                    current_panel = panel
                     current_sizer = non_section_sizer
                     continue
 
@@ -112,9 +138,6 @@ class WxPropertyPanel(PanelMixin):
 
         if not in_section:
             vbox.Add(non_section_sizer, 1, wx.EXPAND)
-
-        self.FitInside()
-        scrollable_panel.Layout()
 
     def on_collapsible_resized(self, event):
         self.Layout()
