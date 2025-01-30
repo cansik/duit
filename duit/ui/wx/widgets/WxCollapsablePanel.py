@@ -37,6 +37,8 @@ class WxCollapsiblePane(wx.Panel):
     :param size: The size of the window.
     :param style: The style flags.
     :param name: The name of the window.
+    :param content_padding: Extra left padding for nested content.
+    :param font_size: Font size for the header text and icon.
     """
 
     def __init__(
@@ -176,5 +178,5 @@ class WxCollapsiblePane(wx.Panel):
         return self._label_text
 
     def GetControlSizer(self) -> wx.Sizer:
-        """Return the sizer used for the content panel, akin to how CollapsiblePane manages content."""
+        """Return the sizer used for the content panel."""
         return self._content_sizer

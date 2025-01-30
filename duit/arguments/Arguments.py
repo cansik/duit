@@ -44,35 +44,43 @@ class Arguments:
         self._annotation_finder: AnnotationFinder[Argument] = AnnotationFinder(Argument, _is_field_valid,
                                                                                recursive=True)
 
-    def add_and_configure(self, parser: argparse.ArgumentParser, obj: Any) -> argparse.Namespace:
+    def add_and_configure(self,
+                          parser: argparse.ArgumentParser,
+                          obj: Any,
+                          use_attribute_path_as_name: bool = False) -> argparse.Namespace:
         """
         Add command-line arguments to the parser and configure them based on annotations in the object.
 
         Args:
             parser (argparse.ArgumentParser): The argparse parser to which the arguments will be added.
             obj (Any): The object containing annotations for command-line arguments.
+            use_attribute_path_as_name (bool): Use the attribute path as name. This allows nested attributes share the same name.
 
         Returns:
             argparse.Namespace: The parsed namespace containing the configured command-line arguments.
         """
-        self.add_arguments(parser, obj)
+        self.add_arguments(parser, obj, use_attribute_path_as_name)
         args = parser.parse_args()
         self.configure(args, obj)
         return args
 
-    def add_arguments(self, parser: argparse.ArgumentParser, obj: Any):
+    def add_arguments(self,
+                      parser: argparse.ArgumentParser, obj: Any,
+                      use_attribute_path_as_name: bool = False):
         """
         Add command-line arguments to the parser based on annotations in the object.
 
         Args:
             parser (argparse.ArgumentParser): The argparse parser to which the arguments will be added.
             obj (Any): The object containing annotations for command-line arguments.
+            use_attribute_path_as_name (bool): Use the attribute path as name. This allows nested attributes share the same name.
         """
         groups = defaultdict(list)
 
-        for name, (field, argument) in self._annotation_finder.find(obj).items():
+        for attribute_identifier, (field, argument) in self._annotation_finder.find_with_identifier(obj).items():
             if argument.dest is None:
-                argument.dest = f"--{self._to_argument_str(name)}"
+                attribute_name = attribute_identifier.path if use_attribute_path_as_name else attribute_identifier.name
+                argument.dest = f"--{self.to_argument_str(attribute_name)}"
 
             groups[argument.group].append((field, argument))
 
@@ -101,7 +109,7 @@ class Arguments:
         """
         for name, (field, argument) in self._annotation_finder.find(obj).items():
             dest = name if argument.dest is None else argument.dest
-            ns_dest = self._to_namespace_str(dest)
+            ns_dest = self.to_namespace_str(dest)
 
             if not argument.allow_none and getattr(args, ns_dest) is None:
                 continue
@@ -119,7 +127,7 @@ class Arguments:
         """
         for name, (field, argument) in self._annotation_finder.find(obj).items():
             dest = name if argument.dest is None else argument.dest
-            ns_dest = self._to_namespace_str(dest)
+            ns_dest = self.to_namespace_str(dest)
             namespace.__setattr__(ns_dest, field.value)
 
     def _get_matching_type_adapter(self, field: DataField) -> BaseTypeAdapter:
@@ -138,7 +146,7 @@ class Arguments:
         return self.default_serializer
 
     @staticmethod
-    def _to_argument_str(name: str) -> str:
+    def to_argument_str(name: str) -> str:
         """
         Convert a name to a format suitable for command-line arguments (replace underscores with dashes).
 
@@ -151,7 +159,7 @@ class Arguments:
         return name.replace("_", "-")
 
     @staticmethod
-    def _to_namespace_str(name: str) -> str:
+    def to_namespace_str(name: str) -> str:
         """
         Convert a command-line argument name to a namespace attribute name (replace dashes with underscores).
 
