@@ -4,7 +4,6 @@ from functools import partial
 from typing import Any, Union
 
 import wx
-
 from duit.ui.BasePropertyPanel import BasePropertyPanel
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from duit.ui.annotations import find_all_ui_annotations
@@ -72,6 +71,7 @@ class WxPropertyPanel(PanelMixin):
 
         annotations = find_all_ui_annotations(obj)
 
+        in_section = False
         for var_name, (model, anns) in annotations.items():
             anns = sorted(anns)
             in_section = False
