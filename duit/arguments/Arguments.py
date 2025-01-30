@@ -76,7 +76,7 @@ class Arguments:
 
             groups[argument.group].append((field, argument))
 
-        group_keys = sorted(groups.keys())
+        group_keys = sorted(groups.keys(), key=lambda x: (x is not None, x))
         if None in group_keys:
             group_keys.remove(None)
             group_keys.insert(0, None)
