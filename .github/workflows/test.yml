@@ -32,6 +32,7 @@ jobs:
       - name: Install prerequisites
         shell: bash
         run: |
+          sudo apt-get update
           sudo apt-get install build-essential libgtk-3-dev
 
       # install pip packages
