@@ -67,6 +67,15 @@ class DataField(Generic[T]):
         if self.publish_enabled and not self._is_equal(self._value, old_value):
             self.fire()
 
+    def set(self, value: T) -> None:
+        """
+        Set the value of the DataField.
+
+        Args:
+            value (T): The new value to set.
+        """
+        self.value = value
+
     def set_silent(self, value: T) -> None:
         """
         Set the value of the DataField without triggering the 'on_changed' event.
