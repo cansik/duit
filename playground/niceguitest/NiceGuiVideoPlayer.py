@@ -124,19 +124,13 @@ def main() -> None:
 
     web_port = 8422
 
-    Thread(target=run_video_thread, args=(video_path,)).start()
-    Thread(target=run_nice_gui, args=(web_port,)).start()
+    Thread(target=run_video_thread, args=(video_path,), daemon=True).start()
+    Thread(target=run_nice_gui, args=(web_port,), daemon=True).start()
 
     webview.create_window("NiceGUI Video Player", f"http://localhost:{web_port}")
     webview.start()
 
-    try:
-        while True:
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        pass
+    exit(0)
 
 
 if __name__ == "__main__":
