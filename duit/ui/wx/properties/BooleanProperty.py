@@ -3,6 +3,7 @@ import wx
 from duit.model.DataField import DataField
 from duit.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from duit.ui.wx.WxFieldProperty import WxFieldProperty
+from duit.ui.wx.widgets.WxToggleSwitch import WxToggleSwitch
 
 
 class BooleanProperty(WxFieldProperty[BooleanAnnotation, DataField]):
@@ -16,21 +17,23 @@ class BooleanProperty(WxFieldProperty[BooleanAnnotation, DataField]):
         Returns:
             wx.Window: The created GUI field.
         """
-        field = wx.CheckBox(parent, label=self.annotation.name)
+        field = WxToggleSwitch(parent, value=self.model.value)
 
         # Set tooltip
         if self.annotation.tooltip:
             field.SetToolTip(self.annotation.tooltip)
 
         # Set initial value and enable/disable based on read_only property
-        field.SetValue(self.model.value)
         field.Enable(not self.annotation.read_only)
 
         # Define event handlers
         def on_dm_changed(value):
-            field.SetValue(value)
+            self.silent_ui_update(field.SetValue, value)
 
         def on_ui_changed(event):
+            if self.is_ui_silent:
+                return
+
             self.model.value = field.GetValue()
 
         # Bind events

@@ -49,7 +49,7 @@ class PathProperty(WxFieldProperty[PathAnnotation, DataField]):
                 self.model.value = Path(field.GetValue())
 
         def on_model_changed(value):
-            field.SetValue(str(value))
+            wx.CallAfter(field.SetValue, str(value))
 
         field.Bind(wx.EVT_KILL_FOCUS, on_ui_changed)
         self.model.on_changed += on_model_changed

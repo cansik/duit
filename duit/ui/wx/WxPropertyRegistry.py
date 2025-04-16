@@ -9,6 +9,7 @@ from duit.ui.annotations.PathAnnotation import PathAnnotation
 from duit.ui.annotations.ProgressAnnotation import ProgressAnnotation
 from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.annotations.TextAnnotation import TextAnnotation
+from duit.ui.annotations.TitleAnnoation import TitleAnnotation
 from duit.ui.annotations.VectorAnnotation import VectorAnnotation
 from duit.ui.wx.properties.ActionProperty import ActionProperty
 from duit.ui.wx.properties.ListProperty import ListProperty
@@ -21,6 +22,7 @@ from duit.ui.wx.properties.ProgressProperty import ProgressProperty
 from duit.ui.wx.properties.SliderProperty import SliderProperty
 from duit.ui.wx.properties.TextProperty import TextProperty
 from duit.ui.wx.properties.VectorProperty import VectorProperty
+from duit.ui.wx.properties.TitleProperty import TitleProperty
 
 
 def init_wx_registry():
@@ -35,3 +37,4 @@ def init_wx_registry():
     UI_PROPERTY_REGISTRY[VectorAnnotation] = VectorProperty
     UI_PROPERTY_REGISTRY[ActionAnnotation] = ActionProperty
     UI_PROPERTY_REGISTRY[ListAnnotation] = ListProperty
+    UI_PROPERTY_REGISTRY[TitleAnnotation] = TitleProperty

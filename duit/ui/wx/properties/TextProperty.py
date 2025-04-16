@@ -1,4 +1,5 @@
 import wx
+
 from duit.model.DataField import DataField
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.wx.WxFieldProperty import WxFieldProperty
@@ -15,7 +16,7 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
         Returns:
             wx.TextCtrl: The created text entry widget.
         """
-        style = 0
+        style = wx.TE_PROCESS_ENTER  # Ensure wx.TE_PROCESS_ENTER is included
         if self.annotation.read_only:
             style |= wx.TE_READONLY
 
@@ -25,10 +26,19 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
             field.SetValue(str(self.model.value))
 
         def on_ui_changed(event):
+            if self.is_ui_silent:
+                return
+
             if field.GetValue() != self.model.value:
                 self.model.value = field.GetValue()
 
+        def on_model_changed(value: str):
+            self.silent_ui_update(field.SetValue, str(value))
+
         field.Bind(wx.EVT_KILL_FOCUS, on_ui_changed)
-        self.model.on_changed(lambda value: field.SetValue(str(value)))
+        # Bind to the event that detects pressing the "Enter" key
+        field.Bind(wx.EVT_TEXT_ENTER, on_ui_changed)
+
+        self.model.on_changed += on_model_changed
 
         return field

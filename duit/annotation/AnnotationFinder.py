@@ -1,6 +1,7 @@
-from typing import Any, Dict, Tuple, TypeVar, Generic, Callable, Optional, Type
+from typing import Any, Dict, Tuple, TypeVar, Generic, Callable, Optional, Type, List
 
 from duit.annotation.Annotation import Annotation
+from duit.model.AttributeIdentifier import AttributeIdentifier
 from duit.model.DataField import DataField
 
 A = TypeVar("A", bound=Annotation)
@@ -49,24 +50,42 @@ class AnnotationFinder(Generic[A]):
         Returns:
             Dict[str, Tuple[DataField, A]]: A dictionary of found annotations, where the keys are attribute names and values are tuples of DataField and the annotation.
         """
-        self._processed_objects.clear()
-        return self._find_all_annotations(obj)
+        return {k.path: v for k, v in self.find_with_identifier(obj).items()}
 
-    def _find_all_annotations(self, obj: Any) -> Dict[str, Tuple[DataField, A]]:
+    def find_with_identifier(self, obj: Any) -> Dict[AttributeIdentifier, Tuple[DataField, A]]:
         """
-        Recursively find all annotations in an object.
+        Find annotations of the specified type in an object.
+        This method does return the attribute identifier which also contains a path to access nested objects.
 
         Args:
             obj (Any): The object to search for annotations.
 
         Returns:
-            Dict[str, Tuple[DataField, A]]: A dictionary of found annotations, where the keys are attribute names and values are tuples of DataField and the annotation.
+            Dict[AttributeIdentifier, Tuple[DataField, A]]: A dictionary of found annotations, where the keys are attribute identifiers and values are tuples of DataField and the annotation.
         """
-        annotations = {}
+        self._processed_objects.clear()
+        return self._find_all_annotations(obj)
+
+    def _find_all_annotations(self, obj: Any,
+                              parents: Optional[List[str]] = None) -> Dict[AttributeIdentifier, Tuple[DataField, A]]:
+        """
+        Recursively find all annotations in an object.
+
+        Args:
+            obj (Any): The object to search for annotations.
+            parents (Optional[List[str]]): Parents for the recursive structure.
+
+        Returns:
+            Dict[AttributeIdentifier, Tuple[DataField, A]]: A dictionary of found annotations, where the keys are attribute identifiers and values are tuples of DataField and the annotation.
+        """
+        annotations: Dict[AttributeIdentifier, Tuple[DataField, A]] = {}
         self._processed_objects.add(id(obj))
 
         if not hasattr(obj, "__dict__"):
             return annotations
+
+        if parents is None:
+            parents = []
 
         for n, v in obj.__dict__.items():
             if isinstance(v, DataField):
@@ -74,9 +93,12 @@ class AnnotationFinder(Generic[A]):
                     a = v.__getattribute__(self._annotation_attribute_name)
                     if self.is_field_valid is not None and not self.is_field_valid(v, a):
                         continue
-                    annotations[n] = (v, a)
+                    attribute_identifier = AttributeIdentifier(n, parents)
+                    annotations[attribute_identifier] = (v, a)
                 else:
                     value = v.value
                     if self.recursive and id(value) not in self._processed_objects:
-                        annotations.update(self._find_all_annotations(value))
+                        parents.append(n)
+                        annotations.update(self._find_all_annotations(value, parents.copy()))
+                        parents.pop()
         return annotations

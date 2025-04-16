@@ -1,6 +1,6 @@
 import argparse
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from duit.arguments.Argument import Argument
 from duit.arguments.adapters.BaseTypeAdapter import BaseTypeAdapter
@@ -39,8 +39,9 @@ class EnumTypeAdapter(BaseTypeAdapter):
             None
         """
         items = {item.name: item for item in list(type(obj))}
+        default_value: Optional[Enum] = argument.kwargs.get("default", None)
 
-        argument.kwargs["default"] = obj.name
+        argument.kwargs["default"] = default_value.name if default_value is not None else default_value
         argument.kwargs["metavar"] = ", ".join([v for v in items.keys()])
         argument.kwargs["type"] = str
 

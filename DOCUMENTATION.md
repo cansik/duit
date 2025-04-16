@@ -42,6 +42,18 @@ if on_birthday in on_new_age:
 
 The choice to utilise the `+=` and `-=` operators is based on their reliability and simplicity in the C# programming language. Additionally, traditional methods such as `contains()`, `append()`, and `remove()` have been implemented.
 
+### Register Method Decorator
+Instead of adding the event handler method explicitly, it is also possible to use the `duit.event.Event.Event.register()` method as a decorator for event handler methods.
+
+```python
+from duit.event.Event import Event
+on_new_age: Event[int] = Event()
+
+@on_new_age.register
+def on_change(value: int):
+    print(value)
+```
+
 ### Waiting for Events
 
 In certain cases, it is useful to block execution until the next event occurs. The `duit.event.Event.Event.wait()` method allows the program to pause and wait for an event to be fired, returning the value passed when the event was triggered.

@@ -1,2 +1,6 @@
-PyOpenGL
 pdoc~=14.5.1
+
+# additional frameworks
+PyOpenGL
+pygfx~=0.5.0
+opencv-python

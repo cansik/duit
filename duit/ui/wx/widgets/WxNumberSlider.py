@@ -12,7 +12,7 @@ class WxNumberSlider(wx.Slider):
                  value: Union[int, float] = 0,
                  min_value: Union[int, float] = 0,
                  max_value: Union[int, float] = 100,
-                 precision: Union[int] = 3,
+                 precision: int = 3,
                  integer_only: bool = False,
                  *args, **kwargs):
 
@@ -20,29 +20,25 @@ class WxNumberSlider(wx.Slider):
         super().__init__(parent, id, style=style, *args, **kwargs)
 
         self.Bind(wx.EVT_SLIDER, self._on_slider_event)
+        self.Bind(wx.EVT_LEFT_DOWN, self._on_left_click)
 
         self.SetRange(0, self.SLIDER_RESOLUTION)
 
-        self.min_value: Union[int, float] = min_value
-        self.max_value: Union[int, float] = max_value
-        self.precision: Union[int] = precision
-        self.integer_only: bool = integer_only
+        self._update = True
+        self._suppress_events = False  # New flag to suppress unwanted events
 
-        self.on_changed: Event[Union[int, float]] = Event()
+        self.min_value = min_value
+        self.max_value = max_value
+        self.precision = precision
+        self.integer_only = integer_only
+
+        self.on_changed = Event()
 
         self._value = value
         self.number_value = value
 
-        self._update: bool = True
-
     @property
     def number_value(self) -> Union[int, float]:
-        """
-        Getter for the numerical value of the field.
-
-        Returns:
-            Union[int, float]: The numerical value of the field.
-        """
         value = self._value
         if self.integer_only:
             return int(value)
@@ -50,14 +46,7 @@ class WxNumberSlider(wx.Slider):
 
     @number_value.setter
     def number_value(self, value: Union[int, float]):
-        """
-        Setter for the numerical value of the field.
-
-        Args:
-            value (Union[int, float]): The new numerical value to set.
-        """
         value = min(max(value, self.min_value), self.max_value)
-
         if self.integer_only:
             value = int(value)
         else:
@@ -72,17 +61,40 @@ class WxNumberSlider(wx.Slider):
         self._update_ui()
 
     def _update_ui(self):
+        if self._suppress_events:
+            return
         self._update = False
         value = (self.number_value - self.min_value) / (self.max_value - self.min_value)
         slider_value = value * self.SLIDER_RESOLUTION
-        self.SetValue(slider_value)
+        self.SetValue(round(slider_value))
         self._update = True
 
     def _on_slider_event(self, event):
+        if not self._update or self._suppress_events:
+            return
+
+        self._suppress_events = True  # Prevent triggering redundant updates
+        try:
+            partial_value = self.GetValue() / self.SLIDER_RESOLUTION
+            delta = (self.max_value - self.min_value) * partial_value
+            actual_value = self.min_value + delta
+            self.number_value = actual_value
+        finally:
+            self._suppress_events = False
+
+    def _on_left_click(self, event):
         if not self._update:
             return
 
-        partial_value = self.GetValue() / self.SLIDER_RESOLUTION
-        delta = (self.max_value - self.min_value) * partial_value
-        actual_value = self.min_value + delta
-        self.number_value = actual_value
+        click_x = event.GetX()
+        slider_width = self.GetSize().GetWidth() - 2 * self.GetThumbLength()
+        fraction_clicked = max(0, min(1, click_x / slider_width))
+        new_value = self.min_value + fraction_clicked * (self.max_value - self.min_value)
+
+        self._suppress_events = True  # Prevent triggering slider events during update
+        try:
+            self.number_value = new_value
+        finally:
+            self._suppress_events = False
+
+        event.Skip()  # Ensure the default event handling behavior is maintained

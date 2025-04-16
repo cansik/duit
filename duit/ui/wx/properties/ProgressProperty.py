@@ -22,7 +22,8 @@ class ProgressProperty(WxFieldProperty[ProgressAnnotation, DataField]):
         field.Enable(not self.annotation.read_only)
 
         def on_dm_changed(value):
-            field.SetValue(round(self.GAUGE_RESOLUTION * value))
+            progress_value = round(self.GAUGE_RESOLUTION * value)
+            wx.CallAfter(field.SetValue, progress_value)
 
         self.model.on_changed.append(on_dm_changed)
 

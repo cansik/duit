@@ -28,9 +28,12 @@ class OptionsProperty(WxFieldProperty[BooleanAnnotation, DataField]):
         def on_dm_changed(value):
             if value in self.options:
                 index = self.options.index(value)
-                field.SetSelection(index)
+                self.silent_ui_update(field.SetSelection, index)
 
         def on_ui_changed(event):
+            if self.is_ui_silent:
+                return
+
             selection = event.GetSelection()
             self.model.value = self.options[selection]
 

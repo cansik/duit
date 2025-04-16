@@ -16,10 +16,15 @@ from playground.SubConfig import SubConfig
 
 class Config:
     def __init__(self):
-        self.is_active = DataField(False) | ui.Boolean("Active")
+        self.is_active = DataField(True) | ui.Boolean("Active")
+
+        self.title = DataField("Information") | ui.Title()
+
+        self.demo_label = DataField("Hallo") | ui.Text("Demo")
 
         self.age = DataField(5) | AnnotationList(
-            ui.StartSection("Options", collapsed=False, is_active_field=self.is_active), ui.Number("Age"))
+            ui.StartSection("Options", collapsed=False,
+                            is_active_field=self.is_active, name_field=self.demo_label), ui.Number("Age"))
         self.hungry = DataField(True) | ui.Boolean("Hungry") | Setting(exposed=False)
         self.title = DataField("Hello world") | ui.Title(text_color=(15, 115, 97))
         self.year = DataField(2021) | ui.Number("Year", 2000, 2050)
@@ -44,7 +49,7 @@ class Config:
         self.save = DataField(Path()) | ui.Path("Save", dialog_type=DialogType.SaveFile)
 
         self.check1 = DataField(False) | ui.Boolean("Check 1") | ui.StartSection("Boxes")
-        self.check2 = DataField(False) | ui.Boolean("Check 2")
+        self.check2 = DataField(True) | ui.Boolean("Check 2")
         self.check3 = DataField(False) | ui.Boolean("Check 3") | ui.EndSection()
 
         self._on_hello = DataField(self.say_hello) | ui.Action("Press Me")

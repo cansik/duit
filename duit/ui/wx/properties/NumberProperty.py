@@ -47,9 +47,15 @@ class NumberProperty(WxFieldProperty[NumberAnnotation, DataField]):
         field.SetToolTip(self.annotation.tooltip)
 
         def on_dm_changed(value):
-            field.number_value = value
+            def _update_ui():
+                field.number_value = value
+
+            self.silent_ui_update(_update_ui)
 
         def on_ui_changed(value):
+            if self.is_ui_silent:
+                return
+
             self.model.value = field.number_value
 
         self.model.on_changed.append(on_dm_changed)

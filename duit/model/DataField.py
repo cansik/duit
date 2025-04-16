@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TypeVar, Generic, Any, Optional, Callable, Iterable, List, Sequence
 
+import numpy as np
+
 import duit.model.DataFieldPlugin
 from duit.event.Event import Event
 from duit.settings import SETTING_ANNOTATION_ATTRIBUTE_NAME
@@ -64,6 +66,15 @@ class DataField(Generic[T]):
 
         if self.publish_enabled and not self._is_equal(self._value, old_value):
             self.fire()
+
+    def set(self, value: T) -> None:
+        """
+        Set the value of the DataField.
+
+        Args:
+            value (T): The new value to set.
+        """
+        self.value = value
 
     def set_silent(self, value: T) -> None:
         """
@@ -189,7 +200,7 @@ class DataField(Generic[T]):
     @staticmethod
     def _is_equal(value: T, new_value: T) -> bool:
         """
-        Check if two values are equal, taking care of iterable comparisons.
+        Check if two values are equal, taking care of iterable comparisons (like numpy arrays).
 
         Args:
             value (T): The first value.
@@ -198,6 +209,9 @@ class DataField(Generic[T]):
         Returns:
             bool: True if the values are equal, False otherwise.
         """
+        if isinstance(value, np.ndarray):
+            return np.array_equal(value, new_value)
+
         result = value == new_value
 
         # fix numpy and list comparisons
