@@ -8,9 +8,11 @@ import cv2
 import webview
 from nicegui import ui
 
+from playground.niceguitest.components.opencv_viewer import OpencvViewer
 from playground.niceguitest.components.video_stream import VideoStream
 
 video_stream: Optional[VideoStream] = None
+opencv_viewer: Optional[OpencvViewer] = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,8 +22,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def run_nice_gui(web_port: int):
-    global video_stream
-    video_stream = VideoStream().classes('w-full h-full')
+    global video_stream, opencv_viewer
+    # video_stream = VideoStream().classes('w-full h-full')
+    opencv_viewer = OpencvViewer().classes('w-full h-full')
     ui.run(reload=False, port=web_port, dark=True, show=False)
 
 
@@ -41,6 +44,8 @@ def run_video_thread(video_path: Path):
                 continue
             if video_stream is not None:
                 video_stream.stream(frame)
+            if opencv_viewer is not None:
+                opencv_viewer.stream(frame)
             time.sleep(delay)
     finally:
         cap.release()
