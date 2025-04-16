@@ -28,6 +28,7 @@ class VideoStream(Element, component='video_stream.js'):
         """
         # convert BGR to RGBA
         rgba = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        # rgba = cv2.resize(rgba, (640, 480))
         h, w, _ = rgba.shape
         body = rgba.tobytes()
         # pack width & height as two big-endian uint32s
