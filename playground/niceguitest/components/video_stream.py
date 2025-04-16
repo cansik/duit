@@ -1,8 +1,11 @@
+import asyncio
 import struct
 from queue import Queue
 
 import cv2
 import numpy as np
+from fastapi import WebSocket
+from nicegui import app
 from nicegui.element import Element
 
 
@@ -20,6 +23,7 @@ class VideoStream(Element, component='video_stream.js'):
         super().__init__()
         # pass endpoint to the Vue component
         self._props['endpoint'] = endpoint
+        self._register()
 
     def stream(self, frame: np.ndarray) -> None:
         """
@@ -40,3 +44,20 @@ class VideoStream(Element, component='video_stream.js'):
         except:
             VideoStream.frame_queue.get(block=False)
             VideoStream.frame_queue.put(buf, block=False)
+
+    def _register(self):
+        def get_event_loop():
+            # helper to avoid lint complaints
+            return asyncio.get_event_loop()
+
+        @app.websocket('/ws/stream')
+        async def ws_stream(websocket: WebSocket):
+            """
+            Accepts WebSocket connections and sends raw RGBA frames as binary messages.
+            """
+            await websocket.accept()
+            loop = get_event_loop()
+            print('ws started')
+            while True:
+                buf: bytes = await loop.run_in_executor(None, VideoStream.frame_queue.get)
+                await websocket.send_bytes(buf)

@@ -1,5 +1,4 @@
 import argparse
-import asyncio
 import time
 from pathlib import Path
 from threading import Thread
@@ -7,8 +6,7 @@ from typing import Optional
 
 import cv2
 import webview
-from fastapi import WebSocket
-from nicegui import ui, app
+from nicegui import ui
 
 from playground.niceguitest.components.video_stream import VideoStream
 
@@ -19,24 +17,6 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("video")
     return parser.parse_args()
-
-
-def get_event_loop():
-    # helper to avoid lint complaints
-    return asyncio.get_event_loop()
-
-
-@app.websocket('/ws/stream')
-async def ws_stream(websocket: WebSocket):
-    """
-    Accepts WebSocket connections and sends raw RGBA frames as binary messages.
-    """
-    await websocket.accept()
-    loop = get_event_loop()
-    print('ws started')
-    while True:
-        buf: bytes = await loop.run_in_executor(None, VideoStream.frame_queue.get)
-        await websocket.send_bytes(buf)
 
 
 def run_nice_gui(web_port: int):
