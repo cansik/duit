@@ -1,66 +1,18 @@
 import argparse
-import base64
+import asyncio
 import time
-from enum import Enum
 from pathlib import Path
-from queue import Queue, Empty
 from threading import Thread
+from typing import Optional
 
 import cv2
-import numpy as np
 import webview
-from nicegui import ui
+from fastapi import WebSocket
+from nicegui import ui, app
 
-frame_queue: Queue[str] = Queue(maxsize=1)
+from playground.niceguitest.components.video_stream import VideoStream
 
-
-class ImageMimeType(Enum):
-    BMP = ('.bmp', 'image/bmp')
-    DIB = ('.dib', 'image/bmp')  # Windows bitmap
-    JPEG = ('.jpg', 'image/jpeg')
-    JPE = ('.jpe', 'image/jpeg')
-    JPEG2K = ('.jp2', 'image/jp2')
-    PNG = ('.png', 'image/png')
-    WEBP = ('.webp', 'image/webp')
-    PPM = ('.ppm', 'image/x-portable-pixmap')
-    PGM = ('.pgm', 'image/x-portable-graymap')
-    PBM = ('.pbm', 'image/x-portable-bitmap')
-    SR = ('.sr', 'image/x-rgb')
-    RAS = ('.ras', 'image/x-cmu-raster')
-    TIFF = ('.tiff', 'image/tiff')
-
-    def __init__(self, ext: str, mime: str):
-        self.ext = ext
-        self.mime = mime
-
-
-def convert_to_data_uri(
-        frame: np.ndarray,
-        img_type: ImageMimeType,
-        encode_params: list[int] = None
-) -> str:
-    """
-    Converts an OpenCV frame to a Base64-encoded data URI using the specified image type.
-
-    Args:
-        frame:        The image as a NumPy array (BGR).
-        img_type:     One of ImageMimeType enum members.
-        encode_params:
-                      Optional OpenCV encoding parameters
-                      (e.g. [cv2.IMWRITE_JPEG_QUALITY, 90]).
-
-    Returns:
-        A string of the form "data:<mime>;base64,<base64-data>".
-
-    Raises:
-        ValueError: If encoding fails.
-    """
-    success, buf = cv2.imencode(img_type.ext, frame, encode_params or [])
-    if not success:
-        raise ValueError(f"Could not encode frame to format {img_type.ext}")
-
-    b64 = base64.b64encode(buf).decode('ascii')
-    return f'data:{img_type.mime};base64,{b64}'
+video_stream: Optional[VideoStream] = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -69,19 +21,27 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def get_event_loop():
+    # helper to avoid lint complaints
+    return asyncio.get_event_loop()
+
+
+@app.websocket('/ws/stream')
+async def ws_stream(websocket: WebSocket):
+    """
+    Accepts WebSocket connections and sends raw RGBA frames as binary messages.
+    """
+    await websocket.accept()
+    loop = get_event_loop()
+    print('ws started')
+    while True:
+        buf: bytes = await loop.run_in_executor(None, VideoStream.frame_queue.get)
+        await websocket.send_bytes(buf)
+
+
 def run_nice_gui(web_port: int):
-    video_image = ui.interactive_image().classes('w-full h-full')
-
-    def update_frame():
-        try:
-            data_uri = frame_queue.get_nowait()
-            # thread‐safe: only the main GUI thread touches the widget here
-            video_image.set_source(data_uri)
-            video_image.update()
-        except Empty:
-            pass
-
-    ui.timer(1 / 30, update_frame)
+    global video_stream
+    video_stream = VideoStream().classes('w-full h-full')
     ui.run(reload=False, port=web_port, dark=True, show=False)
 
 
@@ -99,20 +59,8 @@ def run_video_thread(video_path: Path):
             if not ret:
                 cap.set(cv2.CAP_PROP_POS_MSEC, 0.0)
                 continue
-            # convert and enqueue, dropping old if needed
-            start = time.perf_counter()
-            data_uri = convert_to_data_uri(frame, ImageMimeType.JPEG, [cv2.IMWRITE_JPEG_QUALITY, 70])
-            end = time.perf_counter()
-            print(f"Encoding time: {end - start:.3f}s")
-            try:
-                frame_queue.put(data_uri, block=False)
-            except:
-                # queue full → remove old and retry
-                try:
-                    frame_queue.get(block=False)
-                    frame_queue.put(data_uri, block=False)
-                except:
-                    pass
+            if video_stream is not None:
+                video_stream.stream(frame)
             time.sleep(delay)
     finally:
         cap.release()
