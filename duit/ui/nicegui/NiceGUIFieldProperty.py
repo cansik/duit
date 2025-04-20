@@ -33,7 +33,7 @@ class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
             Iterable[Element]: An iterable of NiceGUI elements.
         """
         if not self.hide_label:
-            label = ui.label(f"{self.annotation.name}:")
+            label = ui.markdown(f"{self.annotation.name}:").classes("p-1")
         result = self.create_field()
 
         if isinstance(result, Sequence):

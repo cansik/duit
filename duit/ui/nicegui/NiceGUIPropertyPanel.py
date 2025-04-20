@@ -23,6 +23,9 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
 
         self._data_context: Optional[Any] = None
 
+        self._grid_columns = "auto 2fr"
+        self._grid_classes = "w-full gap-1"
+
     def _create_panel(self):
         # remove all children
         self.clear()
@@ -32,7 +35,7 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
 
         # add root element
         with self:
-            root = ui.grid(columns=2)
+            root = ui.grid(columns=self._grid_columns).classes(self._grid_classes)
 
         # add elements to gui
         self._create_properties(self._data_context, root)
@@ -66,7 +69,7 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
                     # setup pane
                     expansion = ui.expansion(ann.name, value=ann.collapsed).classes("w-full col-span-full")
                     with expansion:
-                        root_grid = ui.grid(columns=2)
+                        root_grid = ui.grid(columns=self._grid_columns).classes(self._grid_classes)
 
                     root_grid.__enter__()
 

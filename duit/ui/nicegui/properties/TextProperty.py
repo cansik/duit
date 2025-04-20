@@ -8,4 +8,4 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
     def create_field(self) -> Element:
-        return ui.input()
+        return ui.input().props("rounded outlined dense")
