@@ -35,7 +35,7 @@ def main():
     print(f"Library: {config.library.value}")
 
     # add panel
-    panel = NiceGUIPropertyPanel()
+    panel = NiceGUIPropertyPanel().classes("w-full")
     panel.data_context = config
 
     ui.run(native=True, title="Demo Project", window_size=(500, 800), dark=True)

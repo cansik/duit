@@ -32,18 +32,17 @@ class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
         Returns:
             Iterable[Element]: An iterable of NiceGUI elements.
         """
-        with ui.row():
-            if not self.hide_label:
-                label = ui.label(f"{self.annotation.name}:")
-            result = self.create_field()
+        if not self.hide_label:
+            label = ui.label(f"{self.annotation.name}:")
+        result = self.create_field()
 
-            if isinstance(result, Sequence):
-                return result
+        if isinstance(result, Sequence):
+            return result
 
-            if self.hide_label:
-                return [result]
+        if self.hide_label:
+            return [result]
 
-            return label, result
+        return label, result
 
     @abstractmethod
     def create_field(self) -> Element:

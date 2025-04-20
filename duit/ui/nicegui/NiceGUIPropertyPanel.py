@@ -30,8 +30,12 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
         if self._data_context is None:
             return
 
+        # add root element
+        with self:
+            root = ui.grid(columns=2)
+
         # add elements to gui
-        self._create_properties(self._data_context, self)
+        self._create_properties(self._data_context, root)
 
         self.update()
 
@@ -60,8 +64,11 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
                             continue
 
                     # setup pane
-                    expansion = ui.expansion(ann.name, value=ann.collapsed).classes("w-full")
-                    expansion.__enter__()
+                    expansion = ui.expansion(ann.name, value=ann.collapsed).classes("w-full col-span-full")
+                    with expansion:
+                        root_grid = ui.grid(columns=2)
+
+                    root_grid.__enter__()
 
                     # implementation of active field link
                     if ann.is_active_field is not None:
@@ -74,10 +81,10 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
 
                     if is_sub_section:
                         # add widgets and continue
-                        self._create_properties(model.value, expansion)
+                        self._create_properties(model.value, root_grid)
                         continue
 
-                    current_container = expansion
+                    current_container = root_grid
                     in_section = True
                     continue
 
