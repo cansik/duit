@@ -1,5 +1,7 @@
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
+from duit.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from duit.ui.annotations.TextAnnotation import TextAnnotation
+from duit.ui.nicegui.properties.BooleanProperty import BooleanProperty
 from duit.ui.nicegui.properties.TextProperty import TextProperty
 
 
@@ -10,3 +12,4 @@ def init_nicegui_registry():
 
     """
     UI_PROPERTY_REGISTRY[TextAnnotation] = TextProperty
+    UI_PROPERTY_REGISTRY[BooleanAnnotation] = BooleanProperty

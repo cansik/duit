@@ -2,18 +2,16 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.DataField import DataField
-from duit.ui.annotations.TextAnnotation import TextAnnotation
+from duit.ui.annotations.BooleanAnnotation import BooleanAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 
-class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
+class BooleanProperty(NiceGUIFieldProperty[BooleanAnnotation, DataField]):
     def create_field(self) -> Element:
         ann = self.annotation
 
-        element = ui.input(placeholder=ann.placeholder_text).props("rounded outlined dense")
-
+        element = ui.switch().props("rounded outlined dense")
         element.set_enabled(not ann.read_only)
-        element.set_autocomplete([])
 
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)
@@ -27,15 +25,14 @@ class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
 
                 self.model.value = element.value
 
-        def on_model_changed(value: str):
+        def on_model_changed(value: bool):
             with self.silent() as ok:
                 if not ok:
                     return
 
-                element.value = str(value)
+                element.value = bool(value)
 
-        element.on("keydown.enter", on_ui_changed)
-        element.on("blur", on_ui_changed)
+        element.on_value_change(on_ui_changed)
 
         self.model.on_changed += on_model_changed
         self.model.fire_latest()
