@@ -14,25 +14,25 @@ class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
 
         element.set_enabled(not ann.read_only)
         element.set_autocomplete([])
-        element.tooltip(ann.tooltip)
+
+        if ann.tooltip is not None and ann.tooltip != "":
+            element.tooltip(ann.tooltip)
 
         # todo: Also implement ann.copy_content
 
         def on_ui_changed(*args, **kwargs):
-            if self.is_ui_silent:
-                return
+            with self.silent() as ok:
+                if not ok:
+                    return
 
-            self.is_ui_silent = True
-            self.model.value = element.value
-            self.is_ui_silent = False
+                self.model.value = element.value
 
         def on_model_changed(value: str):
-            if self.is_ui_silent:
-                return
+            with self.silent() as ok:
+                if not ok:
+                    return
 
-            self.is_ui_silent = True
-            element.value = str(value)
-            self.is_ui_silent = False
+                element.value = str(value)
 
         element.on("keydown.enter", on_ui_changed)
         element.on("blur", on_ui_changed)
