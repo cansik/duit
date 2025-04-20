@@ -23,7 +23,9 @@ class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
         """
         super().__init__(annotation, model)
         self.hide_label = hide_label
-        self.is_ui_silent: bool = False
+
+        # defines style of properties
+        self._default_props = "rounded outlined dense"
 
     def create_widgets(self) -> Iterable[Element]:
         """

@@ -10,7 +10,7 @@ class BooleanProperty(NiceGUIFieldProperty[BooleanAnnotation, DataField]):
     def create_field(self) -> Element:
         ann = self.annotation
 
-        element = ui.switch().props("rounded outlined dense")
+        element = ui.switch()
         element.set_enabled(not ann.read_only)
 
         if ann.tooltip is not None and ann.tooltip != "":

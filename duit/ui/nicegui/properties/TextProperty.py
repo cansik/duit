@@ -10,7 +10,7 @@ class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
     def create_field(self) -> Element:
         ann = self.annotation
 
-        element = ui.input(placeholder=ann.placeholder_text).props("rounded outlined dense")
+        element = ui.input(placeholder=ann.placeholder_text).props(self._default_props)
 
         element.set_enabled(not ann.read_only)
         element.set_autocomplete([])
