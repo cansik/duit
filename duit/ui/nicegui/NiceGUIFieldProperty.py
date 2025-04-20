@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Optional, Iterable, Sequence, Callable
+from typing import Generic, Optional, Iterable, Sequence
 
 from nicegui import ui
 from nicegui.element import Element
@@ -56,11 +56,3 @@ class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
             wx.Window: The field widget.
         """
         pass
-
-    def silent_ui_update(self, handler: Callable, *args, **kwargs):
-        def ui_task():
-            self.is_ui_silent = True
-            handler(*args, *kwargs)
-            self.is_ui_silent = False
-
-        wx.CallAfter(ui_task)
