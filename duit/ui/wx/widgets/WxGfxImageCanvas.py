@@ -3,8 +3,9 @@ from typing import Optional
 import numpy as np
 import pygfx as gfx
 import wx
-from duit.event.Event import Event
 from wgpu.gui.wx import WgpuWidget
+
+from duit.event.Event import Event
 
 
 class WxGfxImageCanvas(WgpuWidget):
@@ -38,7 +39,9 @@ class WxGfxImageCanvas(WgpuWidget):
 
         self.Bind(wx.EVT_SIZE, self.on_size)
 
-        self.on_mouse_event: Event[gfx.PointerEvent] = Event()
+        self.on_pointer_event: Event[gfx.PointerEvent] = Event()
+        self.on_keyboard_event: Event[gfx.KeyboardEvent] = Event()
+        self.on_wheel_event: Event[gfx.WheelEvent] = Event()
 
         self.request_draw(self._animate)
 
@@ -117,6 +120,13 @@ class WxGfxImageCanvas(WgpuWidget):
 
             self.scene.add(self.gfx_image)
             self.camera.local.scale_y = -1  # Flip image vertically
+
+            # add handlers
+            self.gfx_image.add_event_handler(self.on_pointer_event,
+                                             "pointer_down", "pointer_move", "pointer_up", "pointer_enter",
+                                             "pointer_leave", "click", "double_click")
+            self.gfx_image.add_event_handler(self.on_keyboard_event, "key_down", "key_up")
+            self.gfx_image.add_event_handler(self.on_wheel_event, "wheel")
 
         self.texture.data[:] = self._image[:]
         self.texture.update_full()
