@@ -1,4 +1,3 @@
-import time
 from queue import Queue
 
 import cv2
@@ -70,8 +69,6 @@ class OpencvViewer(Element, component='opencv_viewer.js'):
                                                 b"Content-Length: " + str(len(frame)).encode() + b"\r\n\r\n" +
                             frame + b"\r\n"
                     )
-                    # slight pause to allow other tasks
-                    time.sleep(0)
 
             return StreamingResponse(generator(),
                                      media_type="multipart/x-mixed-replace; boundary=frame")
