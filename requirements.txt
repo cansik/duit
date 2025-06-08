@@ -11,7 +11,7 @@ tk~=0.1.0
 customtkinter~=5.2.2
 
 # extra wx
-wxPython~=4.2.1.0
+wxPython~=4.2.3.0
 
 # extra nicegui
 nicegui~=2.15.0

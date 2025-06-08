@@ -4,6 +4,7 @@ from functools import partial
 from typing import Any, Union
 
 import wx
+
 from duit.ui.BasePropertyPanel import BasePropertyPanel
 from duit.ui.PropertyRegistry import UI_PROPERTY_REGISTRY
 from duit.ui.annotations import find_all_ui_annotations
@@ -19,11 +20,12 @@ class PanelMeta(type(wx.Panel), type(BasePropertyPanel)):
 
 class PanelMixin(wx.ScrolledWindow, BasePropertyPanel, ABC, metaclass=PanelMeta):
     def __init__(self, *args, **kwargs):
-        wx.ScrolledWindow.__init__(self, *args, **kwargs)
+        wx.ScrolledWindow.__init__(self, *args, style=wx.VSCROLL | wx.HSCROLL, **kwargs)
         BasePropertyPanel.__init__(self)
-        self.SetScrollbars(1, 1, 100, 1000)
+        # self.SetScrollbars(1, 1, 100, 1000)
         self.SetScrollRate(5, 5)  # Adjust scroll rate for smoother scrolling
         self.SetExtraStyle(wx.WS_EX_PROCESS_UI_UPDATES | wx.BUFFER_VIRTUAL_AREA)  # Optional double-buffering
+        self.SetAutoLayout(True)
 
 
 class WxPropertyPanel(PanelMixin):
@@ -36,12 +38,10 @@ class WxPropertyPanel(PanelMixin):
         self.max_stack_depth = 5
         self.stack_depth = 0
 
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(self.sizer)
-        self._clean_widgets()
-
     def _clean_widgets(self):
         for child in self.GetChildren():
+            if isinstance(child, wx.ScrollBar) or isinstance(child, wx.Window):
+                continue
             child.Destroy()
 
     def _create_panel(self):
@@ -52,8 +52,8 @@ class WxPropertyPanel(PanelMixin):
 
         self._create_properties(self._data_context, self)
 
-        self.FitInside()
         self.Layout()
+        self.FitInside()
 
     def _create_properties(self, obj: Any, panel: Union[wx.Panel, "WxPropertyPanel"]):
         self.stack_depth += 1
