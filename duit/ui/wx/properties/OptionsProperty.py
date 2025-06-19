@@ -3,11 +3,11 @@ from typing import List, Any
 import wx
 
 from duit.model.DataField import DataField
-from duit.ui.annotations.BooleanAnnotation import BooleanAnnotation
+from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from duit.ui.wx.WxFieldProperty import WxFieldProperty
 
 
-class OptionsProperty(WxFieldProperty[BooleanAnnotation, DataField]):
+class OptionsProperty(WxFieldProperty[OptionsAnnotation, DataField]):
     def create_field(self, parent) -> wx.Window:
         """
         Create an options field for the given boolean annotation.
