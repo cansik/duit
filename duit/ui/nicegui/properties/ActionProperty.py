@@ -13,7 +13,6 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
-
         super().__init__(annotation, model, hide_label=True)
 
     def create_field(self) -> Element:
