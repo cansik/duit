@@ -21,7 +21,7 @@ jobs:
       - run: uv venv
       - run: uv pip install -r requirements.txt
       - run: uv pip install -r dev-requirements.txt
-      - run: python setup.py doc
+      - run: uv run python setup.py doc
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
