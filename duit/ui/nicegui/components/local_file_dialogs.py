@@ -252,8 +252,6 @@ class SaveFilePicker(BaseFilePicker):
     def _init_dialog(self) -> None:
         with self, ui.card():
             ui.label(self.title).classes('text-lg font-medium')
-            # file name input
-            self.name_input = ui.input(label='File name', value=self.default_name).classes('w-full').props('solo')
             # optional drives
             if platform.system() == 'Windows':
                 import win32api  # type: ignore
@@ -269,6 +267,9 @@ class SaveFilePicker(BaseFilePicker):
             }
             self.grid = ui.aggrid(grid_opts, html_columns=[0]).classes('w-96')
             self.grid.on('cellDoubleClicked', self._on_double_click)
+
+            # file name input
+            self.name_input = ui.input(label='File name', value=self.default_name).classes('w-full').props('solo')
 
             with ui.row().classes('w-full justify-end'):
                 ui.button('Cancel', on_click=self.close).props('outline')

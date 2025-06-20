@@ -55,9 +55,7 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
             path = self.model.value
 
             default_path = path.parent
-
-            if path.is_file():
-                default_file_name = path.name
+            default_file_name = path.name
 
         if self.annotation.dialog_type == DialogType.OpenFile:
             result = await OpenFilePicker(default_path, title=self.annotation.title, multiple=False,
