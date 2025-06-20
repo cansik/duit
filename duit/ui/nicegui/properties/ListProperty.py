@@ -4,6 +4,7 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.SelectableDataList import SelectableDataList
+from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.ListAnnotation import ListAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
@@ -14,34 +15,26 @@ class ListProperty(NiceGUIFieldProperty[ListAnnotation, SelectableDataList]):
 
         element = ui.select([]).props(self._default_props)
 
-        # TODO: enabled can not be handled by setting enabled flag
+        if self.annotation.read_only:
+            element.props("readonly")
 
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)
 
+        @BaseProperty.suppress_updates
         def on_ui_changed(*args, **kwargs):
-            with self.silent() as ok:
-                if not ok:
-                    return
+            value = element.value
+            self.model.selected_index = [self.get_option_name(e) for e in self.model.value].index(value)
 
-                value = element.value
-                self.model.selected_index = [self.get_option_name(e) for e in self.model.value].index(value)
-
+        @BaseProperty.suppress_updates
         def on_model_changed(*args, **kwargs):
-            with self.silent() as ok:
-                if not ok:
-                    return
+            element.set_options([self.get_option_name(e) for e in self.model.value],
+                                value=self.get_option_name(self.model.selected_item))
+            element.update()
 
-                element.set_options([self.get_option_name(e) for e in self.model.value],
-                                    value=self.get_option_name(self.model.selected_item))
-                element.update()
-
+        @BaseProperty.suppress_updates
         def on_index_changed(index: int):
-            with self.silent() as ok:
-                if not ok:
-                    return
-
-                element.value = self.get_option_name(self.model.value[index])
+            element.value = self.get_option_name(self.model.value[index])
 
         element.on_value_change(on_ui_changed)
 

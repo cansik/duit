@@ -1,6 +1,7 @@
 import threading
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
+from functools import wraps
 from typing import Optional, Any, Iterable, TypeVar, Generic
 
 from duit.model.DataField import DataField
@@ -63,3 +64,38 @@ class BaseProperty(Generic[T, M], ABC):
             yield True
         finally:
             self._silent_lock.release()
+
+    @staticmethod
+    def suppress_updates(method):
+        """
+        Decorator to wrap callbacks in a silent() context,
+        whether they’re bound methods or nested functions capturing `self`.
+        """
+
+        @wraps(method)
+        def wrapper(*args, **kwargs):
+            # Check if it's a bound method: args[0] is the instance
+            instance = None
+            if args and hasattr(args[0], "silent"):
+                instance = args[0]
+            else:
+                # Otherwise, look in the function closure for 'self'
+                closure = getattr(method, "__closure__", None)
+                if closure:
+                    names = method.__code__.co_freevars
+                    for idx, name in enumerate(names):
+                        if name == "self":
+                            instance = closure[idx].cell_contents
+                            break
+
+            # If no BaseProperty instance found, just call through
+            if instance is None:
+                return method(*args, **kwargs)
+
+            # Otherwise run inside the silent lock
+            with instance.silent() as ok:
+                if not ok:
+                    return
+                return method(*args, **kwargs)
+
+        return wrapper

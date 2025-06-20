@@ -20,7 +20,9 @@ class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
         ann = self.annotation
 
         element = ui.button(ann.text).props(self._default_props).classes("col-span-full")
-        element.set_enabled(not ann.read_only)
+
+        if self.annotation.read_only:
+            element.props("readonly")
 
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)
