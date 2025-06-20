@@ -28,11 +28,11 @@ jobs:
       - name: Get Library Version
         id: get_version
         run: |
-          lib_version=$(python setup.py --version)
+          $lib_version = python setup.py --version
           echo "Library Version: $lib_version"
 
-          echo ::set-output name=version::"$lib_version"
-          echo ::set-output name=v_version::"v$lib_version"
+          echo "::set-output name=version::$lib_version"
+          echo "::set-output name=v_version::v$lib_version"
 
       - name: Build
         run: |
