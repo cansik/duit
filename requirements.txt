@@ -4,7 +4,7 @@ pyperclip
 numpy
 
 # extra open3d
-open3d~=0.19.0
+open3d>=0.19.0
 
 # extra tk
 tk~=0.1.0
