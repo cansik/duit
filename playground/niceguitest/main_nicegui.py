@@ -27,9 +27,15 @@ def main():
     def on_resolution_changed(value):
         print(f"Resolution: {value}")
 
+    def on_sunshine(value):
+        print(f"Sunshine: {value}")
+
     config.hungry.on_changed += on_hungry
     config.resolution.on_changed += on_resolution_changed
     config.codes.on_index_changed += on_code_changed
+
+    config.sunshine.on_changed += on_sunshine
+    config.sunshine.bind_to(config.progress)
 
     print(f"City: {config.location.value.city.value}")
     print(f"Library: {config.library.value}")

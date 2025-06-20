@@ -11,7 +11,7 @@ class ProgressProperty(NiceGUIFieldProperty[ProgressAnnotation, DataField]):
     def create_field(self) -> Element:
         ann = self.annotation
 
-        element = ui.linear_progress().props(self._default_props)
+        element = ui.linear_progress().props(self._default_props).classes('my-auto').props("animation-speed=300")
 
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)

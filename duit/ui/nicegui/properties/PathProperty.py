@@ -24,9 +24,11 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
 
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)
+            select_button.tooltip(ann.tooltip)
 
         if self.annotation.read_only:
             element.props("readonly")
+            select_button.props("readonly")
 
         @BaseProperty.suppress_updates
         def on_ui_changed(*args, **kwargs):

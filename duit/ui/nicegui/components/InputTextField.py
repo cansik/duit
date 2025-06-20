@@ -21,6 +21,7 @@ class InputTextField(Input):
         super().__init__(label, placeholder=placeholder, value=value, password=password,
                          password_toggle_button=password_toggle_button, on_change=on_change, autocomplete=autocomplete,
                          validation=validation)
+        self.set_autocomplete([])
 
         self.on_input_changed: Event[str] = Event()
 

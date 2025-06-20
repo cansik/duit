@@ -82,4 +82,5 @@ class InputNumberField(InputTextField):
 
         self._is_silent = True
         self.value = self._format_number(self._number_value)
+        self.on_number_changed(self._number_value)
         self._is_silent = False

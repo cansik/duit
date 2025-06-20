@@ -13,8 +13,6 @@ class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
 
         element = InputTextField(placeholder=ann.placeholder_text).props(self._default_props)
 
-        element.set_autocomplete([])
-
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)
 
