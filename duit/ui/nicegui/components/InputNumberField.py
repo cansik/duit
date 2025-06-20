@@ -78,7 +78,14 @@ class InputNumberField(InputTextField):
 
     @number_value.setter
     def number_value(self, value: Union[int, float]):
-        self._number_value = self._convert_number(value)
+        new_number = self._convert_number(value)
+
+        # only update if it is a new number
+        tolerance = 1e-9
+        if abs(self._number_value - new_number) < tolerance:
+            return
+
+        self._number_value = new_number
 
         self._is_silent = True
         self.value = self._format_number(self._number_value)

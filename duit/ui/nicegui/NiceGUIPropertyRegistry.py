@@ -10,6 +10,7 @@ from duit.ui.annotations.ProgressAnnotation import ProgressAnnotation
 from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.annotations.TitleAnnoation import TitleAnnotation
+from duit.ui.annotations.VectorAnnotation import VectorAnnotation
 from duit.ui.nicegui.properties.ActionProperty import ActionProperty
 from duit.ui.nicegui.properties.BooleanProperty import BooleanProperty
 from duit.ui.nicegui.properties.EnumProperty import EnumProperty
@@ -21,6 +22,7 @@ from duit.ui.nicegui.properties.ProgressProperty import ProgressProperty
 from duit.ui.nicegui.properties.SliderAnnotation import SliderProperty
 from duit.ui.nicegui.properties.TextProperty import TextProperty
 from duit.ui.nicegui.properties.TitleProperty import TitleProperty
+from duit.ui.nicegui.properties.VectorProperty import VectorProperty
 
 
 def init_nicegui_registry():
@@ -40,3 +42,4 @@ def init_nicegui_registry():
     UI_PROPERTY_REGISTRY[ProgressAnnotation] = ProgressProperty
     UI_PROPERTY_REGISTRY[TitleAnnotation] = TitleProperty
     UI_PROPERTY_REGISTRY[SliderAnnotation] = SliderProperty
+    UI_PROPERTY_REGISTRY[VectorAnnotation] = VectorProperty

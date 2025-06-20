@@ -34,7 +34,7 @@ class SliderProperty(NiceGUIFieldProperty[SliderAnnotation, DataField]):
                                             precision=ann.decimal_precision
                                             ).props(self._default_props).classes("w-24")
 
-        # number_filed.set_visibility(ann.show_number_field)
+        number_filed.set_visibility(ann.show_number_field)
 
         if ann.tooltip is not None and ann.tooltip != "":
             slider.tooltip(ann.tooltip)
