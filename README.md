@@ -13,7 +13,7 @@ and [cansik/bildspur-ui](https://github.com/cansik/bildspur-ui).
 
 <img width="800" alt="gui-demo" src="./doc/gui-demo.png">
 
-*Example UI rendered with [Open3D](https://github.com/isl-org/Open3D) (left), [tkinter](https://docs.python.org/3/library/tkinter.html) (center) and [wx](https://pypi.org/project/wxPython/) (right)*.
+*Example UI rendered with [NiceGUI](https://nicegui.io/) [Open3D](https://github.com/isl-org/Open3D), [tkinter](https://docs.python.org/3/library/tkinter.html) and [wx](https://pypi.org/project/wxPython/) (ltr)*.
 
 ## Features
 
@@ -39,9 +39,11 @@ pip install duit
 To support user interface creation for data fields, one of the following backends can be installed:
 
 - [open3d](https://github.com/isl-org/Open3D) - Cross platform UI framework with support for 3d visualisation.
+- [wx](https://pypi.org/project/wxPython/) - Wx based UI framework which is cross platfrom and very stable.
+- [nicegui](https://nicegui.io/) - Web based interface which looks really nice and is our favourite choice.
 - [tkinter](https://docs.python.org/3/library/tkinter.html) - More stable UI framework, currently not feature complete.
 
-At the moment `open3d` is the recommended choice as gui backend.
+If you are already using `open3d`, this is the recommended choice as gui backend.
 
 ```bash
 pip install "duit[open3d]"
@@ -57,6 +59,12 @@ To install `wx` use the following command:
 
 ```bash
 pip install "duit[wx]"
+```
+
+To install `nicegui` use the following command:
+
+```bash
+pip install "duit[nicegui]"
 ```
 
 To install duit with all backends call pip like this:
@@ -153,4 +161,4 @@ python setup.py doc --launch
 
 ## About
 
-MIT License - Copyright (c) 2024 Florian Bruggisser
+MIT License - Copyright (c) 2025 Florian Bruggisser
