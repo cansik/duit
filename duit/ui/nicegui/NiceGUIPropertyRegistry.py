@@ -6,6 +6,7 @@ from duit.ui.annotations.ListAnnotation import ListAnnotation
 from duit.ui.annotations.NumberAnnotation import NumberAnnotation
 from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from duit.ui.annotations.PathAnnotation import PathAnnotation
+from duit.ui.annotations.ProgressAnnotation import ProgressAnnotation
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.nicegui.properties.ActionProperty import ActionProperty
 from duit.ui.nicegui.properties.BooleanProperty import BooleanProperty
@@ -14,6 +15,7 @@ from duit.ui.nicegui.properties.ListProperty import ListProperty
 from duit.ui.nicegui.properties.NumberProperty import NumberProperty
 from duit.ui.nicegui.properties.OptionsProperty import OptionsProperty
 from duit.ui.nicegui.properties.PathProperty import PathProperty
+from duit.ui.nicegui.properties.ProgressProperty import ProgressProperty
 from duit.ui.nicegui.properties.TextProperty import TextProperty
 
 
@@ -31,3 +33,4 @@ def init_nicegui_registry():
     UI_PROPERTY_REGISTRY[OptionsAnnotation] = OptionsProperty
     UI_PROPERTY_REGISTRY[EnumAnnotation] = EnumProperty
     UI_PROPERTY_REGISTRY[PathAnnotation] = PathProperty
+    UI_PROPERTY_REGISTRY[ProgressAnnotation] = ProgressProperty
