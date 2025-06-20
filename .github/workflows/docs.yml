@@ -22,7 +22,7 @@ jobs:
       - run: uv pip install -r requirements.txt
       - run: uv pip install -r dev-requirements.txt
       - run: python setup.py doc
-      - uses: actions/upload-pages-artifact@v2
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
 
@@ -37,4 +37,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
