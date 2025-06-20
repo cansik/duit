@@ -18,6 +18,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install uv
+      - run: uv venv
       - run: uv pip install -r requirements.txt
       - run: uv pip install -r dev-requirements.txt
       - run: python setup.py doc
