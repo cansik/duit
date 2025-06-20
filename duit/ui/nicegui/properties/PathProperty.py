@@ -8,22 +8,25 @@ from duit.model.DataField import DataField
 from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.PathAnnotation import PathAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.components.InputTextField import InputTextField
+from duit.ui.nicegui.components.LocalFilePicker import LocalFilePicker
 
 
 class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]]]):
-
     def create_field(self) -> Element:
         ann = self.annotation
 
-        element = ui.input(placeholder=ann.placeholder_text).props(self._default_props)
+        with ui.row(wrap=False).classes("gap-1 items-center"):
+            element = InputTextField(placeholder=ann.placeholder_text).props(self._default_props).classes("grow")
+            select_button = ui.button(icon="s_folder_open").props(self._default_props)
 
-        element.set_enabled(not ann.read_only)
         element.set_autocomplete([])
 
         if ann.tooltip is not None and ann.tooltip != "":
             element.tooltip(ann.tooltip)
 
-        # todo: Also implement ann.copy_content
+        if self.annotation.read_only:
+            element.props("readonly")
 
         @BaseProperty.suppress_updates
         def on_ui_changed(*args, **kwargs):
@@ -33,10 +36,13 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
         def on_model_changed(value: str):
             element.value = str(value)
 
-        element.on("keydown.enter", on_ui_changed)
-        element.on("blur", on_ui_changed)
-
+        select_button.on_click(self.pick_file)
+        element.on_input_changed += on_ui_changed
         self.model.on_changed += on_model_changed
         self.model.fire_latest()
 
         return element
+
+    async def pick_file(self) -> None:
+        result = await LocalFilePicker('~', multiple=False)
+        ui.notify(f'You chose {result}')

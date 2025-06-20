@@ -26,7 +26,7 @@ class PathAnnotation(UIAnnotation):
         :param readonly: Whether the annotation is read-only (default is False).
         :param title: The title of the file dialog.
         :param dialog_type: The type of file dialog (default is DialogType.OpenFile).
-        :param filters: Optional file filters in the form of a dictionary (default is an empty dictionary).
+        :param filters: Optional file filters in the form of a dictionary (e.g. ".py": "Python") (default is an empty dictionary).
         """
         super().__init__(name, tooltip, readonly)
         self.placeholder_text = placeholder_text
