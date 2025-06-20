@@ -11,6 +11,11 @@ from duit.ui.nicegui.NiceGUIProperty import NiceGUIProperty
 
 
 class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
+    """
+    A base class for defining NiceGUI properties with associated UI annotations.
+
+    This class handles the creation and management of NiceGUI elements linked to a specific property of a model.
+    """
 
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
         """
@@ -51,10 +56,7 @@ class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
         """
         Creates the specific field widget for this property.
 
-        Args:
-            parent: The parent widget.
-
         Returns:
-            wx.Window: The field widget.
+            Element: The field widget.
         """
         pass

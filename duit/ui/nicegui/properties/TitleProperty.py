@@ -11,10 +11,23 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 
 class TitleProperty(NiceGUIFieldProperty[TitleAnnotation, DataField[str]]):
+    """
+    A property to represent a title with specific UI annotation and model binding.
+
+    :param annotation: The UI annotation that contains metadata for this title property.
+    :param model: Optional model of type M to bind with the title property.
+    :param hide_label: Boolean flag to indicate whether to hide the label.
+    """
+    
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
         super().__init__(annotation, model, hide_label=True)
 
     def create_field(self) -> Element:
+        """
+        Creates and configures the UI element for the title property.
+
+        :returns: A NiceGUI Element representing the title with specific styles and properties.
+        """
         ann = self.annotation
         element = ui.markdown(self.model.value).props(self._default_props).classes("col-span-full")
 

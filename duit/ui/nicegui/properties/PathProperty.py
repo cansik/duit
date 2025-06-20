@@ -13,7 +13,17 @@ from duit.ui.nicegui.components.local_file_dialogs import OpenFilePicker, SaveFi
 
 
 class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]]]):
+    """
+    A class to handle a file or directory path property in a NiceGUI interface.
+    This property allows for user interaction with file input through dialog boxes.
+    """
+
     def create_field(self) -> Element:
+        """
+        Creates the UI field for the path property.
+
+        :returns: An Element representing the input field for the path.
+        """
         ann = self.annotation
 
         with ui.row(wrap=False).classes("gap-1 items-center"):
@@ -32,6 +42,12 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
 
         @BaseProperty.suppress_updates
         def on_ui_changed(*args, **kwargs):
+            """
+            Updates the model value when the UI input changes.
+
+            :param args: Positional arguments.
+            :param kwargs: Keyword arguments.
+            """
             try:
                 path = Path(element.value)
                 self.model.value = path
@@ -40,6 +56,11 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
 
         @BaseProperty.suppress_updates
         def on_model_changed(value: str):
+            """
+            Updates the UI input element when the model value changes.
+
+            :param value: The new value from the model.
+            """
             element.value = str(value)
 
         select_button.on_click(self.pick_file)
@@ -50,6 +71,10 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
         return element
 
     async def pick_file(self) -> None:
+        """
+        Opens the appropriate file dialog based on the annotation configuration and
+        updates the model with the selected path.
+        """
         default_path = "~"
         default_file_name = ""
 
@@ -75,6 +100,11 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
             raise Exception(f"Dialog Type ({self.annotation.dialog_type}) is not allowed.")
 
     def update_path(self, paths: Optional[List[Path]]):
+        """
+        Updates the model value with the selected path and notifies the user.
+
+        :param paths: The list of paths selected by the user.
+        """
         if paths is None:
             return
 

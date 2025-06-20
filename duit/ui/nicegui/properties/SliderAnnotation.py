@@ -11,10 +11,24 @@ from duit.ui.nicegui.components.InputNumberField import InputNumberField
 
 
 class SliderProperty(NiceGUIFieldProperty[SliderAnnotation, DataField]):
+    """
+    A property that represents a slider UI component linked to a data field.
+
+    :param SliderAnnotation: The annotation providing configuration for the slider.
+    :param DataField: The underlying data field model that the slider interacts with.
+    """
+    
     def create_field(self) -> Element:
+        """
+        Creates the slider field component and its associated input number field.
+
+        This method sets up event handlers for synchronizing the slider and the input number field,
+        and defines properties such as min, max, step size, and visibility based on the annotation.
+
+        :returns: The created slider UI element.
+        """
         ann = self.annotation
 
-        # find good step size
         is_integer_only = isinstance(self.model.value, int)
         step_size = 1.0 if is_integer_only else max(0.001, (ann.limit_max - ann.limit_min) / 100.0)
 

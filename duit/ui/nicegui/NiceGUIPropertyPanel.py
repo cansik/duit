@@ -14,8 +14,18 @@ from duit.ui.annotations.container.SubSectionAnnotation import SubSectionAnnotat
 
 
 class NiceGUIPropertyPanel(Element, BasePropertyPanel):
+    """
+    A property panel that uses NiceGUI to render UI components 
+    based on annotations of the given data context.
+
+    Inherits from both Element and BasePropertyPanel.
+    """
 
     def __init__(self):
+        """
+        Initializes the NiceGUIPropertyPanel with default parameters 
+        for stack depth, data context, and grid layout settings.
+        """
         super().__init__()
 
         self.max_stack_depth = 5
@@ -27,7 +37,11 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
         self._grid_classes = "w-full gap-1"
 
     def _create_panel(self):
-        # remove all children
+        """
+        Clears the panel and creates a new UI structure based 
+        on the current data context. Initializes the root element 
+        and calls the method to create properties.
+        """
         self.clear()
 
         if self._data_context is None:
@@ -43,6 +57,14 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
         self.update()
 
     def _create_properties(self, obj: Any, container: Element):
+        """
+        Recursively creates UI properties based on the annotations of 
+        the provided object. It manages sections and sub-sections as 
+        defined by StartSectionAnnotation and EndSectionAnnotation.
+
+        :param obj: The object containing UI annotations.
+        :param container: The container element to hold the created UI components.
+        """
         self.stack_depth += 1
         container.__enter__()
 

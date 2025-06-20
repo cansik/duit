@@ -10,7 +10,22 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 
 class OptionsProperty(NiceGUIFieldProperty[OptionsAnnotation, SelectableDataList]):
+    """
+    A property class that manages a selectable list of options in the NiceGUI framework.
+    
+    This class is responsible for creating a UI field that allows users to select from a list of options 
+    and ensuring that the model's value is synchronized with the selected option.
+    """
+
     def create_field(self) -> Element:
+        """
+        Creates a UI field for selecting options.
+
+        This method creates a selectable UI element with the available options and sets up listeners 
+        for changes in the UI and model.
+
+        :return: An Element representing the selectable field in the UI.
+        """
         ann = self.annotation
 
         options_str = [self.get_option_name(e) for e in self.options]

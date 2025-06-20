@@ -12,10 +12,22 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 
 class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
+    """
+    A property that encapsulates an action button for UI annotations.
+
+    :param annotation: The UI annotation containing action metadata.
+    :param model: Optional model associated with the action.
+    :param hide_label: Boolean to indicate whether to hide the label.
+    """
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
         super().__init__(annotation, model, hide_label=True)
 
     def create_field(self) -> Element:
+        """
+        Creates a button element representing the action.
+
+        :returns: A button element configured with the action's properties.
+        """
         ann = self.annotation
 
         element = ui.button(ann.text).props(self._default_props).classes("col-span-full")
@@ -27,6 +39,12 @@ class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
             element.tooltip(ann.tooltip)
 
         def on_clicked(_):
+            """
+            Handles the click event for the action button.
+
+            Initiates the action method either on a new thread or directly 
+            based on the threaded property of the annotation.
+            """
             if self.model is None:
                 return
 

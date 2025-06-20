@@ -8,7 +8,17 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 
 class BooleanProperty(NiceGUIFieldProperty[BooleanAnnotation, DataField]):
+    """
+    A class to represent a property that can be toggled as a boolean value 
+    using a NiceGUI switch element.
+    """
+
     def create_field(self) -> Element:
+        """
+        Creates a GUI switch element for the boolean property.
+
+        :returns: A NiceGUI switch element for toggling the boolean value.
+        """
         ann = self.annotation
 
         element = ui.switch()

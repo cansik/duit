@@ -75,10 +75,16 @@ class BaseFilePicker(ui.dialog):
                 ui.button('Ok', on_click=self._handle_ok)
 
     def _change_drive(self) -> None:
+        """
+        Change the current path to the selected drive (Windows only).
+        """
         self.path = Path(self.drives_toggle.value).expanduser()
         self._update_grid()
 
     def _update_grid(self) -> None:
+        """
+        Update the file/folder listing in the grid based on the current path and filters.
+        """
         entries = list(self.path.glob('*'))
         if not self.show_hidden:
             entries = [p for p in entries if not p.name.startswith('.')]
@@ -101,6 +107,11 @@ class BaseFilePicker(ui.dialog):
         self.grid.update()
 
     def _on_double_click(self, e: events.GenericEventArguments) -> None:
+        """
+        Handle double-click event in the grid to navigate into folders or select files.
+
+        :param e: Event arguments containing the clicked row data.
+        """
         selected_path = Path(e.args['data']['path'])
         if selected_path.is_dir():
             self.path = selected_path
@@ -109,6 +120,9 @@ class BaseFilePicker(ui.dialog):
             self.submit([str(selected_path)])
 
     async def _handle_ok(self) -> None:
+        """
+        Handle OK button click: validate selected items and submit them if valid.
+        """
         rows = await self.grid.get_selected_rows()
         raw_paths = [r['path'] for r in rows]
         valid_paths: list[str] = []
@@ -250,9 +264,11 @@ class SaveFilePicker(BaseFilePicker):
         )
 
     def _init_dialog(self) -> None:
+        """
+        Initialize the dialog UI components including file name input and overwrite logic.
+        """
         with self, ui.card():
             ui.label(self.title).classes('text-lg font-medium')
-            # optional drives
             if platform.system() == 'Windows':
                 import win32api  # type: ignore
                 drives = win32api.GetLogicalDriveStrings().split('\x00')[:-1]
@@ -268,7 +284,6 @@ class SaveFilePicker(BaseFilePicker):
             self.grid = ui.aggrid(grid_opts, html_columns=[0]).classes('w-96')
             self.grid.on('cellDoubleClicked', self._on_double_click)
 
-            # file name input
             self.name_input = ui.input(label='File name', value=self.default_name).classes('w-full').props('solo')
 
             with ui.row().classes('w-full justify-end'):
@@ -276,6 +291,9 @@ class SaveFilePicker(BaseFilePicker):
                 ui.button('Ok', on_click=self._handle_ok)
 
     async def _handle_ok(self) -> None:
+        """
+        Handle OK button click by validating the input filename and prompting for overwrite if necessary.
+        """
         folder = self.path
         filename = self.name_input.value.strip()
         if not filename:

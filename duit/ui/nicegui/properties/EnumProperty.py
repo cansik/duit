@@ -4,6 +4,10 @@ from duit.ui.nicegui.properties.OptionsProperty import OptionsProperty
 
 
 class EnumProperty(OptionsProperty):
+    """
+    A property class that represents an enumeration, providing options based on the available enum members.
+    """
+
     @property
     def options(self) -> List[Any]:
         """

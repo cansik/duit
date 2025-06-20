@@ -10,7 +10,16 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 
 
 class ListProperty(NiceGUIFieldProperty[ListAnnotation, SelectableDataList]):
+    """
+    A property class representing a list field with selectable options.
+    """
+
     def create_field(self) -> Element:
+        """
+        Creates the UI field for the list property.
+
+        :return: An Element representing the selectable options in the UI.
+        """
         ann = self.annotation
 
         element = ui.select([]).props(self._default_props)
