@@ -24,6 +24,7 @@ class BooleanProperty(NiceGUIFieldProperty[BooleanAnnotation, DataField]):
         element = ui.switch()
 
         if self.annotation.read_only:
+            element.enabled = False
             element.props("readonly")
 
         if ann.tooltip is not None and ann.tooltip != "":
