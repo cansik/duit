@@ -89,7 +89,7 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
                             continue
 
                     # setup pane
-                    expansion = ui.expansion(ann.name, value=ann.collapsed).classes("w-full col-span-full")
+                    expansion = ui.expansion(ann.name, value=not ann.collapsed).classes("w-full col-span-full")
                     with expansion:
                         root_grid = ui.grid(columns=self._grid_columns).classes(self._grid_classes)
 
