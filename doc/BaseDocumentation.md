@@ -648,7 +648,7 @@ class Config:
 When rendered, the following GUI is created, as well as any necessary bindings between the UI widgets and the
 data fields.
 
-<img width="480" alt="doc-window" src="./doc/doc-window.png">
+<img width="480" alt="doc-window" src="doc-window.png">
 
 ### Experimental
 Everything marked as experimental in this documentation has an exclamation mark emoji ⚠️behind its chapter title. That means that the functionality is very likely to change in the future and should be used with cautious.
