@@ -51,6 +51,9 @@ def main():
         panel = NiceGUIPropertyPanel().classes("w-full")
         panel.data_context = config
 
+        # remove padding
+        # ui.query('.nicegui-content').classes('p-0')
+
     ui.run(native=True, title="Demo Project", window_size=(500, 800), dark=True)
 
 

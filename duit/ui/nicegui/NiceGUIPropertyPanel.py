@@ -73,10 +73,8 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
 
         annotations = find_all_ui_annotations(obj)
 
-        in_section = False
         for var_name, (model, anns) in annotations.items():
             anns = sorted(anns)
-            in_section = False
 
             for ann in anns:
                 ann_type = type(ann)
@@ -111,17 +109,14 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
                         # add widgets and continue
                         self._create_properties(model.value, root_grid)
                         current_container.__exit__()
-                        in_section = False
                         current_container = container
                         continue
 
                     current_container = root_grid
-                    in_section = True
                     continue
 
                 if isinstance(ann, EndSectionAnnotation):
                     current_container.__exit__()
-                    in_section = False
                     current_container = container
                     continue
 
@@ -130,6 +125,6 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
                     continue
 
                 property_field = UI_PROPERTY_REGISTRY[ann_type](ann, model)
-                widgets = property_field.create_widgets()
+                _ = property_field.create_widgets()
 
         container.__exit__()
