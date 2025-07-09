@@ -110,6 +110,9 @@ class NiceGUIPropertyPanel(Element, BasePropertyPanel):
                     if is_sub_section:
                         # add widgets and continue
                         self._create_properties(model.value, root_grid)
+                        current_container.__exit__()
+                        in_section = False
+                        current_container = container
                         continue
 
                     current_container = root_grid
