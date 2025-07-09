@@ -1,7 +1,7 @@
 export default {
-    template: `<img :src="endpoint" style="width:100%; height:auto;" />`,
+    template: `<img :src="endpoint" />`,
     props: ['endpoint'],
     mounted() {
-        console.log('📹 <video-stream> MJPEG mounted, src=', this.endpoint);
+        console.log('OpenCV Viewer mounted, src=', this.endpoint);
     }
 };
