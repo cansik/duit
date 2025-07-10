@@ -1,5 +1,4 @@
 import argparse
-import time
 from pathlib import Path
 from threading import Thread
 from typing import Optional
@@ -8,11 +7,18 @@ import cv2
 import webview
 from nicegui import ui
 
+from duit.utils import os_utils
 from playground.niceguitest.components.opencv_viewer import OpencvViewer
 from playground.niceguitest.components.video_stream import VideoStream
 
 video_stream: Optional[VideoStream] = None
 opencv_viewer: Optional[OpencvViewer] = None
+
+if os_utils.is_macos():
+    import appnope
+
+    # disable App Nap for the rest of your process
+    appnope.nope()
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,7 +52,7 @@ def run_video_thread(video_path: Path):
                 video_stream.stream(frame)
             if opencv_viewer is not None:
                 opencv_viewer.stream(frame)
-            time.sleep(delay)
+            # time.sleep(delay)
     finally:
         cap.release()
 
