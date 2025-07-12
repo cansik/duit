@@ -108,3 +108,18 @@ def is_windows() -> bool:
     :return: True if Windows, False otherwise.
     """
     return get_operating_system().os_type == OSType.WINDOWS
+
+
+def disable_app_nap_on_macos():
+    """
+    Disables App Nap on macOS to prevent the application from being throttled
+    when it is not in the foreground.
+
+    This function checks if the operating system is macOS and uses the
+    `appnope` module to disable App Nap for the current process.
+    """
+    if is_macos():
+        import appnope
+
+        # disable App Nap for the rest of your process
+        appnope.nope()

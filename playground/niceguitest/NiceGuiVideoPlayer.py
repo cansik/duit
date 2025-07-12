@@ -8,17 +8,11 @@ import webview
 from nicegui import ui
 
 from duit.utils import os_utils
-from playground.niceguitest.components.opencv_viewer import OpencvViewer
+from duit.ui.nicegui.components.opencv_viewer import OpencvViewer
 from playground.niceguitest.components.video_stream import VideoStream
 
 video_stream: Optional[VideoStream] = None
 opencv_viewer: Optional[OpencvViewer] = None
-
-if os_utils.is_macos():
-    import appnope
-
-    # disable App Nap for the rest of your process
-    appnope.nope()
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,6 +52,8 @@ def run_video_thread(video_path: Path):
 
 
 def main() -> None:
+    os_utils.disable_app_nap_on_macos()
+
     args = parse_args()
     video_path = Path(args.video)
 
