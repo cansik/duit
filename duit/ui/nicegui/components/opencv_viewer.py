@@ -2,7 +2,6 @@ import asyncio
 import uuid
 from queue import Queue, Full
 
-import cv2
 import numpy as np
 from fastapi import Request
 from fastapi.responses import StreamingResponse
@@ -67,6 +66,7 @@ class OpencvViewer(Element, component='opencv_viewer.js'):
 
         :param frame: OpenCV image (BGR numpy array) to encode and enqueue.
         """
+        import cv2
         success, buf = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, self.quality])
         if not success:
             return
