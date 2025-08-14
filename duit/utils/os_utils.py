@@ -1,15 +1,14 @@
-"""
-A basic Python script with type hints to determine the current operating system
-and its architecture, returning a dataclass containing all relevant OS information.
-"""
-
+import functools
 import platform
 from dataclasses import dataclass
 from enum import Enum
+from typing import Callable, Any, TypeVar
 
 
 class OSType(Enum):
-    """Enum representing supported operating systems."""
+    """
+    Enum representing supported operating systems.
+    """
     WINDOWS = "Windows"
     LINUX = "Linux"
     MACOS = "macOS"
@@ -17,7 +16,9 @@ class OSType(Enum):
 
 
 class OSArchitecture(Enum):
-    """Enum representing common OS architectures."""
+    """
+    Enum representing common OS architectures.
+    """
     X86_64 = "x86_64"
     ARM = "ARM"
     ARM64 = "ARM64"
@@ -49,7 +50,6 @@ def get_operating_system() -> OperatingSystem:
     machine = platform.machine().lower()
     version = platform.version()
 
-    # Determine OS type
     if system == "Darwin":
         os_type = OSType.MACOS
     elif system == "Linux":
@@ -59,12 +59,6 @@ def get_operating_system() -> OperatingSystem:
     else:
         os_type = OSType.UNKNOWN
 
-    # Determine architecture
-    # Common values for platform.machine():
-    #  - "x86_64", "AMD64" => x86_64
-    #  - "arm", "armv7l"   => ARM
-    #  - "aarch64"         => ARM64
-    #  - "i386", "i686"    => x86
     if machine in ("x86_64", "amd64"):
         architecture = OSArchitecture.X86_64
     elif machine in ("arm", "armv7l"):
@@ -110,16 +104,60 @@ def is_windows() -> bool:
     return get_operating_system().os_type == OSType.WINDOWS
 
 
-def disable_app_nap_on_macos():
-    """
-    Disables App Nap on macOS to prevent the application from being throttled
-    when it is not in the foreground.
+F = TypeVar("F", bound=Callable[..., Any])
 
-    This function checks if the operating system is macOS and uses the
-    `appnope` module to disable App Nap for the current process.
-    """
-    if is_macos():
-        import appnope
 
-        # disable App Nap for the rest of your process
-        appnope.nope()
+def require_os(*allowed_os: OSType) -> Callable[[F], F]:
+    """
+    Decorator that runs the function only if the current OS is in allowed_os.
+    Works with normal, class, and static methods.
+
+    :param allowed_os: One or more OSType values that are allowed to execute the function.
+
+    :return: A decorator that conditionally executes the function based on the OS.
+    """
+
+    def decorator(func: F) -> F:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            current_os = get_operating_system().os_type
+            if current_os in allowed_os:
+                return func(*args, **kwargs)
+            return None
+
+        return wrapper  # type: ignore
+
+    return decorator
+
+
+def require_windows(func: F) -> F:
+    """
+    Decorator to ensure the function only runs on Windows.
+
+    :param func: The function to decorate.
+
+    :return: The decorated function if the OS is Windows; otherwise, None.
+    """
+    return require_os(OSType.WINDOWS)(func)
+
+
+def require_linux(func: F) -> F:
+    """
+    Decorator to ensure the function only runs on Linux.
+
+    :param func: The function to decorate.
+
+    :return: The decorated function if the OS is Linux; otherwise, None.
+    """
+    return require_os(OSType.LINUX)(func)
+
+
+def require_macos(func: F) -> F:
+    """
+    Decorator to ensure the function only runs on macOS.
+
+    :param func: The function to decorate.
+
+    :return: The decorated function if the OS is macOS; otherwise, None.
+    """
+    return require_os(OSType.MACOS)(func)
