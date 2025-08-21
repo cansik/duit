@@ -1,13 +1,13 @@
 from nicegui.element import Element
 
 from duit.model.DataField import DataField
-from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.TextAnnotation import TextAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 from duit.ui.nicegui.components.InputTextField import InputTextField
 
 
-class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
+class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField[str]]):
     """
     A property that manages a text input field for a given DataField, using a TextAnnotation for configuration.
     """
@@ -25,22 +25,21 @@ class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField]):
 
         element = InputTextField(placeholder=ann.placeholder_text).props(self._default_props)
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             element.tooltip(ann.tooltip)
 
-        if self.annotation.read_only:
+        if ann.read_only:
             element.props("readonly")
 
-        @BaseProperty.suppress_updates
-        def on_ui_changed(*args, **kwargs):
-            self.model.value = element.value
+        def register_ui_change(cb):
+            element.on_input_changed += cb
 
-        @BaseProperty.suppress_updates
-        def on_model_changed(value: str):
-            element.value = str(value)
-
-        element.on_input_changed += on_ui_changed
-        self.model.on_changed += on_model_changed
-        self.model.fire_latest()
+        self._binder = NiceGUIPropertyBinder[str](
+            element=element,
+            model=self.model,
+            register_ui_change=register_ui_change,
+            to_model=str,
+            to_ui=str,
+        )
 
         return element

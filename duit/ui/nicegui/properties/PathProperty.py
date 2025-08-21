@@ -5,11 +5,15 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.DataField import DataField
-from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.PathAnnotation import PathAnnotation, DialogType
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 from duit.ui.nicegui.components.InputTextField import InputTextField
-from duit.ui.nicegui.components.local_file_dialogs import OpenFilePicker, SaveFilePicker, OpenFolderPicker
+from duit.ui.nicegui.components.local_file_dialogs import (
+    OpenFilePicker,
+    SaveFilePicker,
+    OpenFolderPicker,
+)
 
 
 class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]]]):
@@ -32,42 +36,37 @@ class PathProperty(NiceGUIFieldProperty[PathAnnotation, DataField[Optional[Path]
 
         element.set_autocomplete([])
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             element.tooltip(ann.tooltip)
             select_button.tooltip(ann.tooltip)
 
-        if self.annotation.read_only:
+        if ann.read_only:
             element.props("readonly")
             select_button.props("readonly")
 
-        @BaseProperty.suppress_updates
-        def on_ui_changed(*args, **kwargs):
-            """
-            Updates the model value when the UI input changes.
+        def register_ui_change(cb):
+            element.on_input_changed += lambda v: cb(v)
 
-            :param args: Positional arguments.
-            :param kwargs: Keyword arguments.
-            """
+        def to_model(value: str) -> Optional[Path]:
             try:
-                path = Path(element.value)
-                self.model.value = path
-            except:
+                return Path(value) if value else None
+            except Exception:
+                # fallback: fire event without change
                 self.model.fire()
+                return None
 
-        @BaseProperty.suppress_updates
-        def on_model_changed(value: str):
-            """
-            Updates the UI input element when the model value changes.
+        def to_ui(value: Optional[Path]) -> str:
+            return str(value) if value is not None else ""
 
-            :param value: The new value from the model.
-            """
-            element.value = str(value)
+        self._binder = NiceGUIPropertyBinder[Optional[Path]](
+            element=element,
+            model=self.model,
+            register_ui_change=register_ui_change,
+            to_model=to_model,
+            to_ui=to_ui,
+        )
 
         select_button.on_click(self.pick_file)
-        element.on_input_changed += on_ui_changed
-        self.model.on_changed += on_model_changed
-        self.model.fire_latest()
-
         return element
 
     async def pick_file(self) -> None:

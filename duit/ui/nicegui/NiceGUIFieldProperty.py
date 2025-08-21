@@ -8,6 +8,7 @@ from duit.model.DataField import T
 from duit.ui.BaseProperty import M
 from duit.ui.annotations import UIAnnotation
 from duit.ui.nicegui.NiceGUIProperty import NiceGUIProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 
 
 class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
@@ -28,6 +29,8 @@ class NiceGUIFieldProperty(Generic[T, M], NiceGUIProperty[T, M], ABC):
         """
         super().__init__(annotation, model)
         self.hide_label = hide_label
+
+        self._binder: NiceGUIPropertyBinder | None = None
 
         # defines style of properties
         self._default_props = "rounded outlined dense"

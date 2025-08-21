@@ -4,10 +4,10 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.DataField import DataField
-from duit.ui.BaseProperty import BaseProperty, M
 from duit.ui.annotations import UIAnnotation
 from duit.ui.annotations.TitleAnnoation import TitleAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 
 
 class TitleProperty(NiceGUIFieldProperty[TitleAnnotation, DataField[str]]):
@@ -18,8 +18,8 @@ class TitleProperty(NiceGUIFieldProperty[TitleAnnotation, DataField[str]]):
     :param model: Optional model of type M to bind with the title property.
     :param hide_label: Boolean flag to indicate whether to hide the label.
     """
-    
-    def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
+
+    def __init__(self, annotation: UIAnnotation, model: Optional[DataField[str]] = None, hide_label: bool = False):
         super().__init__(annotation, model, hide_label=True)
 
     def create_field(self) -> Element:
@@ -36,17 +36,22 @@ class TitleProperty(NiceGUIFieldProperty[TitleAnnotation, DataField[str]]):
             css_color = f"rgb({r}, {g}, {b})"
             element.style(f"color: {css_color};")
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             element.tooltip(ann.tooltip)
 
-        if self.annotation.read_only:
+        if ann.read_only:
             element.props("readonly")
 
-        @BaseProperty.suppress_updates
-        def on_model_changed(value: str):
-            element.value = value
+        # markdown has no UI to model changes, provide a no-op registrar
+        def register_ui_change(cb):
+            return None
 
-        self.model.on_changed += on_model_changed
-        self.model.fire_latest()
+        self._binder = NiceGUIPropertyBinder[str](
+            element=element,
+            model=self.model,
+            register_ui_change=register_ui_change,
+            to_model=str,
+            to_ui=str,
+        )
 
         return element

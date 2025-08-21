@@ -4,9 +4,9 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.SelectableDataList import SelectableDataList
-from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.OptionsAnnotation import OptionsAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 
 
 class OptionsProperty(NiceGUIFieldProperty[OptionsAnnotation, SelectableDataList]):
@@ -31,25 +31,30 @@ class OptionsProperty(NiceGUIFieldProperty[OptionsAnnotation, SelectableDataList
         options_str = [self.get_option_name(e) for e in self.options]
         element = ui.select(options_str, value=options_str[0]).props(self._default_props)
 
-        if self.annotation.read_only:
+        if ann.read_only:
             element.props("readonly")
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             element.tooltip(ann.tooltip)
 
-        @BaseProperty.suppress_updates
-        def on_ui_changed(*args, **kwargs):
-            value = element.value
-            self.model.value = self.options[options_str.index(value)]
+        def register_ui_change(cb):
+            element.on_value_change(lambda ev: cb(ev.value))
 
-        @BaseProperty.suppress_updates
-        def on_model_changed(value):
+        def to_model(value: str) -> Any:
+            return self.options[options_str.index(value)]
+
+        def to_ui(value: Any) -> str:
             if value in self.options:
-                element.value = self.get_option_name(value)
+                return self.get_option_name(value)
+            return options_str[0] if options_str else ""
 
-        element.on_value_change(on_ui_changed)
-        self.model.on_changed += on_model_changed
-        self.model.fire_latest()
+        self._binder = NiceGUIPropertyBinder[Any](
+            element=element,
+            model=self.model,
+            register_ui_change=register_ui_change,
+            to_model=to_model,
+            to_ui=to_ui,
+        )
 
         return element
 

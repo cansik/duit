@@ -19,6 +19,7 @@ class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
     :param model: Optional model associated with the action.
     :param hide_label: Boolean to indicate whether to hide the label.
     """
+
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
         super().__init__(annotation, model, hide_label=True)
 
@@ -32,10 +33,10 @@ class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
 
         element = ui.button(ann.text).props(self._default_props).classes("col-span-full")
 
-        if self.annotation.read_only:
+        if ann.read_only:
             element.props("readonly")
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             element.tooltip(ann.tooltip)
 
         def on_clicked(_):
@@ -47,7 +48,6 @@ class ActionProperty(NiceGUIFieldProperty[ActionAnnotation, DataField]):
             """
             if self.model is None:
                 return
-
             if self.annotation.threaded:
                 thread = threading.Thread(target=self._run_method, daemon=True)
                 thread.start()

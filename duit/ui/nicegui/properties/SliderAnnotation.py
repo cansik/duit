@@ -4,20 +4,20 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.DataField import DataField
-from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.SliderAnnotation import SliderAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 from duit.ui.nicegui.components.InputNumberField import InputNumberField
 
 
-class SliderProperty(NiceGUIFieldProperty[SliderAnnotation, DataField]):
+class SliderProperty(NiceGUIFieldProperty[SliderAnnotation, DataField[Union[int, float]]]):
     """
     A property that represents a slider UI component linked to a data field.
 
     :param SliderAnnotation: The annotation providing configuration for the slider.
     :param DataField: The underlying data field model that the slider interacts with.
     """
-    
+
     def create_field(self) -> Element:
         """
         Creates the slider field component and its associated input number field.
@@ -36,44 +36,65 @@ class SliderProperty(NiceGUIFieldProperty[SliderAnnotation, DataField]):
             step_size = ann.step_size
 
         with ui.row(wrap=False).classes("gap-2 items-center"):
-            slider = ui.slider(min=ann.limit_min,
-                               max=ann.limit_max,
-                               value=self.model.value,
-                               step=step_size
-                               ).props(self._default_props).classes("my-auto grow")
+            slider = (
+                ui.slider(
+                    min=ann.limit_min,
+                    max=ann.limit_max,
+                    value=self.model.value,
+                    step=step_size,
+                )
+                .props(self._default_props)
+                .classes("my-auto grow")
+            )
 
-            number_filed = InputNumberField(number_value=self.model.value,
-                                            min_value=ann.limit_min,
-                                            max_value=ann.limit_max,
-                                            precision=ann.decimal_precision
-                                            ).props(self._default_props).classes("w-24")
+            number_field = (
+                InputNumberField(
+                    number_value=self.model.value,
+                    min_value=ann.limit_min,
+                    max_value=ann.limit_max,
+                    precision=ann.decimal_precision,
+                )
+                .props(self._default_props)
+                .classes("w-24")
+            )
 
-        number_filed.set_visibility(ann.show_number_field)
+        number_field.set_visibility(ann.show_number_field)
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             slider.tooltip(ann.tooltip)
-            number_filed.tooltip(ann.tooltip)
+            number_field.tooltip(ann.tooltip)
 
-        if self.annotation.read_only:
+        if ann.read_only:
             slider.props("readonly")
-            number_filed.props("readonly")
+            number_field.props("readonly")
 
-        @BaseProperty.suppress_updates
-        def on_ui_changed(*args, **kwargs):
-            self.model.value = number_filed.number_value
-            slider.value = number_filed.number_value
+        # binder from number_field -> model -> number_field
+        def register_ui_change(cb):
+            number_field.on_number_changed += cb
 
-        @BaseProperty.suppress_updates
-        def on_model_changed(value: Union[int, float]):
-            number_filed.value = value
-            slider.value = number_filed.number_value
+        def to_model(v: Union[int, float]) -> Union[int, float]:
+            return v
 
-        def on_slider_event(_):
-            number_filed.number_value = slider.value
+        def to_ui(v: Union[int, float]) -> Union[int, float]:
+            return v
+
+        self._binder = NiceGUIPropertyBinder[Union[int, float]](
+            element=number_field,
+            model=self.model,
+            register_ui_change=register_ui_change,
+            to_model=to_model,
+            to_ui=to_ui,
+        )
+
+        # keep slider and number_field in sync locally
+        def on_slider_event(ev):
+            number_field.number_value = ev.value
 
         slider.on_value_change(on_slider_event)
-        number_filed.on_number_changed += on_ui_changed
-        self.model.on_changed += on_model_changed
-        self.model.fire_latest()
+
+        def on_number_event(v):
+            slider.value = number_field.number_value
+
+        number_field.on_number_changed += on_number_event
 
         return slider

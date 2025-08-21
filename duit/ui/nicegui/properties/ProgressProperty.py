@@ -2,12 +2,12 @@ from nicegui import ui
 from nicegui.element import Element
 
 from duit.model.DataField import DataField
-from duit.ui.BaseProperty import BaseProperty
 from duit.ui.annotations.ProgressAnnotation import ProgressAnnotation
 from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
+from duit.ui.nicegui.NiceGUIPropertyBinder import NiceGUIPropertyBinder
 
 
-class ProgressProperty(NiceGUIFieldProperty[ProgressAnnotation, DataField]):
+class ProgressProperty(NiceGUIFieldProperty[ProgressAnnotation, DataField[float]]):
     """
     A property class for managing a progress field in a NiceGUI application.
 
@@ -29,24 +29,30 @@ class ProgressProperty(NiceGUIFieldProperty[ProgressAnnotation, DataField]):
         """
         ann = self.annotation
 
-        element = ui.linear_progress().props(self._default_props).classes('my-auto').props("animation-speed=300")
+        element = (
+            ui.linear_progress()
+            .props(self._default_props)
+            .classes("my-auto")
+            .props("animation-speed=300")
+        )
 
-        if ann.tooltip is not None and ann.tooltip != "":
+        if ann.tooltip:
             element.tooltip(ann.tooltip)
 
-        if self.annotation.read_only:
+        if ann.read_only:
             element.props("readonly")
 
-        @BaseProperty.suppress_updates
-        def on_model_changed(value: float):
-            """
-            Updates the progress bar's value when the model changes.
+        # Progress bar is one-way (model -> UI)
+        def register_ui_change(cb):
+            # no UI -> model events for progress bar
+            pass
 
-            :param value: The new value to be set for the progress bar, as a float.
-            """
-            element.value = value
-
-        self.model.on_changed += on_model_changed
-        self.model.fire_latest()
+        self._binder = NiceGUIPropertyBinder[float](
+            element=element,
+            model=self.model,
+            register_ui_change=register_ui_change,
+            to_model=float,
+            to_ui=float,
+        )
 
         return element

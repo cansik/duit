@@ -1,3 +1,4 @@
+import gc
 import multiprocessing
 import random
 import threading
@@ -59,11 +60,13 @@ def main():
             on = random.uniform(0, 1) > 0.5
             config.really.value = on
 
-            time.sleep(1 / 1000)
+            time.sleep(random.uniform(0, 5))
+
+            if random.uniform(0, 1) > 0.5:
+                gc.collect()
 
     t = threading.Thread(target=loop, daemon=True)
-
-    # t.start()
+    t.start()
 
     @app.on_startup
     def startup():

@@ -12,6 +12,8 @@ from duit.ui.nicegui.NiceGUIFieldProperty import NiceGUIFieldProperty
 class ListProperty(NiceGUIFieldProperty[ListAnnotation, SelectableDataList]):
     """
     A property class representing a list field with selectable options.
+
+    Important: This class is currently not safe to use because it has not been updated to use the property-binder.
     """
 
     def create_field(self) -> Element:
