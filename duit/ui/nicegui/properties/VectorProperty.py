@@ -1,4 +1,5 @@
 import sys
+import typing
 from typing import Dict, Optional
 
 from nicegui import ui
@@ -59,9 +60,9 @@ class VectorProperty(NiceGUIFieldProperty[VectorAnnotation, DataField]):
 
     def __init__(self, annotation: UIAnnotation, model: Optional[M] = None, hide_label: bool = False):
         super().__init__(annotation, model, hide_label)
-        self._number_fields = None
-        self._component_models = None
-        self._binders = None
+        self._number_fields: Optional[Dict[str, InputNumberField]] = None
+        self._component_models: Optional[Dict[str, VectorProperty._ComponentModel]] = None
+        self._binders: Optional[Dict[str, NiceGUIPropertyBinder]] = None
 
     def create_field(self) -> Element:
         ann = self.annotation
@@ -101,22 +102,20 @@ class VectorProperty(NiceGUIFieldProperty[VectorAnnotation, DataField]):
 
                 # binder per field
                 def register_ui_change(cb, _field=field):
-                    # InputNumberField emits the numeric value directly
                     _field.on_number_changed += cb
 
                 binder = NiceGUIPropertyBinder(
                     element=field,
-                    model=comp_model,
+                    model=typing.cast(DataField, comp_model),
                     register_ui_change=register_ui_change,
                     to_model=None,
                     to_ui=None,
+                    on_dispose=comp_model.dispose
                 )
 
                 number_fields[name] = field
                 self._component_models[name] = comp_model
                 self._binders[name] = binder
 
-        # store for potential cleanup in your framework
         self._number_fields = number_fields
-
         return row
