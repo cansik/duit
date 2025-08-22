@@ -21,6 +21,7 @@ class Config:
         self.title = DataField("Information") | ui.Title()
 
         self.demo_label = DataField("Hallo") | ui.Text("Demo")
+        self.password = DataField("Password") | ui.Text("Demo", is_secret=True)
 
         self.age = DataField(5) | AnnotationList(
             ui.StartSection("Options", collapsed=False,

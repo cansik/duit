@@ -20,6 +20,11 @@ class TextProperty(WxFieldProperty[TextAnnotation, DataField]):
         if self.annotation.read_only:
             style |= wx.TE_READONLY
 
+        # TODO: this has to be handeled with two textboxes side by side (to display the content)
+        #   see https://stackoverflow.com/a/10837286/1138326
+        if self.annotation.is_secret:
+            style |= wx.TE_PASSWORD
+
         field = wx.TextCtrl(parent, value="", style=style)
 
         if self.model.value is not None:

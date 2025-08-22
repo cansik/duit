@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from open3d.cpu.pybind.visualization.gui import Widget
@@ -31,6 +32,10 @@ class TextProperty(Open3dFieldProperty[TextAnnotation, DataField]):
         field.placeholder_text = self.annotation.placeholder_text
         field.enabled = not self.annotation.read_only
         field.tooltip = self.annotation.tooltip
+
+        # TODO: Handle the new is_secret property
+        if self.annotation.is_secret:
+            logging.warning("is_secret is currently not supported in open3d TextProperty")
 
         def on_dm_changed(value):
             field.text_value = value

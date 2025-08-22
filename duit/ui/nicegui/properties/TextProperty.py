@@ -23,7 +23,9 @@ class TextProperty(NiceGUIFieldProperty[TextAnnotation, DataField[str]]):
         """
         ann = self.annotation
 
-        element = InputTextField(placeholder=ann.placeholder_text).props(self._default_props)
+        element = InputTextField(placeholder=ann.placeholder_text,
+                                 password=ann.is_secret,
+                                 password_toggle_button=ann.is_secret).props(self._default_props)
 
         if ann.tooltip:
             element.tooltip(ann.tooltip)

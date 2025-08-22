@@ -17,7 +17,13 @@ class TextProperty(TkFieldProperty[TextAnnotation, DataField]):
         Returns:
             CTkBaseClass: The created text entry field.
         """
-        field = CTkTextEntry(master, placeholder_text=self.annotation.placeholder_text)
+        show = ""
+
+        # TODO: allow to toggle the password field to be visible
+        if self.annotation.is_secret:
+            show = "*"
+
+        field = CTkTextEntry(master, placeholder_text=self.annotation.placeholder_text, show=show)
         field.readonly = self.annotation.read_only
 
         def on_dm_changed(value):
