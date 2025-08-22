@@ -11,6 +11,10 @@ on:
         description: 'Is Pre-Release'
         required: false
         default: 'false'
+      isDraft:
+        description: 'Is Draft'
+        required: false
+        default: 'false'
       publishPyPI:
         description: 'Publish to PyPI'
         required: false
@@ -56,6 +60,7 @@ jobs:
           overwrite: true
           file_glob: true
           prerelease: ${{ github.event.inputs.isPreRelease == 'true' }}
+          draft: ${{ github.event.inputs.isDraft == 'true' }}
 
       # publish to PyPI
       - name: Publish package to PyPI
