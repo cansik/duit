@@ -7,6 +7,10 @@ on:
         description: 'Publish to Releases'
         required: false
         default: 'true'
+      isPreRelease:
+        description: 'Is Pre-Release'
+        required: false
+        default: 'false'
       publishPyPI:
         description: 'Publish to PyPI'
         required: false
@@ -51,6 +55,7 @@ jobs:
           body: "Prebuilt wheel packages version ${{ steps.get_version.outputs.version }}."
           overwrite: true
           file_glob: true
+          prerelease: ${{ github.event.inputs.isPreRelease == 'true' }}
 
       # publish to PyPI
       - name: Publish package to PyPI
