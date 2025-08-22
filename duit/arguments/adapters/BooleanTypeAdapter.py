@@ -38,12 +38,15 @@ class BooleanTypeAdapter(BaseTypeAdapter):
         # add action for boolean parameter
         kwargs = argument.kwargs
         if "action" not in kwargs:
-            default_value = bool(kwargs.get("default", False))
-            kwargs["action"] = "store_false" if default_value else "store_true"
+            kwargs["action"] = argparse.BooleanOptionalAction
 
         # remove type for action_class
         if "type" in kwargs:
             kwargs.pop("type")
+
+        # do not set a value unless user passed the flag
+        if "default" not in kwargs:
+            kwargs["default"] = argparse.SUPPRESS
 
         parser.add_argument(argument.dest, *argument.args, **argument.kwargs)
 

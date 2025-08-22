@@ -6,7 +6,7 @@ from typing import List
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = "duit"
-PACKAGE_VERSION = "0.1.20a1"
+PACKAGE_VERSION = "0.1.20a2"
 PACKAGE_URL = "https://github.com/cansik/duit"
 
 PACKAGE_DOC_MODULES = ["duit", "!duit.vision"]

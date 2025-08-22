@@ -111,6 +111,10 @@ class Arguments:
             dest = name if argument.dest is None else argument.dest
             ns_dest = self.to_namespace_str(dest)
 
+            # only override if CLI actually provided it
+            if not hasattr(args, ns_dest):
+                continue
+
             if not argument.allow_none and getattr(args, ns_dest) is None:
                 continue
 
